@@ -56,7 +56,9 @@ module "spacelift_services" {
   server_lb_subnets           = module.spacelift_infra.private_subnet_ids
   server_lb_security_group_id = module.spacelift_infra.server_security_group_id
   server_security_group_id    = module.spacelift_infra.server_security_group_id
+  server_lb_certificate_arn   = "<LB_CERTIFICATE_ARN>"
 
+  drain_security_group_id     = module.spacelift_infra.drain_security_group_id
   scheduler_security_group_id = module.spacelift_infra.scheduler_security_group_id
 
   mqtt_lb_subnets = module.spacelift_infra.private_subnet_ids
@@ -73,8 +75,8 @@ module "spacelift_services" {
   policy_inputs_bucket_name            = module.spacelift_infra.policy_inputs_bucket_name
   run_logs_bucket_arn                  = module.spacelift_infra.run_logs_bucket_arn
   run_logs_bucket_name                 = module.spacelift_infra.run_logs_bucket_name
-  state_bucket_arn                     = module.spacelift_infra.state_bucket_arn
-  state_bucket_name                    = module.spacelift_infra.state_bucket_name
+  states_bucket_arn                    = module.spacelift_infra.states_bucket_arn
+  states_bucket_name                   = module.spacelift_infra.states_bucket_name
   uploads_bucket_arn                   = module.spacelift_infra.uploads_bucket_arn
   uploads_bucket_name                  = module.spacelift_infra.uploads_bucket_name
   uploads_bucket_url                   = module.spacelift_infra.uploads_bucket_url

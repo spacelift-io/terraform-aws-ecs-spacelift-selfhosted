@@ -23,27 +23,30 @@ resource "aws_iam_policy" "scheduler" {
 
   name        = "spacelift-scheduler-${var.suffix}"
   description = "Policy used by scheduler"
-  policy = jsonencode([
-    {
-      Effect   = "Allow"
-      Action   = ["cloudwatch:PutMetricData"]
-      Resource = ["*"]
-    },
-    {
-      Effect   = "Allow"
-      Action   = ["sts:AssumeRole"]
-      Resource = ["*"]
-    },
-    {
-      Effect = "Allow"
-      Action = [
-        "kms:Decrypt",
-        "kms:Encrypt",
-        "kms:GenerateDataKey",
-      ]
-      Resource = [var.kms_key_arn]
-    }
-  ])
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect   = "Allow"
+        Action   = ["cloudwatch:PutMetricData"]
+        Resource = ["*"]
+      },
+      {
+        Effect   = "Allow"
+        Action   = ["sts:AssumeRole"]
+        Resource = ["*"]
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "kms:Decrypt",
+          "kms:Encrypt",
+          "kms:GenerateDataKey",
+        ]
+        Resource = [var.kms_key_arn]
+      }
+    ]
+  })
 }
 
 resource "aws_iam_role_policy_attachment" "scheduler" {

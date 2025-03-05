@@ -1,9 +1,8 @@
-resource "random_id" "suffix" {
-  byte_length = 6
+resource "random_uuid" "suffix" {
 }
 
 locals {
-  suffix = coalesce(lower(var.unique_suffix), lower(random_id.suffix.id))
+  suffix = coalesce(lower(var.unique_suffix), lower(substr(random_uuid.suffix.id, 0, 5)))
 
   server_port          = 1983
   mqtt_port            = 1984
@@ -85,7 +84,7 @@ module "ecs" {
   drain_log_configuration = var.drain_log_configuration
   drain_memory            = var.drain_memory
   drain_role_arn          = var.drain_role_arn
-  drain_security_group    = var.drain_security_group
+  drain_security_group    = var.drain_security_group_id
 
   scheduler_cpu               = var.scheduler_cpu
   scheduler_desired_count     = var.scheduler_desired_count

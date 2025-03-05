@@ -3,7 +3,7 @@ resource "aws_iam_role" "drain" {
 
   name = "spacelift-drain-role-${var.suffix}"
   assume_role_policy = jsonencode({
-    Version = "2008-10-17"
+    Version = "2012-10-17"
     Statement = [
       {
         Effect = "Allow"
@@ -11,7 +11,18 @@ resource "aws_iam_role" "drain" {
         Principal = {
           Service = "ecs-tasks.amazonaws.com"
         }
-      },
+      }
+    ]
+  })
+}
+
+resource "aws_iam_policy" "drain" {
+  count = var.drain_role_arn == null ? 1 : 0
+
+  name = "spacelift-drain-${var.suffix}"
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
       {
         Effect   = "Allow"
         Action   = ["s3:DeleteObject", "s3:ListBucket"]
@@ -39,6 +50,13 @@ resource "aws_iam_role" "drain" {
       }
     ]
   })
+}
+
+resource "aws_iam_role_policy_attachment" "drain" {
+  count = var.drain_role_arn == null ? 1 : 0
+
+  role       = aws_iam_role.drain[0].name
+  policy_arn = aws_iam_policy.drain[0].arn
 }
 
 resource "aws_iam_role_policy_attachment" "common-policy-for-drain" {

@@ -288,7 +288,7 @@ variable "drain_role_arn" {
   default     = null
 }
 
-variable "drain_security_group" {
+variable "drain_security_group_id" {
   type        = string
   description = "The security group ID to use for the drain service."
 }

@@ -130,22 +130,20 @@ resource "aws_ecs_task_definition" "server" {
         }
       ]
       logConfiguration = var.server_log_configuration
-      environment = [
-        concat(local.shared_envs, [
-          {
-            name  = "ADMIN_USERNAME"
-            value = var.admin_username
-          },
-          {
-            name  = "ADMIN_PASSWORD"
-            value = var.admin_password
-          },
-          {
-            name  = "WEBHOOKS_ENDPOINT"
-            value = join("/", [var.server_domain, "webhooks"])
-          }
-        ])
-      ]
+      environment = concat(local.shared_envs, [
+        {
+          name  = "ADMIN_USERNAME"
+          value = var.admin_username
+        },
+        {
+          name  = "ADMIN_PASSWORD"
+          value = var.admin_password
+        },
+        {
+          name  = "WEBHOOKS_ENDPOINT"
+          value = join("/", [var.server_domain, "webhooks"])
+        }
+      ])
     }
   ])
 }
