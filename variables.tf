@@ -128,7 +128,7 @@ variable "deliveries_bucket_name" {
   description = "The name of the deliveries bucket."
 }
 
-variable "large_queue_messages_arn" {
+variable "large_queue_messages_bucket_arn" {
   type        = string
   description = "The ARN of the large queue messages bucket."
 }
@@ -203,7 +203,7 @@ variable "uploads_bucket_url" {
   description = "The URL of the uploads bucket."
 }
 
-variable "user_uploaded_workspaces_arn" {
+variable "user_uploaded_workspaces_bucket_arn" {
   type        = string
   description = "The ARN of the user uploaded workspaces bucket."
 }
