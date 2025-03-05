@@ -284,17 +284,17 @@ variable "observability_vendor" {
 }
 
 variable "server_log_configuration" {
-  type        = object
+  type        = map(any)
   description = "The log configuration for the server service. See https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_LogConfiguration.html for the definition."
 }
 
 variable "drain_log_configuration" {
-  type        = object
+  type        = map(any)
   description = "The log configuration for the drain service. See https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_LogConfiguration.html for the definition."
 }
 
 variable "scheduler_log_configuration" {
-  type        = object
+  type        = map(any)
   description = "The log configuration for the scheduler service. See https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_LogConfiguration.html for the definition."
 }
 

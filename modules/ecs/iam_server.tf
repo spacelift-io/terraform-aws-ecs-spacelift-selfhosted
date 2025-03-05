@@ -4,7 +4,7 @@ resource "aws_iam_role" "server" {
 
   name = "spacelift-server-role-${var.suffix}"
   assume_role_policy = jsonencode({
-    Version = "2008-10-17"
+    Version = "2012-10-17"
     Statement = [
       {
         Effect    = "Allow"

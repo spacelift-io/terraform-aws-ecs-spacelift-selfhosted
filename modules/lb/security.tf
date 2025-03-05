@@ -24,7 +24,7 @@ resource "aws_vpc_security_group_ingress_rule" "mqtt" {
   cidr_ipv4   = "0.0.0.0/0"
 }
 
-resource "aws_vpc_security_group_ingress_rule" "http" {
+resource "aws_vpc_security_group_ingress_rule" "http_lb_to_server" {
   security_group_id = var.server_security_group_id
 
   description                  = "Allow http connections from the load balancer"
@@ -34,7 +34,7 @@ resource "aws_vpc_security_group_ingress_rule" "http" {
   referenced_security_group_id = aws_security_group.load_balancer_sg.id
 }
 
-resource "aws_vpc_security_group_ingress_rule" "mqtt" {
+resource "aws_vpc_security_group_ingress_rule" "mqtt_lb_to_server" {
   security_group_id = var.server_security_group_id
 
   description                  = "Allow MQTT connections from the load balancer"

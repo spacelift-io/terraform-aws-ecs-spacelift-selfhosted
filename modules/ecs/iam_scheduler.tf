@@ -3,13 +3,18 @@ resource "aws_iam_role" "scheduler" {
 
   name        = "spacelift-scheduler-role-${var.suffix}"
   description = "Role used by scheduler"
-  assume_role_policy = jsonencode([
+  assume_role_policy = jsonencode(
     {
-      Effect    = "Allow"
-      Action    = "sts:AssumeRole"
-      Principal = { Service = "ecs-tasks.amazonaws.com" }
+      Version = "2012-10-17"
+      Statement = [
+        {
+          Effect    = "Allow"
+          Action    = "sts:AssumeRole"
+          Principal = { Service = "ecs-tasks.amazonaws.com" }
+        }
+      ]
     }
-  ])
+  )
 
 }
 

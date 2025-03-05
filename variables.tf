@@ -277,7 +277,7 @@ variable "drain_desired_count" {
 }
 
 variable "drain_log_configuration" {
-  type        = object
+  type        = map(any)
   description = "The log configuration for the drain service. See https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_LogConfiguration.html for the definition."
   default     = null
 }
@@ -312,7 +312,7 @@ variable "scheduler_desired_count" {
 }
 
 variable "scheduler_log_configuration" {
-  type        = object
+  type        = map(any)
   description = "The log configuration for the scheduler service. See https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_LogConfiguration.html for the definition."
   default     = null
 }
@@ -347,7 +347,7 @@ variable "server_desired_count" {
 }
 
 variable "server_log_configuration" {
-  type        = object
+  type        = map(any)
   description = "The log configuration for the server service. See https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_LogConfiguration.html for the definition."
   default     = null
 }
@@ -356,11 +356,6 @@ variable "server_role_arn" {
   type        = string
   description = "The ARN of the IAM role to use for the server service. If empty, a new role will be created."
   default     = null
-}
-
-variable "server_security_group_id" {
-  type        = string
-  description = "The security group ID to use for the server service."
 }
 
 variable "observability_vendor" {

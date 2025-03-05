@@ -15,6 +15,7 @@ Check out the [Terraform](https://developer.hashicorp.com/terraform/language/bac
 ```hcl
 locals {
   spacelift_version = "v3.4.0"
+  website_domain    = "https://spacelift.mycorp.io"
 }
 
 module "spacelift_infra" {
@@ -22,7 +23,7 @@ module "spacelift_infra" {
 
   region         = "eu-west-1"
   default_tags   = {"app" = "spacelift-selfhosted-infra", "env" = "dev"}
-  website_domain = "https://spacelift.mycorp.io"
+  website_domain = local.website_domain
 }
 
 module "spacelift_services" {
@@ -32,7 +33,7 @@ module "spacelift_services" {
   default_tags  = {"app" = "spacelift-selfhosted-services", "env" = "dev"}
   unique_suffix = module.spacelift_infra.unique_suffix
   kms_key_arn   = module.spacelift_infra.kms_key_arn
-  server_domain = "https://spacelift.mycorp.io"
+  server_domain = local.website_domain
 
   license_token = "<your-license-token-issued-by-Spacelift>"
 
