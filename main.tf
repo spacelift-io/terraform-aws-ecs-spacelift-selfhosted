@@ -20,6 +20,7 @@ module "lb" {
   server_lb_internal        = var.server_lb_internal
   server_lb_subnets         = var.server_lb_subnets
   server_lb_certificate_arn = var.server_lb_certificate_arn
+  server_security_group_id  = var.server_security_group_id
 
   mqtt_port        = local.mqtt_port
   mqtt_lb_internal = var.mqtt_lb_internal
@@ -91,7 +92,7 @@ module "ecs" {
   scheduler_log_configuration = var.scheduler_log_configuration
   scheduler_memory            = var.scheduler_memory
   scheduler_role_arn          = var.scheduler_role_arn
-  scheduler_security_group    = var.scheduler_security_group
+  scheduler_security_group    = var.scheduler_security_group_id
 
   server_cpu               = var.server_cpu
   server_desired_count     = var.server_desired_count
@@ -99,7 +100,7 @@ module "ecs" {
   server_log_configuration = var.server_log_configuration
   server_memory            = var.server_memory
   server_role_arn          = var.server_role_arn
-  server_security_group    = var.server_security_group
+  server_security_group    = var.server_security_group_id
   server_target_group_arn  = module.lb.server_target_group_arn
 
   observability_vendor = var.observability_vendor

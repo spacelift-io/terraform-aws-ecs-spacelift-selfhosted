@@ -7,7 +7,7 @@ resource "aws_lb" "mqtt" {
 }
 
 resource "aws_lb_target_group" "mqtt" {
-  name        = "spacelift-mqtt-${var.suffix}"
+  name        = "spacelift-mqtt-tg-${var.suffix}"
   port        = var.mqtt_port
   protocol    = "TCP"
   target_type = "ip"

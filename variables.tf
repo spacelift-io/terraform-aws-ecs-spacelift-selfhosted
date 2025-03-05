@@ -28,7 +28,7 @@ variable "server_domain" {
 
 variable "vpc_id" {
   type        = string
-  description = "The VPC ID to deploy resources (load balancers) in."
+  description = "The VPC ID to deploy the load balancers in."
 }
 
 variable "server_lb_internal" {
@@ -52,6 +52,11 @@ variable "server_lb_certificate_arn" {
   description = "The ARN of the ACM certificate to use for the server load balancer."
 }
 
+variable "server_security_group_id" {
+  type        = string
+  description = "The security group ID of the server. This is needed to allow ingress from the load balancer."
+}
+
 variable "mqtt_lb_internal" {
   type        = bool
   description = "Whether the MQTT load balancer should be internal or internet-facing. It's false (internet-facing) by default."
@@ -72,12 +77,14 @@ variable "admin_username" {
   type        = string
   description = "The admin username for the initial setup. Can be set to an empty string after the initial setup."
   sensitive   = true
+  default     = null
 }
 
 variable "admin_password" {
   type        = string
   description = "The admin password for the initial setup. Can be set to an empty string after the initial setup."
   sensitive   = true
+  default     = null
 }
 
 variable "backend_image" {
@@ -316,7 +323,7 @@ variable "scheduler_role_arn" {
   default     = null
 }
 
-variable "scheduler_security_group" {
+variable "scheduler_security_group_id" {
   type        = string
   description = "The security group ID to use for the scheduler service."
 }
@@ -351,7 +358,7 @@ variable "server_role_arn" {
   default     = null
 }
 
-variable "server_security_group" {
+variable "server_security_group_id" {
   type        = string
   description = "The security group ID to use for the server service."
 }
@@ -367,5 +374,3 @@ variable "observability_vendor" {
 
   default = "Disabled"
 }
-
-

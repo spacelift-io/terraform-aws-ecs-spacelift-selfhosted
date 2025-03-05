@@ -7,7 +7,7 @@ resource "aws_lb" "server" {
 }
 
 resource "aws_lb_target_group" "server" {
-  name = "spacelift-tg-${var.suffix}"
+  name = "spacelift-server-tf-${var.suffix}"
 
   deregistration_delay = 90
   slow_start           = 45

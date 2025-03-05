@@ -8,6 +8,11 @@ variable "vpc_id" {
   description = "The VPC ID to deploy resources in."
 }
 
+variable "server_security_group_id" {
+  type        = string
+  description = "The security group ID for the server."
+}
+
 variable "server_port" {
   type        = number
   description = "The port the server is listening on."
