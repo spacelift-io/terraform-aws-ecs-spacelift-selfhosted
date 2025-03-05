@@ -7,6 +7,11 @@ variable "backend_image" {
   description = "The ECR image to use for the server, scheduler and drain services."
 }
 
+variable "backend_image_tag" {
+  type        = string
+  description = "The tag of the backend image."
+}
+
 variable "admin_username" {
   type        = string
   description = "The admin username for the initial setup. Can be set to an empty string after the initial setup."

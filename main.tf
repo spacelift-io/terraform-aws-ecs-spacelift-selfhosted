@@ -37,6 +37,7 @@ module "ecs" {
   admin_password = var.admin_password
 
   backend_image      = var.backend_image
+  backend_image_tag  = var.backend_image_tag
   launcher_image     = var.launcher_image
   launcher_image_tag = var.launcher_image_tag
 

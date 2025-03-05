@@ -42,11 +42,6 @@ variable "server_lb_subnets" {
   description = "The subnets to deploy the server load balancer in."
 }
 
-variable "server_lb_security_group_id" {
-  type        = string
-  description = "The security group ID of the server load balancer. This is needed to allow ingress from the load balancer."
-}
-
 variable "server_lb_certificate_arn" {
   type        = string
   description = "The ARN of the ACM certificate to use for the server load balancer."
@@ -90,6 +85,11 @@ variable "admin_password" {
 variable "backend_image" {
   type        = string
   description = "The ECR image to use for the server, scheduler and drain services."
+}
+
+variable "backend_image_tag" {
+  type        = string
+  description = "The tag of the backend image."
 }
 
 variable "launcher_image" {
