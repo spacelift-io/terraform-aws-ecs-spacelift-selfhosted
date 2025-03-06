@@ -26,6 +26,10 @@ locals {
       value = var.encryption_kms_encryption_key_id
     },
     {
+      name  = "ENCRYPTION_KMS_SIGNING_KEY_ID"
+      value = var.jwt_signing_key_arn
+    },
+    {
       name  = "MESSAGE_QUEUE_TYPE"
       value = "postgres"
     },
@@ -125,9 +129,9 @@ resource "aws_ecs_task_definition" "server" {
       ]
       ulimits = [
         {
-          name = "nofile"
-          soft = 65536
-          hard = 65536
+          name      = "nofile"
+          softLimit = 65536
+          hardLimit = 65536
         }
       ]
       logConfiguration = var.server_log_configuration
@@ -166,9 +170,9 @@ resource "aws_ecs_task_definition" "drain" {
       image     = local.backend_image
       ulimits = [
         {
-          name = "nofile"
-          soft = 65536
-          hard = 65536
+          name      = "nofile"
+          softLimit = 65536
+          hardLimit = 65536
         }
       ]
       logConfiguration = var.drain_log_configuration
@@ -203,9 +207,9 @@ resource "aws_ecs_task_definition" "scheduler" {
       image     = local.backend_image
       ulimits = [
         {
-          name = "nofile"
-          soft = 65536
-          hard = 65536
+          name      = "nofile"
+          softLimit = 65536
+          hardLimit = 65536
         }
       ]
       logConfiguration = var.scheduler_log_configuration

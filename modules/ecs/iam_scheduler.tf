@@ -25,27 +25,47 @@ resource "aws_iam_policy" "scheduler" {
   description = "Policy used by scheduler"
   policy = jsonencode({
     Version = "2012-10-17"
-    Statement = [
-      {
-        Effect   = "Allow"
-        Action   = ["cloudwatch:PutMetricData"]
-        Resource = ["*"]
-      },
-      {
-        Effect   = "Allow"
-        Action   = ["sts:AssumeRole"]
-        Resource = ["*"]
-      },
-      {
+    Statement = concat(
+      [
+        {
+          Effect   = "Allow"
+          Action   = ["cloudwatch:PutMetricData"]
+          Resource = ["*"]
+        },
+        {
+          Effect   = "Allow"
+          Action   = ["sts:AssumeRole"]
+          Resource = ["*"]
+        },
+        {
+          Effect = "Allow"
+          Action = [
+            "kms:Decrypt",
+            "kms:Encrypt",
+            "kms:GenerateDataKey*",
+          ]
+          Resource = [var.kms_key_arn]
+        }
+      ],
+      var.encryption_kms_encryption_key_id == null ? [] : [{
         Effect = "Allow"
         Action = [
           "kms:Decrypt",
           "kms:Encrypt",
-          "kms:GenerateDataKey",
+          "kms:GenerateDataKey*",
         ]
-        Resource = [var.kms_key_arn]
-      }
-    ]
+        Resource = [var.encryption_kms_encryption_key_id]
+      }],
+      var.jwt_signing_key_arn == null ? [] : [{
+        Effect = "Allow"
+        Action = [
+          "kms:GetPublicKey",
+          "kms:Sign",
+          "kms:Verify",
+        ]
+        Resource = [var.jwt_signing_key_arn]
+      }]
+    )
   })
 }
 

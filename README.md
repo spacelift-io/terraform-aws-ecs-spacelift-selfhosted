@@ -39,6 +39,7 @@ module "spacelift_services" {
 
   encryption_type                  = "kms"
   encryption_kms_encryption_key_id = module.spacelift_infra.encryption_key_arn
+  jwt_signing_key_arn              = module.spacelift_infra.jwt_signing_key_arn
 
   database_url           = format("postgres://%s:%s@%s:5432/spacelift?statement_cache_capacity=0", module.spacelift_infra.rds_username, module.spacelift_infra.rds_password, module.spacelift_infra.rds_cluster_endpoint)
   database_read_only_url = format("postgres://%s:%s@%s:5432/spacelift?statement_cache_capacity=0", module.spacelift_infra.rds_username, module.spacelift_infra.rds_password, module.spacelift_infra.rds_cluster_reader_endpoint)
@@ -80,7 +81,7 @@ module "spacelift_services" {
   uploads_bucket_arn                   = module.spacelift_infra.uploads_bucket_arn
   uploads_bucket_name                  = module.spacelift_infra.uploads_bucket_name
   uploads_bucket_url                   = module.spacelift_infra.uploads_bucket_url
-  user_uploaded_workspaces_arn         = module.spacelift_infra.user_uploaded_workspaces_arn
+  user_uploaded_workspaces_bucket_arn  = module.spacelift_infra.user_uploaded_workspaces_bucket_arn
   user_uploaded_workspaces_bucket_name = module.spacelift_infra.user_uploaded_workspaces_bucket_name
   workspace_bucket_arn                 = module.spacelift_infra.workspace_bucket_arn
   workspace_bucket_name                = module.spacelift_infra.workspace_bucket_name
@@ -97,6 +98,8 @@ This module creates:
   - An ECS cluster
   - Three services (server, drain, scheduler)
   - IAM roles and policies for the corresponding services
+
+Once it succeeded, don't forget to create a DNS record for the server and MQTT load balancer.
 
 ### Deploy with existing IAM roles
 

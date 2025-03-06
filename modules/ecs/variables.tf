@@ -159,6 +159,11 @@ variable "encryption_kms_encryption_key_id" {
   description = "The KMS encryption key ID to use for encryption. Required if encryption_type is 'kms'."
 }
 
+variable "jwt_signing_key_arn" {
+  type        = string
+  description = "The ARN of the KMS key to use for signing JWT tokens. Required if encryption_type is 'kms'."
+}
+
 variable "deliveries_bucket_name" {
   type        = string
   description = "The name of the deliveries S3 bucket."
@@ -234,7 +239,7 @@ variable "user_uploaded_workspaces_bucket_name" {
   description = "The name of the user uploaded workspaces S3 bucket."
 }
 
-variable "user_uploaded_workspaces_arn" {
+variable "user_uploaded_workspaces_bucket_arn" {
   type        = string
   description = "The ARN of the user uploaded workspaces S3 bucket."
 }

@@ -203,7 +203,7 @@ variable "uploads_bucket_url" {
   description = "The URL of the uploads bucket."
 }
 
-variable "user_uploaded_workspaces_arn" {
+variable "user_uploaded_workspaces_bucket_arn" {
   type        = string
   description = "The ARN of the user uploaded workspaces bucket."
 }
@@ -244,6 +244,11 @@ variable "encryption_rsa_private_key" {
   type        = string
   description = "The base64 encoded RSA private key to use for in-app encryption. Required if encryption_type is 'rsa'."
   default     = null
+}
+
+variable "jwt_signing_key_arn" {
+  type        = string
+  description = "The ARN of the KMS key to use for signing JWT tokens. Required if encryption_type is 'kms'."
 }
 
 variable "kms_key_arn" {

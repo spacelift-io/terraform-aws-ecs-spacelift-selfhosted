@@ -101,8 +101,8 @@ resource "aws_iam_policy" "drain-and-server" {
           "s3:PutObject",
         ],
         Resource = [
-          var.user_uploaded_workspaces_arn,
-          "${var.user_uploaded_workspaces_arn}/*",
+          var.user_uploaded_workspaces_bucket_arn,
+          "${var.user_uploaded_workspaces_bucket_arn}/*",
         ]
       },
       {
@@ -155,19 +155,30 @@ resource "aws_iam_policy" "drain-and-server" {
         Action = [
           "kms:Decrypt",
           "kms:Encrypt",
-          "kms:GenerateDataKey",
+          "kms:GenerateDataKey*"
         ],
         Resource = [var.kms_key_arn]
       }
-      ], var.encryption_kms_encryption_key_id == null ? [] : [{
+      ],
+      var.encryption_kms_encryption_key_id == null ? [] : [{
         Effect = "Allow"
         Action = [
           "kms:Decrypt",
           "kms:Encrypt",
-          "kms:GenerateDataKey",
+          "kms:GenerateDataKey*",
         ]
         Resource = [var.encryption_kms_encryption_key_id]
-    }])
+      }],
+      var.jwt_signing_key_arn == null ? [] : [{
+        Effect = "Allow"
+        Action = [
+          "kms:GetPublicKey",
+          "kms:Sign",
+          "kms:Verify",
+        ]
+        Resource = [var.jwt_signing_key_arn]
+      }]
+    )
   })
 }
 resource "aws_iam_role_policy_attachment" "common-policy-for-server" {

@@ -4,6 +4,26 @@ resource "aws_security_group" "load_balancer_sg" {
   vpc_id      = var.vpc_id
 }
 
+resource "aws_vpc_security_group_egress_rule" "lb_http_towards_server" {
+  security_group_id = aws_security_group.load_balancer_sg.id
+
+  description                  = "Allow all traffic to the server"
+  from_port                    = var.server_port
+  to_port                      = var.server_port
+  ip_protocol                  = "tcp"
+  referenced_security_group_id = var.server_security_group_id
+}
+
+resource "aws_vpc_security_group_egress_rule" "lb_mqtt_towards_server" {
+  security_group_id = aws_security_group.load_balancer_sg.id
+
+  description                  = "Allow all traffic to the server"
+  from_port                    = var.mqtt_port
+  to_port                      = var.mqtt_port
+  ip_protocol                  = "tcp"
+  referenced_security_group_id = var.server_security_group_id
+}
+
 resource "aws_vpc_security_group_ingress_rule" "tls" {
   security_group_id = aws_security_group.load_balancer_sg.id
 
@@ -28,8 +48,8 @@ resource "aws_vpc_security_group_ingress_rule" "http_lb_to_server" {
   security_group_id = var.server_security_group_id
 
   description                  = "Allow http connections from the load balancer"
-  from_port                    = 1983
-  to_port                      = 1983
+  from_port                    = var.server_port
+  to_port                      = var.server_port
   ip_protocol                  = "tcp"
   referenced_security_group_id = aws_security_group.load_balancer_sg.id
 }
@@ -38,8 +58,8 @@ resource "aws_vpc_security_group_ingress_rule" "mqtt_lb_to_server" {
   security_group_id = var.server_security_group_id
 
   description                  = "Allow MQTT connections from the load balancer"
-  from_port                    = 1984
-  to_port                      = 1984
+  from_port                    = var.mqtt_port
+  to_port                      = var.mqtt_port
   ip_protocol                  = "tcp"
   referenced_security_group_id = aws_security_group.load_balancer_sg.id
 }
