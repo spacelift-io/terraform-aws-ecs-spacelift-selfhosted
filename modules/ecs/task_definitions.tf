@@ -3,7 +3,7 @@ locals {
   shared_envs = [
     {
       name  = "SERVER_DOMAIN"
-      value = var.server_domain
+      value = trimprefix(var.server_domain, "https://")
     },
     {
       name  = "MQTT_BROKER_TYPE"
