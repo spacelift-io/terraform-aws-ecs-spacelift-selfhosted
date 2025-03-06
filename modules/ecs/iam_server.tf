@@ -10,7 +10,17 @@ resource "aws_iam_role" "server" {
         Effect    = "Allow"
         Action    = "sts:AssumeRole"
         Principal = { Service = "ecs-tasks.amazonaws.com" }
-      },
+      }
+    ]
+  })
+}
+
+resource "aws_iam_policy" "server" {
+  count = var.server_role_arn == null ? 1 : 0
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
       {
         Effect   = "Allow"
         Action   = ["s3:AbortMultipartUpload", "s3:DeleteObject", "s3:GetObject", "s3:ListBucket", "s3:PutObject", "s3:PutObjectTagging", "s3:GetObjectVersion", "s3:ListBucketVersions"]
@@ -24,10 +34,17 @@ resource "aws_iam_role" "server" {
       {
         Effect   = "Allow"
         Action   = ["s3:AbortMultipartUpload", "s3:PutObject"]
-        Resource = [var.large_queue_messages_arn, "${var.large_queue_messages_arn}/*"]
+        Resource = [var.large_queue_messages_bucket_arn, "${var.large_queue_messages_bucket_arn}/*"]
       }
     ]
   })
+}
+
+resource "aws_iam_role_policy_attachment" "server" {
+  count = var.server_role_arn == null ? 1 : 0
+
+  role       = aws_iam_role.server[0].name
+  policy_arn = aws_iam_policy.server[0].arn
 }
 
 resource "aws_iam_policy" "drain-and-server" {
@@ -153,7 +170,6 @@ resource "aws_iam_policy" "drain-and-server" {
     }])
   })
 }
-
 resource "aws_iam_role_policy_attachment" "common-policy-for-server" {
   count = var.drain_role_arn == null && var.server_role_arn == null ? 1 : 0
 

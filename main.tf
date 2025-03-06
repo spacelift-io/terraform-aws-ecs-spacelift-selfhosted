@@ -27,16 +27,18 @@ module "lb" {
 }
 
 module "ecs" {
-  source = "./modules/ecs"
+  source     = "./modules/ecs"
+  depends_on = [module.lb] # Prevents race conditions
 
   suffix = local.suffix
 
-  subnets = var.subnets
+  subnets = var.ecs_subnets
 
   admin_username = var.admin_username
   admin_password = var.admin_password
 
   backend_image      = var.backend_image
+  backend_image_tag  = var.backend_image_tag
   launcher_image     = var.launcher_image
   launcher_image_tag = var.launcher_image_tag
 
@@ -52,7 +54,7 @@ module "ecs" {
 
   deliveries_bucket_arn                = var.deliveries_bucket_arn
   deliveries_bucket_name               = var.deliveries_bucket_name
-  large_queue_messages_arn             = var.large_queue_messages_arn
+  large_queue_messages_bucket_arn      = var.large_queue_messages_bucket_arn
   large_queue_messages_bucket_name     = var.large_queue_messages_bucket_name
   metadata_bucket_arn                  = var.metadata_bucket_arn
   metadata_bucket_name                 = var.metadata_bucket_name

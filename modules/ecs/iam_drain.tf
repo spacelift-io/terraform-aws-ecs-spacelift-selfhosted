@@ -41,7 +41,7 @@ resource "aws_iam_policy" "drain" {
       {
         Effect   = "Allow"
         Action   = ["s3:GetObject"]
-        Resource = [var.large_queue_messages_arn, "${var.large_queue_messages_arn}/*"]
+        Resource = [var.large_queue_messages_bucket_arn, "${var.large_queue_messages_bucket_arn}/*"]
       },
       {
         Effect   = "Allow"

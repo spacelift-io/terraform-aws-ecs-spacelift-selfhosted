@@ -26,7 +26,18 @@ resource "aws_iam_role_policy" "execution" {
           "kms:Decrypt",
         ]
         Resource = [var.kms_key_arn]
-      }
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:DescribeLogGroups",
+          "logs:DescribeLogStreams",
+          "logs:PutLogEvents"
+        ],
+        Resource = "*"
+      },
     ]
   })
 }

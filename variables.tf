@@ -42,11 +42,6 @@ variable "server_lb_subnets" {
   description = "The subnets to deploy the server load balancer in."
 }
 
-variable "server_lb_security_group_id" {
-  type        = string
-  description = "The security group ID of the server load balancer. This is needed to allow ingress from the load balancer."
-}
-
 variable "server_lb_certificate_arn" {
   type        = string
   description = "The ARN of the ACM certificate to use for the server load balancer."
@@ -68,7 +63,7 @@ variable "mqtt_lb_subnets" {
   description = "The subnets to deploy the MQTT load balancer in."
 }
 
-variable "subnets" {
+variable "ecs_subnets" {
   type        = list(string)
   description = "The subnets to deploy the ECS services in"
 }
@@ -90,6 +85,11 @@ variable "admin_password" {
 variable "backend_image" {
   type        = string
   description = "The ECR image to use for the server, scheduler and drain services."
+}
+
+variable "backend_image_tag" {
+  type        = string
+  description = "The tag of the backend image."
 }
 
 variable "launcher_image" {
@@ -128,7 +128,7 @@ variable "deliveries_bucket_name" {
   description = "The name of the deliveries bucket."
 }
 
-variable "large_queue_messages_arn" {
+variable "large_queue_messages_bucket_arn" {
   type        = string
   description = "The ARN of the large queue messages bucket."
 }
@@ -277,7 +277,7 @@ variable "drain_desired_count" {
 }
 
 variable "drain_log_configuration" {
-  type        = map(any)
+  type        = any
   description = "The log configuration for the drain service. See https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_LogConfiguration.html for the definition."
   default     = null
 }
@@ -312,7 +312,7 @@ variable "scheduler_desired_count" {
 }
 
 variable "scheduler_log_configuration" {
-  type        = map(any)
+  type        = any
   description = "The log configuration for the scheduler service. See https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_LogConfiguration.html for the definition."
   default     = null
 }
@@ -347,7 +347,7 @@ variable "server_desired_count" {
 }
 
 variable "server_log_configuration" {
-  type        = map(any)
+  type        = any
   description = "The log configuration for the server service. See https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_LogConfiguration.html for the definition."
   default     = null
 }

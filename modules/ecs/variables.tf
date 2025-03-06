@@ -7,6 +7,11 @@ variable "backend_image" {
   description = "The ECR image to use for the server, scheduler and drain services."
 }
 
+variable "backend_image_tag" {
+  type        = string
+  description = "The ECR image tag to use for the server, scheduler and drain services."
+}
+
 variable "admin_username" {
   type        = string
   description = "The admin username for the initial setup. Can be set to an empty string after the initial setup."
@@ -169,7 +174,7 @@ variable "large_queue_messages_bucket_name" {
   description = "The name of the large queue messages S3 bucket."
 }
 
-variable "large_queue_messages_arn" {
+variable "large_queue_messages_bucket_arn" {
   type        = string
   description = "The ARN of the large queue messages S3 bucket."
 }
@@ -284,17 +289,17 @@ variable "observability_vendor" {
 }
 
 variable "server_log_configuration" {
-  type        = map(any)
+  type        = any
   description = "The log configuration for the server service. See https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_LogConfiguration.html for the definition."
 }
 
 variable "drain_log_configuration" {
-  type        = map(any)
+  type        = any
   description = "The log configuration for the drain service. See https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_LogConfiguration.html for the definition."
 }
 
 variable "scheduler_log_configuration" {
-  type        = map(any)
+  type        = any
   description = "The log configuration for the scheduler service. See https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_LogConfiguration.html for the definition."
 }
 

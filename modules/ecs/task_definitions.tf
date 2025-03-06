@@ -1,4 +1,5 @@
 locals {
+  backend_image = "${var.backend_image}:${var.backend_image_tag}"
   shared_envs = [
     {
       name  = "SERVER_DOMAIN"
@@ -113,7 +114,7 @@ resource "aws_ecs_task_definition" "server" {
       name      = "server"
       command   = ["spacelift", "backend", "server"]
       essential = true
-      image     = var.backend_image
+      image     = local.backend_image
       portMappings = [
         {
           containerPort = var.server_port
@@ -162,7 +163,7 @@ resource "aws_ecs_task_definition" "drain" {
       name      = "drain"
       command   = ["spacelift", "backend", "drain"]
       essential = true
-      image     = var.backend_image
+      image     = local.backend_image
       ulimits = [
         {
           name = "nofile"
@@ -199,7 +200,7 @@ resource "aws_ecs_task_definition" "scheduler" {
       name      = "scheduler"
       command   = ["spacelift", "scheduler"]
       essential = true
-      image     = var.backend_image
+      image     = local.backend_image
       ulimits = [
         {
           name = "nofile"

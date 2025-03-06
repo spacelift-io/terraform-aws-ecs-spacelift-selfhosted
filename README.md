@@ -43,7 +43,8 @@ module "spacelift_services" {
   database_url           = format("postgres://%s:%s@%s:5432/spacelift?statement_cache_capacity=0", module.spacelift_infra.rds_username, module.spacelift_infra.rds_password, module.spacelift_infra.rds_cluster_endpoint)
   database_read_only_url = format("postgres://%s:%s@%s:5432/spacelift?statement_cache_capacity=0", module.spacelift_infra.rds_username, module.spacelift_infra.rds_password, module.spacelift_infra.rds_cluster_reader_endpoint)
 
-  backend_image      = "${module.spacelift_infra.ecr_backend_repository_url}:${local.spacelift_version}"
+  backend_image      = module.spacelift_infra.ecr_backend_repository_url
+  backend_image_tag  = local.spacelift_version
   launcher_image     = module.spacelift_infra.ecr_launcher_repository_url
   launcher_image_tag = local.spacelift_version
 
@@ -54,9 +55,8 @@ module "spacelift_services" {
   subnets = module.spacelift_infra.private_subnet_ids
 
   server_lb_subnets           = module.spacelift_infra.private_subnet_ids
-  server_lb_security_group_id = module.spacelift_infra.server_security_group_id
   server_security_group_id    = module.spacelift_infra.server_security_group_id
-  server_lb_certificate_arn   = "<LB_CERTIFICATE_ARN>"
+  server_lb_certificate_arn   = "<LB_CERTIFICATE_ARN>" # Note that this certificate must be successfully issued. It cannot be attached to the load balancer in a pending state.
 
   drain_security_group_id     = module.spacelift_infra.drain_security_group_id
   scheduler_security_group_id = module.spacelift_infra.scheduler_security_group_id
@@ -65,7 +65,7 @@ module "spacelift_services" {
 
   deliveries_bucket_arn                = module.spacelift_infra.deliveries_bucket_arn
   deliveries_bucket_name               = module.spacelift_infra.deliveries_bucket_name
-  large_queue_messages_arn             = module.spacelift_infra.large_queue_messages_arn
+  large_queue_messages_bucket_arn      = module.spacelift_infra.large_queue_messages_bucket_arn
   large_queue_messages_bucket_name     = module.spacelift_infra.large_queue_messages_bucket_name
   metadata_bucket_arn                  = module.spacelift_infra.metadata_bucket_arn
   metadata_bucket_name                 = module.spacelift_infra.metadata_bucket_name
