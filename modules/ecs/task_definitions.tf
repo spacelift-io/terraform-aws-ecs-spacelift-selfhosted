@@ -87,7 +87,7 @@ locals {
     },
     {
       name  = "DATABASE_READ_ONLY_URL"
-      value = coalesce(var.database_read_only_url, var.database_url)
+      value = var.database_read_only_url
     },
     {
       name  = "LICENSE_TYPE"
