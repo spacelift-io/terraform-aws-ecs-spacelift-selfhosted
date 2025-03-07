@@ -14,14 +14,16 @@ Check out the [Terraform](https://developer.hashicorp.com/terraform/language/bac
 
 ```hcl
 locals {
+  region = "eu-west-1"
   spacelift_version = "v3.4.0"
   website_domain    = "https://spacelift.mycorp.io"
+  mqtt_domain       = "tls://spacelift-mqtt.mycorp.io:1984" # Must start with `tls://` and end with a port number
 }
 
 module "spacelift_infra" {
   source = "github.com/spacelift-io/terraform-aws-spacelift-selfhosted?ref=v1.0.0"
 
-  region         = "eu-west-1"
+  region         = local.region
   default_tags   = {"app" = "spacelift-selfhosted-infra", "env" = "dev"}
   website_domain = local.website_domain
 }
@@ -29,11 +31,12 @@ module "spacelift_infra" {
 module "spacelift_services" {
   source = "github.com/spacelift-io/terraform-aws-ecs-spacelift-selfhosted?ref=v1.0.0"
 
-  region        = "eu-west-1"
-  default_tags  = {"app" = "spacelift-selfhosted-services", "env" = "dev"}
-  unique_suffix = module.spacelift_infra.unique_suffix
-  kms_key_arn   = module.spacelift_infra.kms_key_arn
-  server_domain = local.website_domain
+  region               = local.region
+  default_tags         = {"app" = "spacelift-selfhosted-services", "env" = "dev"}
+  unique_suffix        = module.spacelift_infra.unique_suffix
+  kms_key_arn          = module.spacelift_infra.kms_key_arn
+  server_domain        = local.website_domain
+  mqtt_broker_endpoint = local.mqtt_domain
 
   license_token = "<your-license-token-issued-by-Spacelift>"
 
@@ -52,17 +55,17 @@ module "spacelift_services" {
   admin_username = "admin"      # Temporary for the initial setup, will be removed
   admin_password = "1P@ssw0rd"  # Temporary for the initial setup, will be removed
 
-  vpc_id  = module.spacelift_infra.vpc_id
-  subnets = module.spacelift_infra.private_subnet_ids
+  vpc_id      = module.spacelift_infra.vpc_id
+  ecs_subnets = module.spacelift_infra.private_subnet_ids
 
-  server_lb_subnets           = module.spacelift_infra.private_subnet_ids
+  server_lb_subnets           = module.spacelift_infra.public_subnet_ids
   server_security_group_id    = module.spacelift_infra.server_security_group_id
-  server_lb_certificate_arn   = "<LB_CERTIFICATE_ARN>" # Note that this certificate must be successfully issued. It cannot be attached to the load balancer in a pending state.
+  server_lb_certificate_arn   = "<LB certificate ARN>" # Note that this certificate MUST be successfully issued. It cannot be attached to the load balancer in a pending state.
 
   drain_security_group_id     = module.spacelift_infra.drain_security_group_id
   scheduler_security_group_id = module.spacelift_infra.scheduler_security_group_id
 
-  mqtt_lb_subnets = module.spacelift_infra.private_subnet_ids
+  mqtt_lb_subnets = module.spacelift_infra.public_subnet_ids
 
   deliveries_bucket_arn                = module.spacelift_infra.deliveries_bucket_arn
   deliveries_bucket_name               = module.spacelift_infra.deliveries_bucket_name
@@ -91,7 +94,7 @@ module "spacelift_services" {
 This module creates:
 
 - Load balancers
-  - An ALB for the Spacelift server
+  - An ALB for the Spacelift server (needs a valid ACM certificate)
   - A network load balancer for the MQTT broker
   - A security group for the load balancers
 - ECS
@@ -99,7 +102,7 @@ This module creates:
   - Three services (server, drain, scheduler)
   - IAM roles and policies for the corresponding services
 
-Once it succeeded, don't forget to create a DNS record for the server and MQTT load balancer.
+Once it succeeded, don't forget to create a DNS record (`CNAME`) for the server and MQTT load balancer.
 
 ### Deploy with existing IAM roles
 
