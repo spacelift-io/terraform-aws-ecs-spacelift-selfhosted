@@ -17,8 +17,12 @@ variable "unique_suffix" {
 
 variable "mqtt_broker_endpoint" {
   type        = string
-  description = "The endpoint of the MQTT broker. If empty, it'll default to server_domain:1984."
-  default     = ""
+  description = "The endpoint of the MQTT broker. Make sure the protocol is tls:// and that you include a port number. Example: tls://spacelift-mqtt.mycorp.com:1984"
+
+  validation {
+    condition     = can(regex("tls://.*:\\d+", var.mqtt_broker_endpoint))
+    error_message = "mqtt_broker_endpoint must be in the format tls://<hostname>:<port>"
+  }
 }
 
 variable "server_domain" {

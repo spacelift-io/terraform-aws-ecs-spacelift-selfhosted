@@ -4,9 +4,8 @@ resource "random_uuid" "suffix" {
 locals {
   suffix = coalesce(lower(var.unique_suffix), lower(substr(random_uuid.suffix.id, 0, 5)))
 
-  server_port          = 1983
-  mqtt_port            = 1984
-  mqtt_broker_endpoint = coalesce(var.mqtt_broker_endpoint, "${var.server_domain}:${local.mqtt_port}")
+  server_port = 1983
+  mqtt_port   = tonumber(split(":", var.mqtt_broker_endpoint)[2])
 }
 
 module "lb" {
@@ -46,7 +45,7 @@ module "ecs" {
 
   server_port                  = local.server_port
   mqtt_broker_port             = local.mqtt_port
-  mqtt_broker_endpoint         = local.mqtt_broker_endpoint
+  mqtt_broker_endpoint         = var.mqtt_broker_endpoint
   mqtt_server_target_group_arn = module.lb.mqtt_target_group_arn
 
   database_url           = var.database_url
