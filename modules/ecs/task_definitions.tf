@@ -145,6 +145,10 @@ resource "aws_ecs_task_definition" "server" {
           value = var.admin_password
         },
         {
+          name  = "FEATURE_FLAG_SELF_HOSTED_V3_INSTALLATION_FLOW"
+          value = "true"
+        },
+        {
           name  = "WEBHOOKS_ENDPOINT"
           value = join("/", [var.server_domain, "webhooks"])
         }

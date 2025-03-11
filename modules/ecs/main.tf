@@ -29,6 +29,12 @@ resource "aws_ecs_service" "server" {
   deployment_minimum_healthy_percent = 100
   deployment_maximum_percent         = 200
 
+  capacity_provider_strategy {
+    base              = 1
+    capacity_provider = "FARGATE"
+    weight            = 100
+  }
+
   network_configuration {
     assign_public_ip = false
     security_groups  = [var.server_security_group]
@@ -58,6 +64,12 @@ resource "aws_ecs_service" "drain" {
   deployment_minimum_healthy_percent = 100
   deployment_maximum_percent         = 200
 
+  capacity_provider_strategy {
+    base              = 1
+    capacity_provider = "FARGATE"
+    weight            = 100
+  }
+
   network_configuration {
     assign_public_ip = false
     security_groups  = [var.drain_security_group]
@@ -74,6 +86,12 @@ resource "aws_ecs_service" "scheduler" {
 
   deployment_minimum_healthy_percent = 100
   deployment_maximum_percent         = 200
+
+  capacity_provider_strategy {
+    base              = 1
+    capacity_provider = "FARGATE"
+    weight            = 100
+  }
 
   network_configuration {
     assign_public_ip = false

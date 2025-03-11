@@ -241,13 +241,13 @@ variable "encryption_type" {
 variable "encryption_kms_encryption_key_id" {
   type        = string
   description = "The KMS key ID to use for in-app encryption. Required if encryption_type is 'kms'."
-  default     = null
+  default     = ""
 }
 
 variable "encryption_rsa_private_key" {
   type        = string
   description = "The base64 encoded RSA private key to use for in-app encryption. Required if encryption_type is 'rsa'."
-  default     = null
+  default     = ""
 }
 
 variable "jwt_signing_key_arn" {
