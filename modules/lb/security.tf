@@ -1,5 +1,5 @@
 resource "aws_security_group" "load_balancer_sg" {
-  name        = "load-balancer-sg"
+  name        = "load_balancer_sg_${var.suffix}"
   description = "Allow HTTP and HTTPS traffic to the load balancer"
   vpc_id      = var.vpc_id
 }
