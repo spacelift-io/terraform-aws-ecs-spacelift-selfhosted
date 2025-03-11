@@ -122,19 +122,9 @@ variable "database_read_only_url" {
   default     = null
 }
 
-variable "deliveries_bucket_arn" {
-  type        = string
-  description = "The ARN of the deliveries bucket."
-}
-
 variable "deliveries_bucket_name" {
   type        = string
   description = "The name of the deliveries bucket."
-}
-
-variable "large_queue_messages_bucket_arn" {
-  type        = string
-  description = "The ARN of the large queue messages bucket."
 }
 
 variable "large_queue_messages_bucket_name" {
@@ -142,19 +132,9 @@ variable "large_queue_messages_bucket_name" {
   description = "The name of the large queue messages bucket."
 }
 
-variable "metadata_bucket_arn" {
-  type        = string
-  description = "The ARN of the metadata bucket."
-}
-
 variable "metadata_bucket_name" {
   type        = string
   description = "The name of the metadata bucket."
-}
-
-variable "modules_bucket_arn" {
-  type        = string
-  description = "The ARN of the modules bucket."
 }
 
 variable "modules_bucket_name" {
@@ -162,19 +142,9 @@ variable "modules_bucket_name" {
   description = "The name of the modules bucket."
 }
 
-variable "policy_inputs_bucket_arn" {
-  type        = string
-  description = "The ARN of the policy inputs bucket."
-}
-
 variable "policy_inputs_bucket_name" {
   type        = string
   description = "The name of the policy inputs bucket."
-}
-
-variable "run_logs_bucket_arn" {
-  type        = string
-  description = "The ARN of the run logs bucket."
 }
 
 variable "run_logs_bucket_name" {
@@ -182,19 +152,9 @@ variable "run_logs_bucket_name" {
   description = "The name of the run logs bucket."
 }
 
-variable "states_bucket_arn" {
-  type        = string
-  description = "The ARN of the states bucket."
-}
-
 variable "states_bucket_name" {
   type        = string
   description = "The name of the states bucket."
-}
-
-variable "uploads_bucket_arn" {
-  type        = string
-  description = "The ARN of the uploads bucket."
 }
 
 variable "uploads_bucket_name" {
@@ -207,19 +167,9 @@ variable "uploads_bucket_url" {
   description = "The URL of the uploads bucket."
 }
 
-variable "user_uploaded_workspaces_bucket_arn" {
-  type        = string
-  description = "The ARN of the user uploaded workspaces bucket."
-}
-
 variable "user_uploaded_workspaces_bucket_name" {
   type        = string
   description = "The name of the user uploaded workspaces bucket."
-}
-
-variable "workspace_bucket_arn" {
-  type        = string
-  description = "The ARN of the workspace bucket."
 }
 
 variable "workspace_bucket_name" {

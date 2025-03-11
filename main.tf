@@ -1,5 +1,6 @@
-resource "random_uuid" "suffix" {
-}
+data "aws_partition" "current" {}
+
+resource "random_uuid" "suffix" {}
 
 locals {
   suffix = coalesce(lower(var.unique_suffix), lower(substr(random_uuid.suffix.id, 0, 5)))
@@ -51,26 +52,26 @@ module "ecs" {
   database_url           = var.database_url
   database_read_only_url = var.database_read_only_url
 
-  deliveries_bucket_arn                = var.deliveries_bucket_arn
+  deliveries_bucket_arn                = "arn:${data.aws_partition.current.partition}:s3:::${var.deliveries_bucket_name}"
   deliveries_bucket_name               = var.deliveries_bucket_name
-  large_queue_messages_bucket_arn      = var.large_queue_messages_bucket_arn
+  large_queue_messages_bucket_arn      = "arn:${data.aws_partition.current.partition}:s3:::${var.large_queue_messages_bucket_name}"
   large_queue_messages_bucket_name     = var.large_queue_messages_bucket_name
-  metadata_bucket_arn                  = var.metadata_bucket_arn
+  metadata_bucket_arn                  = "arn:${data.aws_partition.current.partition}:s3:::${var.metadata_bucket_name}"
   metadata_bucket_name                 = var.metadata_bucket_name
-  modules_bucket_arn                   = var.modules_bucket_arn
+  modules_bucket_arn                   = "arn:${data.aws_partition.current.partition}:s3:::${var.modules_bucket_name}"
   modules_bucket_name                  = var.modules_bucket_name
-  policy_inputs_bucket_arn             = var.policy_inputs_bucket_arn
+  policy_inputs_bucket_arn             = "arn:${data.aws_partition.current.partition}:s3:::${var.policy_inputs_bucket_name}"
   policy_inputs_bucket_name            = var.policy_inputs_bucket_name
-  run_logs_bucket_arn                  = var.run_logs_bucket_arn
+  run_logs_bucket_arn                  = "arn:${data.aws_partition.current.partition}:s3:::${var.run_logs_bucket_name}"
   run_logs_bucket_name                 = var.run_logs_bucket_name
-  states_bucket_arn                    = var.states_bucket_arn
+  states_bucket_arn                    = "arn:${data.aws_partition.current.partition}:s3:::${var.states_bucket_name}"
   states_bucket_name                   = var.states_bucket_name
-  uploads_bucket_arn                   = var.uploads_bucket_arn
+  uploads_bucket_arn                   = "arn:${data.aws_partition.current.partition}:s3:::${var.uploads_bucket_name}"
   uploads_bucket_name                  = var.uploads_bucket_name
   uploads_bucket_url                   = var.uploads_bucket_url
-  user_uploaded_workspaces_bucket_arn  = var.user_uploaded_workspaces_bucket_arn
+  user_uploaded_workspaces_bucket_arn  = "arn:${data.aws_partition.current.partition}:s3:::${var.user_uploaded_workspaces_bucket_name}"
   user_uploaded_workspaces_bucket_name = var.user_uploaded_workspaces_bucket_name
-  workspace_bucket_arn                 = var.workspace_bucket_arn
+  workspace_bucket_arn                 = "arn:${data.aws_partition.current.partition}:s3:::${var.workspace_bucket_name}"
   workspace_bucket_name                = var.workspace_bucket_name
 
   encryption_type                  = var.encryption_type

@@ -67,26 +67,16 @@ module "spacelift_services" {
 
   mqtt_lb_subnets = module.spacelift_infra.public_subnet_ids
 
-  deliveries_bucket_arn                = module.spacelift_infra.deliveries_bucket_arn
   deliveries_bucket_name               = module.spacelift_infra.deliveries_bucket_name
-  large_queue_messages_bucket_arn      = module.spacelift_infra.large_queue_messages_bucket_arn
   large_queue_messages_bucket_name     = module.spacelift_infra.large_queue_messages_bucket_name
-  metadata_bucket_arn                  = module.spacelift_infra.metadata_bucket_arn
   metadata_bucket_name                 = module.spacelift_infra.metadata_bucket_name
-  modules_bucket_arn                   = module.spacelift_infra.modules_bucket_arn
   modules_bucket_name                  = module.spacelift_infra.modules_bucket_name
-  policy_inputs_bucket_arn             = module.spacelift_infra.policy_inputs_bucket_arn
   policy_inputs_bucket_name            = module.spacelift_infra.policy_inputs_bucket_name
-  run_logs_bucket_arn                  = module.spacelift_infra.run_logs_bucket_arn
   run_logs_bucket_name                 = module.spacelift_infra.run_logs_bucket_name
-  states_bucket_arn                    = module.spacelift_infra.states_bucket_arn
   states_bucket_name                   = module.spacelift_infra.states_bucket_name
-  uploads_bucket_arn                   = module.spacelift_infra.uploads_bucket_arn
   uploads_bucket_name                  = module.spacelift_infra.uploads_bucket_name
   uploads_bucket_url                   = module.spacelift_infra.uploads_bucket_url
-  user_uploaded_workspaces_bucket_arn  = module.spacelift_infra.user_uploaded_workspaces_bucket_arn
   user_uploaded_workspaces_bucket_name = module.spacelift_infra.user_uploaded_workspaces_bucket_name
-  workspace_bucket_arn                 = module.spacelift_infra.workspace_bucket_arn
   workspace_bucket_name                = module.spacelift_infra.workspace_bucket_name
 }
 ```
