@@ -1,9 +1,10 @@
 locals {
-  backend_image = "${var.backend_image}:${var.backend_image_tag}"
+  webhooks_endpoint = "https://${join("/", [var.server_domain, "webhooks"])}"
+  backend_image     = "${var.backend_image}:${var.backend_image_tag}"
   shared_envs = [
     {
       name  = "SERVER_DOMAIN"
-      value = trimprefix(var.server_domain, "https://")
+      value = var.server_domain
     },
     {
       name  = "MQTT_BROKER_TYPE"
@@ -150,7 +151,7 @@ resource "aws_ecs_task_definition" "server" {
         },
         {
           name  = "WEBHOOKS_ENDPOINT"
-          value = join("/", [var.server_domain, "webhooks"])
+          value = local.webhooks_endpoint
         }
       ])
     }
