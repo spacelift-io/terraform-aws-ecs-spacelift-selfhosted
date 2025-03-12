@@ -24,14 +24,29 @@ variable "admin_password" {
   sensitive   = true
 }
 
+variable "server_container_definition" {
+  type        = string
+  description = "The default container definition for the server service. If empty, a default container definition will be used."
+}
+
 variable "server_desired_count" {
   type        = number
   description = "The desired count of the server service."
 }
 
+variable "drain_container_definitions" {
+  type        = string
+  description = "The container definitions for the drain service. If empty, a default container definition will be used."
+}
+
 variable "drain_desired_count" {
   type        = number
   description = "The desired count of the drain service."
+}
+
+variable "scheduler_container_definition" {
+  type        = string
+  description = "The default container definition for the scheduler service. If empty, a default container definition will be used."
 }
 
 variable "scheduler_desired_count" {
