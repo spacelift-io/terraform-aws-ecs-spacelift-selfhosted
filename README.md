@@ -14,7 +14,7 @@ Check out the [Terraform](https://developer.hashicorp.com/terraform/language/bac
 
 ```hcl
 locals {
-  region = "eu-west-1"
+  region            = "eu-west-1"
   spacelift_version = "v3.4.0"
   website_domain    = "spacelift.mycorp.io"
   website_endpoint  = "https://${local.website_domain}"
@@ -25,8 +25,8 @@ locals {
 module "spacelift_infra" {
   source = "github.com/spacelift-io/terraform-aws-spacelift-selfhosted?ref=v1.0.0"
 
-  region         = local.region
-  default_tags   = {"app" = "spacelift-selfhosted-infra", "env" = "dev"}
+  region           = local.region
+  default_tags     = {"app" = "spacelift-selfhosted-infra", "env" = "dev"}
   website_endpoint = local.website_endpoint
 }
 
