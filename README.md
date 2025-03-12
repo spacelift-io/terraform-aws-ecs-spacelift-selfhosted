@@ -14,18 +14,20 @@ Check out the [Terraform](https://developer.hashicorp.com/terraform/language/bac
 
 ```hcl
 locals {
-  region = "eu-west-1"
+  region            = "eu-west-1"
   spacelift_version = "v3.4.0"
-  website_domain    = "https://spacelift.mycorp.io"
-  mqtt_domain       = "tls://spacelift-mqtt.mycorp.io:1984" # Must start with `tls://` and end with a port number
+  website_domain    = "spacelift.mycorp.io"
+  website_endpoint  = "https://${local.website_domain}"
+  mqtt_domain       = "spacelift-mqtt.mycorp.io"
+  mqtt_endpoint     = "tls://${local.mqtt_domain}:1984"
 }
 
 module "spacelift_infra" {
   source = "github.com/spacelift-io/terraform-aws-spacelift-selfhosted?ref=v1.0.0"
 
-  region         = local.region
-  default_tags   = {"app" = "spacelift-selfhosted-infra", "env" = "dev"}
-  website_domain = local.website_domain
+  region           = local.region
+  default_tags     = {"app" = "spacelift-selfhosted-infra", "env" = "dev"}
+  website_endpoint = local.website_endpoint
 }
 
 module "spacelift_services" {
@@ -36,7 +38,7 @@ module "spacelift_services" {
   unique_suffix        = module.spacelift_infra.unique_suffix
   kms_key_arn          = module.spacelift_infra.kms_key_arn
   server_domain        = local.website_domain
-  mqtt_broker_endpoint = local.mqtt_domain
+  mqtt_broker_endpoint = local.mqtt_endpoint
 
   license_token = "<your-license-token-issued-by-Spacelift>"
 

@@ -131,7 +131,11 @@ variable "mqtt_broker_port" {
 
 variable "server_domain" {
   type        = string
-  description = "The domain of the server service."
+  description = "The domain of the server service. This should be the domain name without the protocol, for example spacelift.example.com, not https://spacelift.example.com."
+  validation {
+    condition     = !startswith(var.server_domain, "http://") && !startswith(var.server_domain, "https://")
+    error_message = "server_domain should not include a protocol ('http://' or 'https://')"
+  }
 }
 
 variable "mqtt_broker_endpoint" {
