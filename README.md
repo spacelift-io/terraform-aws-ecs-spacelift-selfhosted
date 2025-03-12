@@ -96,6 +96,48 @@ This module creates:
 
 Once it succeeded, don't forget to create a DNS record (`CNAME`) for the server and MQTT load balancer.
 
+### With CloudWatch logging
+
+You can pass in a log configuration for each service. See [the official documentation](https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_LogConfiguration.html) for the configuration schema.
+
+```hcl
+module "spacelift_services" {
+  source = "github.com/spacelift-io/terraform-aws-ecs-spacelift-selfhosted?ref=v1.0.0"
+
+  server_log_configuration = {
+    logDriver : "awslogs",
+    options : {
+      "awslogs-region" : var.region,
+      "awslogs-group" : "/ecs/spacelift-server",
+      "awslogs-create-group" : "true",
+      "awslogs-stream-prefix" : "server"
+    }
+  }
+
+  drain_log_configuration = {
+    logDriver : "awslogs",
+    options : {
+      "awslogs-region" : var.region,
+      "awslogs-group" : "/ecs/spacelift-drain",
+      "awslogs-create-group" : "true",
+      "awslogs-stream-prefix" : "drain"
+    }
+  }
+
+  scheduler_log_configuration = {
+    logDriver : "awslogs",
+    options : {
+      "awslogs-region" : var.region,
+      "awslogs-group" : "/ecs/spacelift-scheduler",
+      "awslogs-create-group" : "true",
+      "awslogs-stream-prefix" : "scheduler"
+    }
+  }
+
+  # Further configuration removed for brevity
+}
+```
+
 ### Deploy with existing IAM roles
 
 ```hcl

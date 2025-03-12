@@ -114,48 +114,7 @@ resource "aws_ecs_task_definition" "server" {
   memory                   = var.server_memory
   execution_role_arn       = coalesce(var.execution_role_arn, aws_iam_role.execution[0].arn)
   task_role_arn            = coalesce(var.server_role_arn, aws_iam_role.server[0].arn)
-  container_definitions = jsonencode([
-    {
-      name      = "server"
-      command   = ["spacelift", "backend", "server"]
-      essential = true
-      image     = local.backend_image
-      portMappings = [
-        {
-          containerPort = var.server_port
-        },
-        {
-          containerPort = var.mqtt_broker_port
-        }
-      ]
-      ulimits = [
-        {
-          name      = "nofile"
-          softLimit = 65536
-          hardLimit = 65536
-        }
-      ]
-      logConfiguration = var.server_log_configuration
-      environment = concat(local.shared_envs, [
-        {
-          name  = "ADMIN_USERNAME"
-          value = var.admin_username
-        },
-        {
-          name  = "ADMIN_PASSWORD"
-          value = var.admin_password
-        },
-        {
-          name  = "FEATURE_FLAG_SELF_HOSTED_V3_INSTALLATION_FLOW"
-          value = "true"
-        },
-        {
-          name  = "WEBHOOKS_ENDPOINT"
-          value = local.webhooks_endpoint
-        }
-      ])
-    }
-  ])
+  container_definitions    = coalesce(var.server_container_definition, local.default_server_container_definition)
 }
 
 resource "aws_ecs_task_definition" "drain" {
@@ -167,32 +126,7 @@ resource "aws_ecs_task_definition" "drain" {
   memory                   = var.drain_memory
   execution_role_arn       = coalesce(var.execution_role_arn, aws_iam_role.execution[0].arn)
   task_role_arn            = coalesce(var.drain_role_arn, aws_iam_role.drain[0].arn)
-  container_definitions = jsonencode([
-    {
-      name      = "drain"
-      command   = ["spacelift", "backend", "drain"]
-      essential = true
-      image     = local.backend_image
-      ulimits = [
-        {
-          name      = "nofile"
-          softLimit = 65536
-          hardLimit = 65536
-        }
-      ]
-      logConfiguration = var.drain_log_configuration
-      environment = concat(local.shared_envs, [
-        {
-          name  = "LAUNCHER_IMAGE"
-          value = var.launcher_image
-        },
-        {
-          name  = "LAUNCHER_IMAGE_TAG"
-          value = var.launcher_image_tag
-        }
-      ])
-    }
-  ])
+  container_definitions    = coalesce(var.drain_container_definitions, local.default_drain_container_definition)
 }
 
 resource "aws_ecs_task_definition" "scheduler" {
@@ -204,21 +138,5 @@ resource "aws_ecs_task_definition" "scheduler" {
   memory                   = var.scheduler_memory
   execution_role_arn       = coalesce(var.execution_role_arn, aws_iam_role.execution[0].arn)
   task_role_arn            = coalesce(var.scheduler_role_arn, aws_iam_role.scheduler[0].arn)
-  container_definitions = jsonencode([
-    {
-      name      = "scheduler"
-      command   = ["spacelift", "scheduler"]
-      essential = true
-      image     = local.backend_image
-      ulimits = [
-        {
-          name      = "nofile"
-          softLimit = 65536
-          hardLimit = 65536
-        }
-      ]
-      logConfiguration = var.scheduler_log_configuration
-      environment      = local.shared_envs
-    }
-  ])
+  container_definitions    = coalesce(var.scheduler_container_definition, local.default_scheduler_container_definition)
 }

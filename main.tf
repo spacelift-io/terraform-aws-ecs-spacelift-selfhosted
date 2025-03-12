@@ -82,28 +82,31 @@ module "ecs" {
 
   execution_role_arn = var.execution_role_arn
 
-  drain_cpu               = var.drain_cpu
-  drain_desired_count     = var.drain_desired_count
-  drain_log_configuration = var.drain_log_configuration
-  drain_memory            = var.drain_memory
-  drain_role_arn          = var.drain_role_arn
-  drain_security_group    = var.drain_security_group_id
+  drain_cpu                   = var.drain_cpu
+  drain_desired_count         = var.drain_desired_count
+  drain_log_configuration     = var.drain_log_configuration
+  drain_memory                = var.drain_memory
+  drain_role_arn              = var.drain_role_arn
+  drain_security_group        = var.drain_security_group_id
+  drain_container_definitions = var.drain_container_definitions
 
-  scheduler_cpu               = var.scheduler_cpu
-  scheduler_desired_count     = var.scheduler_desired_count
-  scheduler_log_configuration = var.scheduler_log_configuration
-  scheduler_memory            = var.scheduler_memory
-  scheduler_role_arn          = var.scheduler_role_arn
-  scheduler_security_group    = var.scheduler_security_group_id
+  scheduler_cpu                  = var.scheduler_cpu
+  scheduler_desired_count        = var.scheduler_desired_count
+  scheduler_log_configuration    = var.scheduler_log_configuration
+  scheduler_memory               = var.scheduler_memory
+  scheduler_role_arn             = var.scheduler_role_arn
+  scheduler_security_group       = var.scheduler_security_group_id
+  scheduler_container_definition = var.scheduler_container_definition
 
-  server_cpu               = var.server_cpu
-  server_desired_count     = var.server_desired_count
-  server_domain            = var.server_domain
-  server_log_configuration = var.server_log_configuration
-  server_memory            = var.server_memory
-  server_role_arn          = var.server_role_arn
-  server_security_group    = var.server_security_group_id
-  server_target_group_arn  = module.lb.server_target_group_arn
+  server_cpu                  = var.server_cpu
+  server_desired_count        = var.server_desired_count
+  server_domain               = var.server_domain
+  server_log_configuration    = var.server_log_configuration
+  server_memory               = var.server_memory
+  server_role_arn             = var.server_role_arn
+  server_security_group       = var.server_security_group_id
+  server_target_group_arn     = module.lb.server_target_group_arn
+  server_container_definition = var.server_container_definition
 
   observability_vendor = var.observability_vendor
 }

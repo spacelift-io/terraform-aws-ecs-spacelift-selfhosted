@@ -80,14 +80,14 @@ variable "admin_username" {
   type        = string
   description = "The admin username for the initial setup. Can be set to an empty string after the initial setup."
   sensitive   = true
-  default     = null
+  default     = ""
 }
 
 variable "admin_password" {
   type        = string
   description = "The admin password for the initial setup. Can be set to an empty string after the initial setup."
   sensitive   = true
-  default     = null
+  default     = ""
 }
 
 variable "backend_image" {
@@ -221,6 +221,12 @@ variable "execution_role_arn" {
   default     = null
 }
 
+variable "drain_container_definitions" {
+  type        = string
+  description = "The container definitions for the drain service. If empty, a default container definition will be used."
+  default     = null
+}
+
 variable "drain_cpu" {
   type        = number
   description = "The CPU units to allocate to the drain service."
@@ -256,6 +262,12 @@ variable "drain_security_group_id" {
   description = "The security group ID to use for the drain service."
 }
 
+variable "scheduler_container_definition" {
+  type        = string
+  description = "The container definition for the scheduler service. If empty, a default container definition will be used."
+  default     = null
+}
+
 variable "scheduler_cpu" {
   type        = number
   description = "The CPU units to allocate to the scheduler service."
@@ -289,6 +301,12 @@ variable "scheduler_role_arn" {
 variable "scheduler_security_group_id" {
   type        = string
   description = "The security group ID to use for the scheduler service."
+}
+
+variable "server_container_definition" {
+  type        = string
+  description = "The container definition for the server service. If empty, a default container definition will be used."
+  default     = null
 }
 
 variable "server_cpu" {
