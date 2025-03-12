@@ -1,5 +1,5 @@
 locals {
-  webhooks_endpoint = "https://${join("/", [var.server_domain, "webhooks"])}"
+  webhooks_endpoint = "https://${var.server_domain}/webhooks"
   backend_image     = "${var.backend_image}:${var.backend_image_tag}"
   shared_envs = [
     {
