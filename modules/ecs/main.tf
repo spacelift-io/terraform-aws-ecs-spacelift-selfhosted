@@ -28,6 +28,7 @@ resource "aws_ecs_service" "server" {
 
   deployment_minimum_healthy_percent = 100
   deployment_maximum_percent         = 200
+  wait_for_steady_state              = true
 
   capacity_provider_strategy {
     base              = 1
@@ -63,6 +64,7 @@ resource "aws_ecs_service" "drain" {
 
   deployment_minimum_healthy_percent = 100
   deployment_maximum_percent         = 200
+  wait_for_steady_state              = true
 
   capacity_provider_strategy {
     base              = 1
@@ -86,6 +88,7 @@ resource "aws_ecs_service" "scheduler" {
 
   deployment_minimum_healthy_percent = 100
   deployment_maximum_percent         = 200
+  wait_for_steady_state              = true
 
   capacity_provider_strategy {
     base              = 1
