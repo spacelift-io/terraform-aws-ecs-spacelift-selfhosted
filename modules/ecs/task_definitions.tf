@@ -3,6 +3,22 @@ locals {
   backend_image     = "${var.backend_image}:${var.backend_image_tag}"
   shared_envs = [
     {
+      name  = "AWS_ACCOUNT_ID",
+      value = var.aws_account_id
+    },
+    {
+      name  = "AWS_DEFAULT_REGION",
+      value = var.aws_region
+    },
+    {
+      name  = "AWS_REGION",
+      value = var.aws_region
+    },
+    {
+      name  = "ENVIRONMENT",
+      value = "prod"
+    },
+    {
       name  = "SERVER_DOMAIN"
       value = var.server_domain
     },

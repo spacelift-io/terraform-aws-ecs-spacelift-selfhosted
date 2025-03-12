@@ -1,3 +1,13 @@
+variable "aws_account_id" {
+  type        = string
+  description = "The AWS account the services are being run in."
+}
+
+variable "aws_region" {
+  type        = string
+  description = "The AWS region the services are being run in."
+}
+
 variable "suffix" {
   type = string
 }

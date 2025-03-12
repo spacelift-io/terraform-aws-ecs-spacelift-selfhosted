@@ -1,3 +1,4 @@
+data "aws_caller_identity" "current" {}
 data "aws_partition" "current" {}
 
 resource "random_uuid" "suffix" {}
@@ -29,6 +30,9 @@ module "lb" {
 module "ecs" {
   source     = "./modules/ecs"
   depends_on = [module.lb] # Prevents race conditions
+
+  aws_account_id = data.aws_caller_identity.current.account_id
+  aws_region     = var.region
 
   suffix = local.suffix
 
