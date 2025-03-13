@@ -128,8 +128,8 @@ resource "aws_ecs_task_definition" "server" {
   requires_compatibilities = ["FARGATE"]
   cpu                      = var.server_cpu
   memory                   = var.server_memory
-  execution_role_arn       = coalesce(var.execution_role_arn, aws_iam_role.execution[0].arn)
-  task_role_arn            = coalesce(var.server_role_arn, aws_iam_role.server[0].arn)
+  execution_role_arn       = var.execution_role_arn != null ? var.execution_role_arn : aws_iam_role.execution[0].arn
+  task_role_arn            = var.server_role_arn != null ? var.server_role_arn : aws_iam_role.server[0].arn
   container_definitions    = coalesce(var.server_container_definition, local.default_server_container_definition)
 }
 
@@ -140,8 +140,8 @@ resource "aws_ecs_task_definition" "drain" {
   requires_compatibilities = ["FARGATE"]
   cpu                      = var.drain_cpu
   memory                   = var.drain_memory
-  execution_role_arn       = coalesce(var.execution_role_arn, aws_iam_role.execution[0].arn)
-  task_role_arn            = coalesce(var.drain_role_arn, aws_iam_role.drain[0].arn)
+  execution_role_arn       = var.execution_role_arn != null ? var.execution_role_arn : aws_iam_role.execution[0].arn
+  task_role_arn            = var.drain_role_arn != null ? var.drain_role_arn : aws_iam_role.drain[0].arn
   container_definitions    = coalesce(var.drain_container_definitions, local.default_drain_container_definition)
 }
 
@@ -152,7 +152,7 @@ resource "aws_ecs_task_definition" "scheduler" {
   requires_compatibilities = ["FARGATE"]
   cpu                      = var.scheduler_cpu
   memory                   = var.scheduler_memory
-  execution_role_arn       = coalesce(var.execution_role_arn, aws_iam_role.execution[0].arn)
-  task_role_arn            = coalesce(var.scheduler_role_arn, aws_iam_role.scheduler[0].arn)
+  execution_role_arn       = var.execution_role_arn != null ? var.execution_role_arn : aws_iam_role.execution[0].arn
+  task_role_arn            = var.scheduler_role_arn != null ? var.scheduler_role_arn : aws_iam_role.scheduler[0].arn
   container_definitions    = coalesce(var.scheduler_container_definition, local.default_scheduler_container_definition)
 }
