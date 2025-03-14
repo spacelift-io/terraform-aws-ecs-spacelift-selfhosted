@@ -26,7 +26,6 @@ module "spacelift_infra" {
   source = "github.com/spacelift-io/terraform-aws-spacelift-selfhosted?ref=v1.0.0"
 
   region           = local.region
-  default_tags     = {"app" = "spacelift-selfhosted-infra", "env" = "dev"}
   website_endpoint = local.website_endpoint
 }
 
@@ -34,7 +33,6 @@ module "spacelift_services" {
   source = "github.com/spacelift-io/terraform-aws-ecs-spacelift-selfhosted?ref=v1.0.0"
 
   region               = local.region
-  default_tags         = {"app" = "spacelift-selfhosted-services", "env" = "dev"}
   unique_suffix        = module.spacelift_infra.unique_suffix
   kms_key_arn          = module.spacelift_infra.kms_key_arn
   server_domain        = local.website_domain
