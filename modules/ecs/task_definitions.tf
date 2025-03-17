@@ -36,15 +36,15 @@ locals {
     },
     {
       name  = "ENCRYPTION_RSA_PRIVATE_KEY"
-      value = var.encryption_rsa_private_key
+      value = var.rsa_private_key
     },
     {
       name  = "ENCRYPTION_KMS_ENCRYPTION_KEY_ID"
-      value = var.encryption_kms_encryption_key_id
+      value = var.kms_encryption_key_arn
     },
     {
       name  = "ENCRYPTION_KMS_SIGNING_KEY_ID"
-      value = var.jwt_signing_key_arn
+      value = var.kms_signing_key_arn
     },
     {
       name  = "MESSAGE_QUEUE_TYPE"

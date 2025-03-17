@@ -47,23 +47,23 @@ resource "aws_iam_policy" "scheduler" {
           Resource = [var.kms_key_arn]
         }
       ],
-      var.encryption_kms_encryption_key_id == null ? [] : [{
+      var.kms_encryption_key_arn == null ? [] : [{
         Effect = "Allow"
         Action = [
           "kms:Decrypt",
           "kms:Encrypt",
           "kms:GenerateDataKey*",
         ]
-        Resource = [var.encryption_kms_encryption_key_id]
+        Resource = [var.kms_encryption_key_arn]
       }],
-      var.jwt_signing_key_arn == null ? [] : [{
+      var.kms_signing_key_arn == null ? [] : [{
         Effect = "Allow"
         Action = [
           "kms:GetPublicKey",
           "kms:Sign",
           "kms:Verify",
         ]
-        Resource = [var.jwt_signing_key_arn]
+        Resource = [var.kms_signing_key_arn]
       }]
     )
   })
