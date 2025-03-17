@@ -78,11 +78,11 @@ module "ecs" {
   workspace_bucket_arn                 = "arn:${data.aws_partition.current.partition}:s3:::${var.workspace_bucket_name}"
   workspace_bucket_name                = var.workspace_bucket_name
 
-  encryption_type                  = var.encryption_type
-  encryption_kms_encryption_key_id = var.encryption_kms_encryption_key_id
-  encryption_rsa_private_key       = var.encryption_rsa_private_key
-  jwt_signing_key_arn              = var.jwt_signing_key_arn
-  kms_key_arn                      = var.kms_key_arn
+  encryption_type        = var.encryption_type
+  rsa_private_key        = var.rsa_private_key
+  kms_encryption_key_arn = var.kms_encryption_key_arn
+  kms_signing_key_arn    = var.kms_signing_key_arn
+  kms_key_arn            = var.kms_key_arn
 
   execution_role_arn = var.execution_role_arn
 

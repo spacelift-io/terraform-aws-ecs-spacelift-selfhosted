@@ -186,19 +186,19 @@ variable "encryption_type" {
   }
 }
 
-variable "encryption_kms_encryption_key_id" {
-  type        = string
-  description = "The KMS key ID to use for in-app encryption. Required if encryption_type is 'kms'."
-  default     = ""
-}
-
-variable "encryption_rsa_private_key" {
+variable "rsa_private_key" {
   type        = string
   description = "The base64 encoded RSA private key to use for in-app encryption. Required if encryption_type is 'rsa'."
   default     = ""
 }
 
-variable "jwt_signing_key_arn" {
+variable "kms_encryption_key_arn" {
+  type        = string
+  description = "The ARN of the KMS key to use for in-app encryption. Required if encryption_type is 'kms'."
+  default     = ""
+}
+
+variable "kms_signing_key_arn" {
   type        = string
   description = "The ARN of the KMS key to use for signing JWT tokens. Required if encryption_type is 'kms'."
 }

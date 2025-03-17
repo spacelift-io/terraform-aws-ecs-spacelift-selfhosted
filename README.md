@@ -40,9 +40,9 @@ module "spacelift_services" {
 
   license_token = "<your-license-token-issued-by-Spacelift>"
 
-  encryption_type                  = "kms"
-  encryption_kms_encryption_key_id = module.spacelift_infra.encryption_key_arn
-  jwt_signing_key_arn              = module.spacelift_infra.jwt_signing_key_arn
+  encryption_type        = "kms"
+  kms_encryption_key_arn = module.spacelift_infra.kms_encryption_key_arn
+  kms_signing_key_arn    = module.spacelift_infra.kms_signing_key_arn
 
   database_url           = format("postgres://%s:%s@%s:5432/spacelift?statement_cache_capacity=0", module.spacelift_infra.rds_username, module.spacelift_infra.rds_password, module.spacelift_infra.rds_cluster_endpoint)
   database_read_only_url = format("postgres://%s:%s@%s:5432/spacelift?statement_cache_capacity=0", module.spacelift_infra.rds_username, module.spacelift_infra.rds_password, module.spacelift_infra.rds_cluster_reader_endpoint)
