@@ -1,4 +1,5 @@
 locals {
+  spacelift_public_api = "https://spacelift-io.app.spacelift.io"
   default_server_container_definition = jsonencode([
     {
       name      = "server"
@@ -64,6 +65,10 @@ locals {
         {
           name  = "LAUNCHER_IMAGE_TAG"
           value = var.launcher_image_tag
+        },
+        {
+          name  = "SPACELIFT_PUBLIC_API"
+          value = var.enable_anonymous_usage_data_collection ? local.spacelift_public_api : ""
         }
       ])
     }
