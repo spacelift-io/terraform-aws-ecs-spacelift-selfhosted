@@ -351,3 +351,9 @@ variable "kms_key_arn" {
   type        = string
   description = "The ARN of the KMS key used for encrypting AWS resources (ECR, S3, etc.)."
 }
+
+variable "enable_anonymous_usage_data_collection" {
+  type        = bool
+  default     = false
+  description = "Enable anonymous usage data collection."
+}
