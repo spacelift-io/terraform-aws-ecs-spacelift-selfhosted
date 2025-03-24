@@ -112,6 +112,6 @@ module "ecs" {
   server_target_group_arn     = module.lb.server_target_group_arn
   server_container_definition = var.server_container_definition
 
-  observability_vendor                   = var.observability_vendor
-  enable_anonymous_usage_data_collection = var.enable_anonymous_usage_data_collection
+  observability_vendor                  = var.observability_vendor
+  enable_automatic_usage_data_reporting = var.enable_automatic_usage_data_reporting
 }

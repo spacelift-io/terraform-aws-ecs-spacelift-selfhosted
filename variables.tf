@@ -345,7 +345,7 @@ variable "observability_vendor" {
   default = "Disabled"
 }
 
-variable "enable_anonymous_usage_data_collection" {
+variable "enable_automatic_usage_data_reporting" {
   type        = bool
   default     = false
   description = "Enable anonymous usage data collection."
