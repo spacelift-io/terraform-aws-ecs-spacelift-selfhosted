@@ -1,50 +1,28 @@
 resource "aws_iam_role" "execution" {
   count = var.execution_role_arn == null ? 1 : 0
 
-  name = "spacelift-execution-role-${var.suffix}"
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect    = "Allow"
-        Action    = "sts:AssumeRole"
-        Principal = { Service = "ecs-tasks.amazonaws.com" }
-      }
-    ]
-  })
+  name               = "spacelift-execution-role-${var.suffix}"
+  assume_role_policy = module.iam_roles_and_policies.execution.assume_role
 }
 
 resource "aws_iam_role_policy" "execution" {
-  count = var.execution_role_arn == null ? 1 : 0
-  role  = aws_iam_role.execution[0].name
+  for_each = var.execution_role_arn == null ? module.iam_roles_and_policies.execution.policies : {}
 
-  policy = jsonencode({
-    Statement = [
-      {
-        Effect = "Allow"
-        Action = [
-          "kms:Decrypt",
-        ]
-        Resource = [var.kms_key_arn]
-      },
-      {
-        Effect = "Allow"
-        Action = [
-          "logs:CreateLogGroup",
-          "logs:CreateLogStream",
-          "logs:DescribeLogGroups",
-          "logs:DescribeLogStreams",
-          "logs:PutLogEvents"
-        ],
-        Resource = "*"
-      },
-    ]
-  })
+  name   = "${aws_iam_role.execution[0].name}-${each.key}"
+  role   = aws_iam_role.execution[0].name
+  policy = each.value
 }
 
 resource "aws_iam_role_policy_attachment" "execution" {
-  count = var.execution_role_arn == null ? 1 : 0
-  role  = aws_iam_role.execution[0].name
+  for_each = var.execution_role_arn == null ? module.iam_roles_and_policies.execution.policies : {}
 
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+  role       = aws_iam_role.execution[0].name
+  policy_arn = aws_iam_role_policy.execution[each.key].arn
+}
+
+resource "aws_iam_role_policy_attachment" "execution_extra" {
+  for_each = var.execution_role_arn == null ? module.iam_roles_and_policies.execution.attachments : {}
+
+  role       = aws_iam_role.execution[0].name
+  policy_arn = each.value
 }
