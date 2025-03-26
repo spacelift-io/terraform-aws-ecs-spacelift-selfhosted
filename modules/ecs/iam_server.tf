@@ -3,7 +3,7 @@ resource "aws_iam_role" "server" {
   count = var.server_role_arn == null ? 1 : 0
 
   name               = "spacelift-server-role-${var.suffix}"
-  assume_role_policy = module.iam_roles_and_policies.server.assume_role_policy
+  assume_role_policy = module.iam_roles_and_policies.server.assume_role
 }
 
 resource "aws_iam_policy" "server" {
