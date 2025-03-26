@@ -1,77 +1,21 @@
 resource "aws_iam_role" "scheduler" {
   count = var.scheduler_role_arn == null ? 1 : 0
 
-  name        = "spacelift-scheduler-role-${var.suffix}"
-  description = "Role used by scheduler"
-  assume_role_policy = jsonencode(
-    {
-      Version = "2012-10-17"
-      Statement = [
-        {
-          Effect    = "Allow"
-          Action    = "sts:AssumeRole"
-          Principal = { Service = "ecs-tasks.amazonaws.com" }
-        }
-      ]
-    }
-  )
-
+  name               = "spacelift-scheduler-role-${var.suffix}"
+  description        = "Role used by scheduler"
+  assume_role_policy = module.iam_roles_and_policies.scheduler.assume_role
 }
 
 resource "aws_iam_policy" "scheduler" {
-  count = var.scheduler_role_arn == null ? 1 : 0
+  for_each = var.scheduler_role_arn == null ? module.iam_roles_and_policies.scheduler.policies : {}
 
-  name        = "spacelift-scheduler-${var.suffix}"
-  description = "Policy used by scheduler"
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = concat(
-      [
-        {
-          Effect   = "Allow"
-          Action   = ["cloudwatch:PutMetricData"]
-          Resource = ["*"]
-        },
-        {
-          Effect   = "Allow"
-          Action   = ["sts:AssumeRole"]
-          Resource = ["*"]
-        },
-        {
-          Effect = "Allow"
-          Action = [
-            "kms:Decrypt",
-            "kms:Encrypt",
-            "kms:GenerateDataKey*",
-          ]
-          Resource = [var.kms_key_arn]
-        }
-      ],
-      var.kms_encryption_key_arn == null ? [] : [{
-        Effect = "Allow"
-        Action = [
-          "kms:Decrypt",
-          "kms:Encrypt",
-          "kms:GenerateDataKey*",
-        ]
-        Resource = [var.kms_encryption_key_arn]
-      }],
-      var.kms_signing_key_arn == null ? [] : [{
-        Effect = "Allow"
-        Action = [
-          "kms:GetPublicKey",
-          "kms:Sign",
-          "kms:Verify",
-        ]
-        Resource = [var.kms_signing_key_arn]
-      }]
-    )
-  })
+  name   = "${aws_iam_role.scheduler[0].name}-${each.key}"
+  policy = each.value
 }
 
 resource "aws_iam_role_policy_attachment" "scheduler" {
-  count = var.scheduler_role_arn == null ? 1 : 0
+  for_each = var.scheduler_role_arn == null ? module.iam_roles_and_policies.scheduler.policies : {}
 
   role       = aws_iam_role.scheduler[0].name
-  policy_arn = aws_iam_policy.scheduler[0].arn
+  policy_arn = aws_iam_policy.scheduler[each.key].arn
 }

@@ -8,6 +8,16 @@ variable "aws_region" {
   description = "The AWS region the services are being run in."
 }
 
+variable "aws_partition" {
+  type        = string
+  description = "The AWS partition the services are being run in."
+}
+
+variable "aws_dns_suffix" {
+  type        = string
+  description = "The AWS DNS suffix for the region."
+}
+
 variable "suffix" {
   type = string
 }

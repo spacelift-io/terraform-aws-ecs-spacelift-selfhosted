@@ -33,6 +33,8 @@ module "ecs" {
 
   aws_account_id = data.aws_caller_identity.current.account_id
   aws_region     = var.region
+  aws_dns_suffix = data.aws_partition.current.dns_suffix
+  aws_partition  = data.aws_partition.current.partition
 
   suffix = local.suffix
 
