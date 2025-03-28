@@ -1,7 +1,7 @@
 locals {
   webhooks_endpoint = "https://${var.server_domain}/webhooks"
   backend_image     = "${var.backend_image}:${var.backend_image_tag}"
-  shared_envs = [
+  shared_envs = concat(var.additional_env_vars, [
     {
       name  = "AWS_ACCOUNT_ID",
       value = var.aws_account_id
@@ -117,8 +117,9 @@ locals {
     {
       name  = "OBSERVABILITY_VENDOR"
       value = var.observability_vendor
-    }
-  ]
+    },
+    ]
+  )
 }
 
 resource "aws_ecs_task_definition" "server" {
