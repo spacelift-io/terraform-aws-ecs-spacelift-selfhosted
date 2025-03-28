@@ -362,6 +362,15 @@ variable "kms_key_arn" {
   description = "The ARN of the KMS key used for encrypting AWS resources (ECR, S3, etc.)."
 }
 
+variable "additional_env_vars" {
+  type = list(object({
+    name  = string
+    value = string
+  }))
+  description = "Additional environment variables to pass to the containers."
+  default     = []
+}
+
 variable "enable_automatic_usage_data_reporting" {
   type        = bool
   default     = false

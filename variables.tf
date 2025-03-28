@@ -345,6 +345,15 @@ variable "observability_vendor" {
   default = "Disabled"
 }
 
+variable "additional_env_vars" {
+  type = list(object({
+    name  = string
+    value = string
+  }))
+  description = "Additional environment variables to pass to the containers."
+  default     = []
+}
+
 variable "enable_automatic_usage_data_reporting" {
   type        = bool
   default     = false
