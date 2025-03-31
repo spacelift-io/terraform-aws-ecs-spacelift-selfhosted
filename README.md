@@ -171,6 +171,10 @@ resource "aws_iam_role" "spacelift_scheduler_role" {
 }
 ```
 
+## Module registries
+
+The module is also available [on the OpenTofu registry](https://search.opentofu.org/module/spacelift-io/ecs-spacelift-selfhosted/aws/latest) where you can browse the input and output variables.
+
 ## 🚀 Release
 
 We have a [GitHub workflow](./.github/workflows/release.yaml) to automatically create a tag and a release based on the version number in [`.spacelift/config.yml`](./.spacelift/config.yml) file.
