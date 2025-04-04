@@ -345,6 +345,12 @@ variable "observability_vendor" {
   default = "Disabled"
 }
 
+variable "ecs_service_az_rebalancing_enabled" {
+  type        = bool
+  description = "Enables automatic rebalancing of ECS service tasks across Availability Zones to maintain high availability and even task distribution without manual intervention. Enabled by default."
+  default     = true
+}
+
 variable "additional_env_vars" {
   type = list(object({
     name  = string

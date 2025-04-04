@@ -362,17 +362,20 @@ variable "kms_key_arn" {
   description = "The ARN of the KMS key used for encrypting AWS resources (ECR, S3, etc.)."
 }
 
+variable "ecs_service_az_rebalancing_enabled" {
+  type        = bool
+  description = "Enables automatic rebalancing of ECS service tasks across Availability Zones to maintain high availability and even task distribution without manual intervention. Enabled by default."
+}
+
 variable "additional_env_vars" {
   type = list(object({
     name  = string
     value = string
   }))
   description = "Additional environment variables to pass to the containers."
-  default     = []
 }
 
 variable "enable_automatic_usage_data_reporting" {
   type        = bool
-  default     = false
   description = "Enable automatic usage data reporting."
 }
