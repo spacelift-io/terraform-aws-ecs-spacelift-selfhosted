@@ -1,2 +1,24 @@
-# version: 2
-# module_version: "0.0.1"
+version: 2
+module_version: "1.0.2"
+
+tests:
+  - name: Basic example
+    project_root: examples/basic-example
+    environment:
+      TF_VAR_region: "eu-central-1"
+      TF_VAR_unique_suffix: "e89fd"
+      TF_VAR_vpc_id: "vpc-0a314b38f047fe0b0"
+      TF_VAR_private_subnet_ids: '["subnet-06dac8477b9776169","subnet-09807a1f0669bd2d4","subnet-09f5280a47d846235"]'
+      TF_VAR_public_subnet_ids: '["subnet-0b85be8982fda3156","subnet-04989d92e35a8f637","subnet-01b90610f74f60c2b"]'
+      TF_VAR_server_security_group_id: "sg-000e8ff37e8793659"
+      TF_VAR_drain_security_group_id: "sg-02f5938fb08692bbb"
+      TF_VAR_scheduler_security_group_id: "sg-07172bf10bb3e4cf3"
+      TF_VAR_kms_key_arn: "arn:aws:kms:eu-central-1:666640173260:key/mrk-586b3c36796644acb2920a968b4c40c6"
+      TF_VAR_kms_encryption_key_arn: "arn:aws:kms:eu-central-1:666640173260:key/mrk-56bdca0baed847659f227414cca441e8"
+      TF_VAR_kms_signing_key_arn: "arn:aws:kms:eu-central-1:666640173260:key/mrk-149b214956914505924283421ae467ed"
+      TF_VAR_lb_certificate_arn: "arn:aws:acm:eu-central-1:666640173260:certificate/01f0a780-8b62-42bf-901e-d2b0c6c06094"
+      TF_VAR_website_domain: "module-test-aws-ecs.spacelift.sh"
+      TF_VAR_mqtt_broker_endpoint: "tls://module-test-aws-ecs.spacelift.sh:1984"
+      TF_VAR_ecr_backend_repository_url: "666640173260.dkr.ecr.eu-central-1.amazonaws.com/spacelift-backend-e89fd"
+      TF_VAR_ecr_launcher_repository_url: "666640173260.dkr.ecr.eu-central-1.amazonaws.com/spacelift-launcher-e89fd"
+      TF_VAR_spacelift_version: "v0.0.1-moduletests"
