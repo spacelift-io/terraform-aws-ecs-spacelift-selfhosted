@@ -28,7 +28,7 @@ resource "aws_ecs_service" "server" {
 
   deployment_minimum_healthy_percent = 100
   deployment_maximum_percent         = 200
-  availability_zone_rebalancing      = var.ecs_service_az_rebalancing_enabled
+  availability_zone_rebalancing      = var.ecs_service_az_rebalancing_enabled ? "ENABLED" : "DISABLED"
   wait_for_steady_state              = true
 
   capacity_provider_strategy {
@@ -65,7 +65,7 @@ resource "aws_ecs_service" "drain" {
 
   deployment_minimum_healthy_percent = 100
   deployment_maximum_percent         = 200
-  availability_zone_rebalancing      = var.ecs_service_az_rebalancing_enabled
+  availability_zone_rebalancing      = var.ecs_service_az_rebalancing_enabled ? "ENABLED" : "DISABLED"
   wait_for_steady_state              = true
 
   capacity_provider_strategy {
@@ -90,7 +90,7 @@ resource "aws_ecs_service" "scheduler" {
 
   deployment_minimum_healthy_percent = 100
   deployment_maximum_percent         = 200
-  availability_zone_rebalancing      = var.ecs_service_az_rebalancing_enabled
+  availability_zone_rebalancing      = var.ecs_service_az_rebalancing_enabled ? "ENABLED" : "DISABLED"
   wait_for_steady_state              = true
 
   capacity_provider_strategy {
