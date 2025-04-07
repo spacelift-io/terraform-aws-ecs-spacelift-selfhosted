@@ -23,7 +23,7 @@ resource "spacelift_aws_integration_attachment" "aws-moduletest-infra" {
 }
 
 resource "spacelift_environment_variable" "aws-moduletest-infra-aws_region" {
-  stack_id   = spacelift_stack.aws-infra.id
+  stack_id   = spacelift_stack.aws-module-test-infra.id
   name       = "TF_VAR_aws_region"
   value      = local.aws_region_for_module_tests
   write_only = false
