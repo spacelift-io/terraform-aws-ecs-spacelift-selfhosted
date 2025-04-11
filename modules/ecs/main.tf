@@ -49,10 +49,13 @@ resource "aws_ecs_service" "server" {
     container_port   = var.server_port
   }
 
-  load_balancer {
-    target_group_arn = var.mqtt_server_target_group_arn
-    container_name   = "server"
-    container_port   = var.mqtt_broker_port
+  dynamic "load_balancer" {
+    for_each = var.mqtt_broker_type == "mqtt" ? [1] : []
+    content {
+      target_group_arn = var.mqtt_server_target_group_arn
+      container_name   = "server"
+      container_port   = var.mqtt_broker_port
+    }
   }
 }
 
