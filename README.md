@@ -85,14 +85,14 @@ This module creates:
 
 - Load balancers
   - An ALB for the Spacelift server (needs a valid ACM certificate)
-  - A network load balancer for the MQTT broker
+  - A network load balancer for the MQTT broker (when using the default `builtin` broker type)
   - A security group for the load balancers
 - ECS
   - An ECS cluster
   - Three services (server, drain, scheduler)
   - IAM roles and policies for the corresponding services
 
-Once it succeeded, don't forget to create a DNS record (`CNAME`) for the server and MQTT load balancer.
+Once it succeeded, don't forget to create a DNS record (`CNAME`) for the server and MQTT load balancer (if using the `builtin` broker type).
 
 ### With CloudWatch logging
 
@@ -174,6 +174,50 @@ resource "aws_iam_role" "spacelift_scheduler_role" {
 ## Module registries
 
 The module is also available [on the OpenTofu registry](https://search.opentofu.org/module/spacelift-io/ecs-spacelift-selfhosted/aws/latest) where you can browse the input and output variables.
+
+## Additional Configuration Options
+
+### Message Broker Types
+
+This module supports two types of MQTT brokers:
+
+1. **Built-in MQTT broker (mqtt_broker_type = "builtin")**
+   - When using the built-in broker, the Spacelift server acts as the MQTT broker, but listens on a different port.
+     - A separate Network Load Balancer (NLB) is created for the MQTT broker port.
+     - The NLB doesn't require an ACM certificate. TLS is handled inside the Spacelift MQTT broker.  
+   - Requires DNS configuration (`CNAME`) for the MQTT broker endpoint.
+   - Set in your configuration with: `mqtt_broker_type = "builtin"` (this is the default), and `mqtt_broker_endpoint = "tls://<endpoint address>"`.
+
+2. **AWS IoT Core (mqtt_broker_type = "iotcore")**
+   - Uses AWS IoT Core as the MQTT broker
+   - No separate load balancer is created
+   - Set in your configuration with: `mqtt_broker_type = "iotcore"`
+
+### Message Queue Types
+
+The Spacelift server supports two types of message queues:
+
+1. **Default PostgreSQL (MESSAGE_QUEUE_TYPE = "postgres")**
+   - Uses the same PostgreSQL database for message queuing
+   - No additional configuration required
+
+2. **AWS SQS (MESSAGE_QUEUE_TYPE = "sqs")**
+   - Uses AWS SQS for message queuing
+   - Requires the `sqs_queues` variable with queue names
+   - Automatically fetches ARNs and URLs using data sources
+   - Configure in your module with:
+   ```hcl
+   sqs_queues = {
+     deadletter      = "<your-deadletter-queue-name>"
+     deadletter_fifo = "<your-deadletter-fifo-queue-name>"
+     async_jobs      = "<your-async-jobs-queue-name>"
+     events_inbox    = "<your-events-inbox-queue-name>"
+     async_jobs_fifo = "<your-async-jobs-fifo-queue-name>"
+     cronjobs        = "<your-cronjobs-queue-name>"
+     webhooks        = "<your-webhooks-queue-name>"
+     iot             = "<your-iot-queue-name>"
+   }
+   ```
 
 ## 🚀 Release
 

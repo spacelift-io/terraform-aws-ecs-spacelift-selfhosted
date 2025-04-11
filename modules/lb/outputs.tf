@@ -3,7 +3,7 @@ output "server_lb_dns" {
 }
 
 output "mqtt_lb_dns" {
-  value = aws_lb.mqtt.dns_name
+  value = var.mqtt_broker_type == "builtin" ? aws_lb.mqtt[0].dns_name : null
 }
 
 output "server_target_group_arn" {
@@ -11,5 +11,5 @@ output "server_target_group_arn" {
 }
 
 output "mqtt_target_group_arn" {
-  value = aws_lb_target_group.mqtt.arn
+  value = var.mqtt_broker_type == "builtin" ? aws_lb_target_group.mqtt[0].arn : null
 }
