@@ -13,11 +13,6 @@ variable "aws_partition" {
   description = "The AWS partition the services are being run in."
 }
 
-variable "aws_dns_suffix" {
-  type        = string
-  description = "The AWS DNS suffix for the region."
-}
-
 variable "suffix" {
   type = string
 }
@@ -378,4 +373,38 @@ variable "additional_env_vars" {
 variable "enable_automatic_usage_data_reporting" {
   type        = bool
   description = "Enable automatic usage data reporting."
+}
+
+variable "mqtt_broker_type" {
+  type        = string
+  description = "The type of MQTT broker to use (builtin or iotcore)."
+}
+
+variable "sqs_queues" {
+  type = object({
+    # ARNs for IAM policies
+    deadletter      = string
+    deadletter_fifo = string
+    async_jobs      = string
+    events_inbox    = string
+    async_jobs_fifo = string
+    cronjobs        = string
+    webhooks        = string
+    iot             = string
+    # URLs for environment variables
+    deadletter_url      = string
+    deadletter_fifo_url = string
+    async_jobs_url      = string
+    events_inbox_url    = string
+    async_jobs_fifo_url = string
+    cronjobs_url        = string
+    webhooks_url        = string
+    iot_url             = string
+  })
+  description = "A map of SQS queue ARNs and URLs, in case the queue type is SQS."
+}
+
+variable "iot_topic" {
+  type        = string
+  description = "The IoT topic when AWS IoT is used as a message broker."
 }

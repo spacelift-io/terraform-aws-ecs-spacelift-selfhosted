@@ -47,3 +47,8 @@ variable "mqtt_lb_internal" {
   type        = bool
   description = "Whether the MQTT load balancer should be internal or internet-facing."
 }
+
+variable "mqtt_broker_type" {
+  type        = string
+  description = "The type of MQTT broker to use (builtin or iotcore)."
+}

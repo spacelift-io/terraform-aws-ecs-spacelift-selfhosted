@@ -1,4 +1,5 @@
 resource "aws_lb" "mqtt" {
+  count              = var.mqtt_broker_type == "builtin" ? 1 : 0
   name               = "spacelift-mqtt-${var.suffix}"
   security_groups    = [aws_security_group.load_balancer_sg.id]
   subnets            = var.mqtt_lb_subnets
@@ -7,6 +8,7 @@ resource "aws_lb" "mqtt" {
 }
 
 resource "aws_lb_target_group" "mqtt" {
+  count       = var.mqtt_broker_type == "builtin" ? 1 : 0
   name        = "spacelift-mqtt-tg-${var.suffix}"
   port        = var.mqtt_port
   protocol    = "TCP"
@@ -15,12 +17,13 @@ resource "aws_lb_target_group" "mqtt" {
 }
 
 resource "aws_lb_listener" "mqtt" {
-  load_balancer_arn = aws_lb.mqtt.arn
+  count             = var.mqtt_broker_type == "builtin" ? 1 : 0
+  load_balancer_arn = aws_lb.mqtt[0].arn
   port              = var.mqtt_port
   protocol          = "TCP"
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.mqtt.arn
+    target_group_arn = aws_lb_target_group.mqtt[0].arn
   }
 }
