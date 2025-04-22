@@ -14,8 +14,18 @@ module "this" {
   kms_encryption_key_arn = var.kms_encryption_key_arn
   kms_signing_key_arn    = var.kms_signing_key_arn
 
-  database_url           = "empty" # Doesn't need to be valid since the service desired count is 0
-  database_read_only_url = "empty" # Doesn't need to be valid since the service desired count is 0
+  # The secret ARNs don't need to be valid since the service desired count is 0
+  sensitive_env_vars = [
+    {
+      name      = "DATABASE_URL",
+      valueFrom = "arn:aws:secretsmanager:${var.region}:000000000000:secret:spacelift/database-abc123:DATABASE_URL::"
+    },
+    {
+      name      = "DATABASE_READ_ONLY_URL",
+      valueFrom = "arn:aws:secretsmanager:${var.region}:000000000000:secret:spacelift/database-abc123:DATABASE_READ_ONLY_URL::"
+    }
+  ]
+  secrets_manager_secret_arns = ["arn:aws:secretsmanager:${var.region}:000000000000:secret:spacelift/database-abc123"]
 
   backend_image      = var.ecr_backend_repository_url
   backend_image_tag  = var.spacelift_version

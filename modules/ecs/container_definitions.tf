@@ -40,6 +40,7 @@ locals {
           value = local.webhooks_endpoint
         }
       ])
+      secrets = var.sensitive_env_vars
     }
   ])
 
@@ -71,6 +72,7 @@ locals {
           value = var.enable_automatic_usage_data_reporting ? local.spacelift_public_api : ""
         }
       ])
+      secrets = var.sensitive_env_vars
     }
   ])
 
@@ -89,6 +91,7 @@ locals {
       ]
       logConfiguration = var.scheduler_log_configuration
       environment      = local.shared_envs
+      secrets          = var.sensitive_env_vars
     }
   ])
 }
