@@ -19,6 +19,10 @@ locals {
         value = var.aws_region
       },
       {
+        name  = "AWS_PARTITION"
+        value = var.aws_partition
+      },
+      {
         name  = "ENVIRONMENT"
         value = "prod"
       },

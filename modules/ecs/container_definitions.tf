@@ -36,6 +36,10 @@ locals {
           value = var.admin_password
         },
         {
+          name  = "AWS_S3_US_EAST_1_REGIONAL_ENDPOINT"
+          value = "regional"
+        },
+        {
           name  = "FEATURE_FLAG_SELF_HOSTED_V3_INSTALLATION_FLOW"
           value = "true"
         },

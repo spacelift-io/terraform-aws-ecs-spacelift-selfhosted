@@ -207,6 +207,7 @@ This module supports two types of MQTT brokers:
    - Uses AWS IoT Core as the MQTT broker
    - No separate load balancer is created
    - Set in your configuration with: `mqtt_broker_type = "iotcore"`
+   - **Important**: when the `mqtt_broker_type` is set to `iotcore`, the message queue type must be SQS, hence the `sqs_queues` variable is a must. This is because the AWS IoT Core broker publishes message to SQS queues.
 
 ### Message Queue Types
 
@@ -219,6 +220,7 @@ The Spacelift server supports two types of message queues:
 2. **AWS SQS (MESSAGE_QUEUE_TYPE = "sqs")**
    - Uses AWS SQS for message queuing
    - Requires the `sqs_queues` variable with queue names
+   - If you set the `mqtt_broker_type` to `iotcore`, the message queue type must be SQS, hence the `sqs_queues` variable is a must.
    - Automatically fetches ARNs and URLs using data sources
    - Configure in your module with:
    ```hcl
