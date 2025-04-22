@@ -33,7 +33,6 @@ module "ecs" {
 
   aws_account_id = data.aws_caller_identity.current.account_id
   aws_region     = var.region
-  aws_dns_suffix = data.aws_partition.current.dns_suffix
   aws_partition  = data.aws_partition.current.partition
 
   suffix = local.suffix
@@ -116,6 +115,8 @@ module "ecs" {
 
   ecs_service_az_rebalancing_enabled    = var.ecs_service_az_rebalancing_enabled
   additional_env_vars                   = var.additional_env_vars
+  sensitive_env_vars                    = var.sensitive_env_vars
+  secrets_manager_secret_arns           = var.secrets_manager_secret_arns
   observability_vendor                  = var.observability_vendor
   enable_automatic_usage_data_reporting = var.enable_automatic_usage_data_reporting
 }

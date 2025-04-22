@@ -99,14 +99,6 @@ locals {
       value = var.uploads_bucket_url
     },
     {
-      name  = "DATABASE_URL"
-      value = var.database_url
-    },
-    {
-      name  = "DATABASE_READ_ONLY_URL"
-      value = var.database_read_only_url
-    },
-    {
       name  = "LICENSE_TYPE"
       value = "jwt"
     },
@@ -118,7 +110,19 @@ locals {
       name  = "OBSERVABILITY_VENDOR"
       value = var.observability_vendor
     },
-    ]
+    ],
+    var.database_url != null ? [
+      {
+        name  = "DATABASE_URL"
+        value = var.database_url
+      }
+    ] : [],
+    var.database_read_only_url != null ? [
+      {
+        name  = "DATABASE_READ_ONLY_URL"
+        value = var.database_read_only_url
+      }
+    ] : [],
   )
 }
 

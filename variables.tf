@@ -111,12 +111,13 @@ variable "license_token" {
 
 variable "database_url" {
   type        = string
-  description = "The connection string to the database."
+  description = "The connection string to the database. If not provided, the connection string URL must be passed in as part of the sensitive_env_vars variable."
+  default     = null
 }
 
 variable "database_read_only_url" {
   type        = string
-  description = "The read-only connection string to the database (ideally a replica). If left empty, the main database URL will be used."
+  description = "The read-only connection string to the database (ideally a replica). If left empty, the main database URL will be used. Optionally, this can be passed in as part of the sensitive_env_vars variable."
   default     = null
 }
 
@@ -349,6 +350,21 @@ variable "ecs_service_az_rebalancing_enabled" {
   type        = bool
   description = "Enables automatic rebalancing of ECS service tasks across Availability Zones to maintain high availability and even task distribution without manual intervention. Enabled by default."
   default     = true
+}
+
+variable "sensitive_env_vars" {
+  type = list(object({
+    name      = string
+    valueFrom = string
+  }))
+  description = "Sensitive environment variables to pass to the containers. It is directly passed to the 'secrets' field of the container definition. Don't forget to add the ARNs to the secrets_manager_secret_arns variable."
+  default     = []
+}
+
+variable "secrets_manager_secret_arns" {
+  type        = list(string)
+  description = "A list of Secret Manager secret ARNs that the ECS tasks should have access to. This is used to create an execution policy that allows the ECS tasks to access the secrets."
+  default     = []
 }
 
 variable "additional_env_vars" {

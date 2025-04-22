@@ -23,14 +23,14 @@ locals {
 }
 
 module "spacelift_infra" {
-  source = "github.com/spacelift-io/terraform-aws-spacelift-selfhosted?ref=v1.0.0"
+  source = "github.com/spacelift-io/terraform-aws-spacelift-selfhosted?ref=v1.2.0"
 
   region           = local.region
   website_endpoint = local.website_endpoint
 }
 
 module "spacelift_services" {
-  source = "github.com/spacelift-io/terraform-aws-ecs-spacelift-selfhosted?ref=v1.0.0"
+  source = "github.com/spacelift-io/terraform-aws-ecs-spacelift-selfhosted?ref=v1.1.0"
 
   region               = local.region
   unique_suffix        = module.spacelift_infra.unique_suffix
@@ -44,8 +44,17 @@ module "spacelift_services" {
   kms_encryption_key_arn = module.spacelift_infra.kms_encryption_key_arn
   kms_signing_key_arn    = module.spacelift_infra.kms_signing_key_arn
 
-  database_url           = format("postgres://%s:%s@%s:5432/spacelift?statement_cache_capacity=0", module.spacelift_infra.rds_username, module.spacelift_infra.rds_password, module.spacelift_infra.rds_cluster_endpoint)
-  database_read_only_url = format("postgres://%s:%s@%s:5432/spacelift?statement_cache_capacity=0", module.spacelift_infra.rds_username, module.spacelift_infra.rds_password, module.spacelift_infra.rds_cluster_reader_endpoint)
+  secrets_manager_secret_arns = [module.spacelift_infra.database_secret_arn]
+  sensitive_env_vars          = [
+    {
+      name = "DATABASE_URL"
+      valueFrom = "${module.spacelift_infra.database_secret_arn}:DATABASE_URL::"
+    },
+    {
+      name = "DATABASE_READ_ONLY_URL"
+      valueFrom = "${module.spacelift_infra.database_secret_arn}:DATABASE_READ_ONLY_URL::"
+    }
+  ]
 
   backend_image      = module.spacelift_infra.ecr_backend_repository_url
   backend_image_tag  = local.spacelift_version
@@ -100,7 +109,7 @@ You can pass in a log configuration for each service. See [the official document
 
 ```hcl
 module "spacelift_services" {
-  source = "github.com/spacelift-io/terraform-aws-ecs-spacelift-selfhosted?ref=v1.0.0"
+  source = "github.com/spacelift-io/terraform-aws-ecs-spacelift-selfhosted?ref=v1.1.0"
 
   server_log_configuration = {
     logDriver : "awslogs",
@@ -140,7 +149,7 @@ module "spacelift_services" {
 
 ```hcl
 module "spacelift_services" {
-  source = "github.com/spacelift-io/terraform-aws-ecs-spacelift-selfhosted?ref=v1.0.0"
+  source = "github.com/spacelift-io/terraform-aws-ecs-spacelift-selfhosted?ref=v1.1.0"
 
   execution_role_arn = aws_iam_role.execution_role.arn
   server_role_arn    = aws_iam_role.spacelift_server_role.arn

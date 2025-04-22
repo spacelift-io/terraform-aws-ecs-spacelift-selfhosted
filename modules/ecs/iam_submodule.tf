@@ -1,9 +1,10 @@
 module "iam_roles_and_policies" {
-  source = "github.com/spacelift-io/terraform-aws-iam-spacelift-selfhosted?ref=v1.0.1"
+  source = "github.com/spacelift-io/terraform-aws-iam-spacelift-selfhosted?ref=v1.2.1"
 
   write_as_files = false
   aws_partition  = var.aws_partition
-  aws_dns_suffix = var.aws_dns_suffix
+
+  secrets_manager_secret_arns = var.secrets_manager_secret_arns
 
   kms_encryption_key_arn = var.kms_encryption_key_arn
   kms_signing_key_arn    = var.kms_signing_key_arn

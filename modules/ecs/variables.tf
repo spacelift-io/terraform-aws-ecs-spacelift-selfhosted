@@ -13,11 +13,6 @@ variable "aws_partition" {
   description = "The AWS partition the services are being run in."
 }
 
-variable "aws_dns_suffix" {
-  type        = string
-  description = "The AWS DNS suffix for the region."
-}
-
 variable "suffix" {
   type = string
 }
@@ -373,6 +368,19 @@ variable "additional_env_vars" {
     value = string
   }))
   description = "Additional environment variables to pass to the containers."
+}
+
+variable "sensitive_env_vars" {
+  type = list(object({
+    name      = string
+    valueFrom = string
+  }))
+  description = "Sensitive environment variables to pass to the containers. It is directly passed to the 'secrets' field of the container definition."
+}
+
+variable "secrets_manager_secret_arns" {
+  type        = list(string)
+  description = "A list of Secret Manager secret ARNs that the ECS tasks should have access to. This is used to create an execution policy that allows the ECS tasks to access the secrets."
 }
 
 variable "enable_automatic_usage_data_reporting" {
