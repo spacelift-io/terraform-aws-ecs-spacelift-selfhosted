@@ -4,7 +4,7 @@ module "iam_roles_and_policies" {
   write_as_files = false
   aws_partition  = var.aws_partition
 
-  secrets_manager_secret_arns = var.secrets_manager_secret_arns
+  secrets_manager_secret_arns = concat([aws_secretsmanager_secret.shared_secrets.arn], var.secrets_manager_secret_arns)
 
   kms_encryption_key_arn = var.kms_encryption_key_arn
   kms_signing_key_arn    = var.kms_signing_key_arn
