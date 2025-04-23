@@ -100,6 +100,7 @@ This module creates:
   - An ECS cluster
   - Three services (server, drain, scheduler)
   - IAM roles and policies for the corresponding services
+  - A SecretsManager secret for storing sensitive environment variables, such as the license token
 
 Once it succeeded, don't forget to create a DNS record (`CNAME`) for the server and MQTT load balancer (if using the `builtin` broker type).
 

@@ -111,10 +111,6 @@ locals {
         value = "jwt"
       },
       {
-        name  = "LICENSE_TOKEN"
-        value = var.license_token
-      },
-      {
         name  = "OBSERVABILITY_VENDOR"
         value = var.observability_vendor
       }
