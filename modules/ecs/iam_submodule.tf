@@ -20,4 +20,7 @@ module "iam_roles_and_policies" {
   uploads_bucket_name                  = var.uploads_bucket_name
   user_uploaded_workspaces_bucket_name = var.user_uploaded_workspaces_bucket_name
   workspace_bucket_name                = var.workspace_bucket_name
+
+  sqs_queues = var.sqs_queues
+  iot_topic  = var.iot_topic
 }

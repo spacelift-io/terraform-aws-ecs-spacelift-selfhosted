@@ -11,12 +11,14 @@ variable "unique_suffix" {
 
 variable "mqtt_broker_endpoint" {
   type        = string
-  description = "The endpoint of the MQTT broker. Make sure the protocol is tls:// and that you include a port number. Example: tls://spacelift-mqtt.mycorp.com:1984"
+  description = "The endpoint of the MQTT broker in case the mqtt_broker_type is builtin. Make sure the protocol is tls:// and that you include a port number. Example: tls://spacelift-mqtt.mycorp.com:1984"
 
   validation {
-    condition     = can(regex("tls://.*:\\d+", var.mqtt_broker_endpoint))
+    condition     = var.mqtt_broker_endpoint == null || can(regex("tls://.*:\\d+", var.mqtt_broker_endpoint))
     error_message = "mqtt_broker_endpoint must be in the format tls://<hostname>:<port>"
   }
+
+  default = null
 }
 
 variable "server_domain" {
@@ -62,7 +64,8 @@ variable "mqtt_lb_internal" {
 
 variable "mqtt_lb_subnets" {
   type        = list(string)
-  description = "The subnets to deploy the MQTT load balancer in."
+  description = "The subnets to deploy the MQTT load balancer in. Mandatory if mqtt_broker_type is builtin."
+  default     = []
 }
 
 variable "ecs_subnets" {
@@ -380,4 +383,30 @@ variable "enable_automatic_usage_data_reporting" {
   type        = bool
   default     = false
   description = "Enable anonymous usage data collection."
+}
+
+variable "sqs_queues" {
+  type = object({
+    deadletter      = string
+    deadletter_fifo = string
+    async_jobs      = string
+    events_inbox    = string
+    async_jobs_fifo = string
+    cronjobs        = string
+    webhooks        = string
+    iot             = string
+  })
+  description = "A map of SQS queue names, in case the user chooses to use SQS for message queues."
+  default     = null
+}
+
+variable "mqtt_broker_type" {
+  type        = string
+  description = "The type of MQTT broker to use. Can be 'builtin' or 'iotcore'."
+  default     = "builtin"
+
+  validation {
+    condition     = contains(["builtin", "iotcore"], var.mqtt_broker_type)
+    error_message = "mqtt_broker_type must be either 'builtin' or 'iotcore'"
+  }
 }

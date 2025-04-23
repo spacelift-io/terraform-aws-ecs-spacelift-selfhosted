@@ -6,14 +6,18 @@ locals {
       command   = ["spacelift", "backend", "server"]
       essential = true
       image     = local.backend_image
-      portMappings = [
-        {
-          containerPort = var.server_port
-        },
-        {
-          containerPort = var.mqtt_broker_port
-        }
-      ]
+      portMappings = concat(
+        [
+          {
+            containerPort = var.server_port
+          }
+        ],
+        var.mqtt_broker_port != 0 ? [
+          {
+            containerPort = var.mqtt_broker_port
+          }
+        ] : []
+      )
       ulimits = [
         {
           name      = "nofile"
@@ -30,6 +34,10 @@ locals {
         {
           name  = "ADMIN_PASSWORD"
           value = var.admin_password
+        },
+        {
+          name  = "AWS_S3_US_EAST_1_REGIONAL_ENDPOINT"
+          value = "regional"
         },
         {
           name  = "FEATURE_FLAG_SELF_HOSTED_V3_INSTALLATION_FLOW"
@@ -58,20 +66,37 @@ locals {
         }
       ]
       logConfiguration = var.drain_log_configuration
-      environment = concat(local.shared_envs, [
-        {
-          name  = "LAUNCHER_IMAGE"
-          value = var.launcher_image
-        },
-        {
-          name  = "LAUNCHER_IMAGE_TAG"
-          value = var.launcher_image_tag
-        },
-        {
-          name  = "SPACELIFT_PUBLIC_API"
-          value = var.enable_automatic_usage_data_reporting ? local.spacelift_public_api : ""
-        }
-      ])
+      environment = concat(
+        local.shared_envs,
+        [
+          {
+            name  = "LAUNCHER_IMAGE"
+            value = var.launcher_image
+          },
+          {
+            name  = "LAUNCHER_IMAGE_TAG"
+            value = var.launcher_image_tag
+          },
+          {
+            name  = "SPACELIFT_PUBLIC_API"
+            value = var.enable_automatic_usage_data_reporting ? local.spacelift_public_api : ""
+          }
+        ],
+        var.sqs_queues != null ? [
+          {
+            name  = "MESSAGE_QUEUE_SQS_DLQ_URL"
+            value = var.sqs_queues.deadletter_url
+          },
+          {
+            name  = "MESSAGE_QUEUE_SQS_DLQ_FIFO_URL"
+            value = var.sqs_queues.deadletter_fifo_url
+          },
+          {
+            name  = "MESSAGE_QUEUE_SQS_IOT_URL"
+            value = var.sqs_queues.iot_url
+          }
+        ] : []
+      )
       secrets = var.sensitive_env_vars
     }
   ])

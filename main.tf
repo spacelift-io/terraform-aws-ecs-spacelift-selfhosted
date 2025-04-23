@@ -1,14 +1,36 @@
-data "aws_caller_identity" "current" {}
-data "aws_partition" "current" {}
-
-resource "random_uuid" "suffix" {}
-
 locals {
   suffix = coalesce(lower(var.unique_suffix), lower(substr(random_uuid.suffix.id, 0, 5)))
 
   server_port = 1983
-  mqtt_port   = tonumber(split(":", var.mqtt_broker_endpoint)[2])
+  mqtt_port   = var.mqtt_broker_endpoint != null ? tonumber(split(":", var.mqtt_broker_endpoint)[2]) : 0
+
+  mqtt_broker_type     = var.mqtt_broker_type
+  mqtt_broker_endpoint = var.mqtt_broker_type == "iotcore" ? data.aws_iot_endpoint.iot[0].endpoint_address : var.mqtt_broker_endpoint
+
+  sqs_queues = var.sqs_queues != null ? {
+    deadletter      = data.aws_sqs_queue.deadletter[0].arn
+    deadletter_fifo = data.aws_sqs_queue.deadletter_fifo[0].arn
+    async_jobs      = data.aws_sqs_queue.async_jobs[0].arn
+    events_inbox    = data.aws_sqs_queue.events_inbox[0].arn
+    async_jobs_fifo = data.aws_sqs_queue.async_jobs_fifo[0].arn
+    cronjobs        = data.aws_sqs_queue.cronjobs[0].arn
+    webhooks        = data.aws_sqs_queue.webhooks[0].arn
+    iot             = data.aws_sqs_queue.iot[0].arn
+
+    deadletter_url      = data.aws_sqs_queue.deadletter[0].url
+    deadletter_fifo_url = data.aws_sqs_queue.deadletter_fifo[0].url
+    async_jobs_url      = data.aws_sqs_queue.async_jobs[0].url
+    events_inbox_url    = data.aws_sqs_queue.events_inbox[0].url
+    async_jobs_fifo_url = data.aws_sqs_queue.async_jobs_fifo[0].url
+    cronjobs_url        = data.aws_sqs_queue.cronjobs[0].url
+    webhooks_url        = data.aws_sqs_queue.webhooks[0].url
+    iot_url             = data.aws_sqs_queue.iot[0].url
+  } : null
+
+  iot_topic = var.mqtt_broker_type == "iotcore" ? "arn:${data.aws_partition.current.partition}:iot:${var.region}:${data.aws_caller_identity.current.account_id}:topic/spacelift/readonly/*" : null
 }
+
+resource "random_uuid" "suffix" {}
 
 module "lb" {
   source = "./modules/lb"
@@ -25,6 +47,7 @@ module "lb" {
   mqtt_port        = local.mqtt_port
   mqtt_lb_internal = var.mqtt_lb_internal
   mqtt_lb_subnets  = var.mqtt_lb_subnets
+  mqtt_broker_type = local.mqtt_broker_type
 }
 
 module "ecs" {
@@ -51,7 +74,8 @@ module "ecs" {
 
   server_port                  = local.server_port
   mqtt_broker_port             = local.mqtt_port
-  mqtt_broker_endpoint         = var.mqtt_broker_endpoint
+  mqtt_broker_type             = local.mqtt_broker_type
+  mqtt_broker_endpoint         = local.mqtt_broker_endpoint
   mqtt_server_target_group_arn = module.lb.mqtt_target_group_arn
 
   database_url           = var.database_url
@@ -119,4 +143,6 @@ module "ecs" {
   secrets_manager_secret_arns           = var.secrets_manager_secret_arns
   observability_vendor                  = var.observability_vendor
   enable_automatic_usage_data_reporting = var.enable_automatic_usage_data_reporting
+  sqs_queues                            = local.sqs_queues
+  iot_topic                             = local.iot_topic
 }
