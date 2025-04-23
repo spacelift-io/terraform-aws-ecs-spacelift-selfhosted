@@ -316,6 +316,7 @@ variable "database_read_only_url" {
 variable "license_token" {
   type        = string
   description = "The license token for selfhosted, issued by Spacelift."
+  sensitive   = true
 }
 
 variable "observability_vendor" {

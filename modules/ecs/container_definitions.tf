@@ -48,7 +48,15 @@ locals {
           value = local.webhooks_endpoint
         }
       ])
-      secrets = var.sensitive_env_vars
+      secrets = concat(
+        [
+          {
+            name      = "LICENSE_TOKEN",
+            valueFrom = "${aws_secretsmanager_secret.shared_secrets.arn}:LICENSE_TOKEN::"
+          }
+        ],
+        var.sensitive_env_vars
+      )
     }
   ])
 
@@ -97,7 +105,15 @@ locals {
           }
         ] : []
       )
-      secrets = var.sensitive_env_vars
+      secrets = concat(
+        [
+          {
+            name      = "LICENSE_TOKEN",
+            valueFrom = "${aws_secretsmanager_secret.shared_secrets.arn}:LICENSE_TOKEN::"
+          }
+        ],
+        var.sensitive_env_vars
+      )
     }
   ])
 
@@ -116,7 +132,15 @@ locals {
       ]
       logConfiguration = var.scheduler_log_configuration
       environment      = local.shared_envs
-      secrets          = var.sensitive_env_vars
+      secrets = concat(
+        [
+          {
+            name      = "LICENSE_TOKEN",
+            valueFrom = "${aws_secretsmanager_secret.shared_secrets.arn}:LICENSE_TOKEN::"
+          }
+        ],
+        var.sensitive_env_vars
+      )
     }
   ])
 }
