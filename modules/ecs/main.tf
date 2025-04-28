@@ -50,7 +50,7 @@ resource "aws_ecs_service" "server" {
   }
 
   dynamic "load_balancer" {
-    for_each = var.mqtt_broker_type == "mqtt" ? [1] : []
+    for_each = var.mqtt_broker_type == "builtin" ? [1] : []
     content {
       target_group_arn = var.mqtt_server_target_group_arn
       container_name   = "server"
