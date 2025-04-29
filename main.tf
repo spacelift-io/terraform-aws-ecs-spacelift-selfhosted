@@ -5,7 +5,7 @@ locals {
   mqtt_port   = var.mqtt_broker_endpoint != null ? tonumber(split(":", var.mqtt_broker_endpoint)[2]) : 0
 
   mqtt_broker_type     = var.mqtt_broker_type
-  mqtt_broker_endpoint = var.mqtt_broker_type == "iotcore" ? data.aws_iot_endpoint.iot[0].endpoint_address : var.mqtt_broker_endpoint
+  mqtt_broker_endpoint = var.mqtt_broker_type == "iotcore" ? coalesce(var.iot_endpoint, data.aws_iot_endpoint.iot[0].endpoint_address) : var.mqtt_broker_endpoint
 
   sqs_queues = var.sqs_queues != null ? {
     deadletter      = data.aws_sqs_queue.deadletter[0].arn
