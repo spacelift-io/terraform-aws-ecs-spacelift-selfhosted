@@ -400,6 +400,12 @@ variable "sqs_queues" {
   default     = null
 }
 
+variable "iot_endpoint" {
+  type        = string
+  description = "The endpoint of the IoT Core service. This only needs to be specified if not using the default endpoint but a custom DNS name."
+  default     = null
+}
+
 variable "mqtt_broker_type" {
   type        = string
   description = "The type of MQTT broker to use. Can be 'builtin' or 'iotcore'."
