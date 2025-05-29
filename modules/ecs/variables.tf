@@ -258,6 +258,12 @@ variable "metadata_bucket_arn" {
   description = "The ARN of the metadata S3 bucket."
 }
 
+variable "permissions_boundary" {
+  type        = string
+  description = "IAM Permission Boundary"
+  default     = null
+}
+
 variable "states_bucket_name" {
   type        = string
   description = "The name of the states S3 bucket."

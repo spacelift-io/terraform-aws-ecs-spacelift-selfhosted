@@ -260,6 +260,12 @@ variable "drain_security_group_id" {
   description = "The security group ID to use for the drain service."
 }
 
+variable "permissions_boundary" {
+  type        = string
+  description = "IAM Permission Boundary"
+  default     = null
+}
+
 variable "scheduler_container_definition" {
   type        = string
   description = "The container definition for the scheduler service. If empty, a default container definition will be used."

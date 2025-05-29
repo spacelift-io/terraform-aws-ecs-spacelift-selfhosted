@@ -119,6 +119,8 @@ module "ecs" {
   drain_security_group        = var.drain_security_group_id
   drain_container_definitions = var.drain_container_definitions
 
+  permissions_boundary = var.permissions_boundary
+
   scheduler_cpu                  = var.scheduler_cpu
   scheduler_desired_count        = var.scheduler_desired_count
   scheduler_log_configuration    = var.scheduler_log_configuration

@@ -4,6 +4,8 @@ resource "aws_iam_role" "scheduler" {
   name               = "spacelift-scheduler-role-${var.suffix}"
   description        = "Role used by scheduler"
   assume_role_policy = module.iam_roles_and_policies.scheduler.assume_role
+
+  permissions_boundary = var.permissions_boundary
 }
 
 resource "aws_iam_policy" "scheduler" {

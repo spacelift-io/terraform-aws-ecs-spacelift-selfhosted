@@ -3,6 +3,8 @@ resource "aws_iam_role" "drain" {
 
   name               = "spacelift-drain-role-${var.suffix}"
   assume_role_policy = module.iam_roles_and_policies.drain.assume_role
+
+  permissions_boundary = var.permissions_boundary
 }
 
 resource "aws_iam_policy" "drain_role" {
