@@ -23,14 +23,14 @@ locals {
 }
 
 module "spacelift_infra" {
-  source = "github.com/spacelift-io/terraform-aws-spacelift-selfhosted?ref=v1.2.0"
+  source = "github.com/spacelift-io/terraform-aws-spacelift-selfhosted?ref=v1.4.0"
 
   region           = local.region
   website_endpoint = local.website_endpoint
 }
 
 module "spacelift_services" {
-  source = "github.com/spacelift-io/terraform-aws-ecs-spacelift-selfhosted?ref=v1.1.0"
+  source = "github.com/spacelift-io/terraform-aws-ecs-spacelift-selfhosted?ref=v1.2.0"
 
   region               = local.region
   unique_suffix        = module.spacelift_infra.unique_suffix
@@ -110,7 +110,7 @@ You can pass in a log configuration for each service. See [the official document
 
 ```hcl
 module "spacelift_services" {
-  source = "github.com/spacelift-io/terraform-aws-ecs-spacelift-selfhosted?ref=v1.1.0"
+  source = "github.com/spacelift-io/terraform-aws-ecs-spacelift-selfhosted?ref=v1.2.0"
 
   server_log_configuration = {
     logDriver : "awslogs",
@@ -156,7 +156,7 @@ module "spacelift_services" {
 
 ```hcl
 module "spacelift_services" {
-  source = "github.com/spacelift-io/terraform-aws-ecs-spacelift-selfhosted?ref=v1.1.0"
+  source = "github.com/spacelift-io/terraform-aws-ecs-spacelift-selfhosted?ref=v1.2.0"
 
   execution_role_arn = aws_iam_role.execution_role.arn
   server_role_arn    = aws_iam_role.spacelift_server_role.arn
