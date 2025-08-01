@@ -143,4 +143,48 @@ locals {
       )
     }
   ])
+
+  default_vcs_gateway_container_definition = jsonencode([
+    {
+      name      = "vcs-gateway"
+      command   = ["spacelift", "backend", "vcs-gateway"]
+      essential = true
+      image     = local.backend_image
+      portMappings = [
+        {
+          containerPort = var.vcs_gateway_external_port
+        },
+        {
+          containerPort = var.vcs_gateway_internal_port
+        }
+      ]
+      ulimits = [
+        {
+          name      = "nofile"
+          softLimit = 65536
+          hardLimit = 65536
+        }
+      ]
+      logConfiguration = var.vcs_gateway_log_configuration
+      environment = concat(local.shared_envs, [
+        {
+          name  = "GATEWAY_GRPC_PORT"
+          value = tostring(var.vcs_gateway_external_port)
+        },
+        {
+          name  = "GATEWAY_HTTP_PORT"
+          value = tostring(var.vcs_gateway_internal_port)
+        }
+      ])
+      secrets = concat(
+        [
+          {
+            name      = "LICENSE_TOKEN",
+            valueFrom = "${aws_secretsmanager_secret.shared_secrets.arn}:LICENSE_TOKEN::"
+          }
+        ],
+        var.sensitive_env_vars
+      )
+    }
+  ])
 }

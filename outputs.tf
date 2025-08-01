@@ -8,6 +8,11 @@ output "mqtt_lb_dns_name" {
   description = "The DNS name of the mqtt load balancer"
 }
 
+output "vcs_gateway_lb_dns_name" {
+  value       = module.lb.vcs_gateway_lb_dns
+  description = "The DNS name of the VCS gateway load balancer"
+}
+
 output "server_service_name" {
   value       = module.ecs.server_service_name
   description = "The name of the server ECS service"
@@ -21,4 +26,9 @@ output "drain_service_name" {
 output "scheduler_service_name" {
   value       = module.ecs.scheduler_service_name
   description = "The name of the scheduler ECS service"
+}
+
+output "vcs_gateway_service_name" {
+  value       = module.ecs.vcs_gateway_service_name
+  description = "The name of the VCS gateway ECS service"
 }

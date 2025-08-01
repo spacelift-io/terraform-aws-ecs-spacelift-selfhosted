@@ -69,3 +69,71 @@ resource "aws_vpc_security_group_ingress_rule" "mqtt_lb_to_server" {
   ip_protocol                  = "tcp"
   referenced_security_group_id = aws_security_group.load_balancer_sg.id
 }
+
+resource "aws_security_group" "vcs_gateway_lb_sg" {
+  count = var.vcs_gateway_service_security_group_id != null ? 1 : 0
+
+  name        = "vcs-gateway-loadbalancer-sg-${var.suffix}"
+  description = "Allow HTTPS traffic to the VCS gateway"
+  vpc_id      = var.vpc_id
+}
+
+resource "aws_vpc_security_group_ingress_rule" "vcs_gateway_https" {
+  count = var.vcs_gateway_service_security_group_id != null ? 1 : 0
+
+  security_group_id = aws_security_group.vcs_gateway_lb_sg[0].id
+
+  description = "Allow HTTPS traffic to the VCS gateway"
+  from_port   = 443
+  to_port     = 443
+  ip_protocol = "tcp"
+  cidr_ipv4   = "0.0.0.0/0"
+}
+
+resource "aws_vpc_security_group_egress_rule" "vcs_gateway_lb_to_gateway_service" {
+  count = var.vcs_gateway_service_security_group_id != null ? 1 : 0
+
+  security_group_id = aws_security_group.vcs_gateway_lb_sg[0].id
+
+  description                  = "Allow traffic to the VCS gateway service"
+  from_port                    = var.vcs_gateway_external_port
+  to_port                      = var.vcs_gateway_external_port
+  ip_protocol                  = "tcp"
+  referenced_security_group_id = var.vcs_gateway_service_security_group_id
+}
+
+resource "aws_vpc_security_group_ingress_rule" "vcs_gateway_service_grpc_from_lb" {
+  count = var.vcs_gateway_service_security_group_id != null ? 1 : 0
+
+  security_group_id = var.vcs_gateway_service_security_group_id
+
+  description                  = "(gRPC) Allow the load balancer to connect to the VCS gateway - this is used by remote agents connecting to the gateway"
+  from_port                    = var.vcs_gateway_external_port
+  to_port                      = var.vcs_gateway_external_port
+  ip_protocol                  = "tcp"
+  referenced_security_group_id = aws_security_group.vcs_gateway_lb_sg[0].id
+}
+
+resource "aws_vpc_security_group_ingress_rule" "vcs_gateway_service_allow_from_server" {
+  count = var.vcs_gateway_service_security_group_id != null ? 1 : 0
+
+  security_group_id = var.vcs_gateway_service_security_group_id
+
+  description                  = "(HTTP) Allow the server to connect to the VCS gateway"
+  from_port                    = var.vcs_gateway_internal_port
+  to_port                      = var.vcs_gateway_internal_port
+  ip_protocol                  = "tcp"
+  referenced_security_group_id = var.server_security_group_id
+}
+
+resource "aws_vpc_security_group_ingress_rule" "vcs_gateway_service_allow_from_drain" {
+  count = var.vcs_gateway_service_security_group_id != null ? 1 : 0
+
+  security_group_id = var.vcs_gateway_service_security_group_id
+
+  description                  = "(HTTP) Allow the drain to connect to the VCS gateway"
+  from_port                    = var.vcs_gateway_internal_port
+  to_port                      = var.vcs_gateway_internal_port
+  ip_protocol                  = "tcp"
+  referenced_security_group_id = var.drain_security_group_id
+}

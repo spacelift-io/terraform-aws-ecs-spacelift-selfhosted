@@ -148,6 +148,12 @@ locals {
         name  = "MESSAGE_QUEUE_SQS_WEBHOOKS_URL"
         value = var.sqs_queues.webhooks_url
       }
+    ] : [],
+    var.vcs_gateway_domain != null ? [
+      {
+        name  = "VCS_GATEWAY_ENDPOINT"
+        value = "${var.vcs_gateway_domain}:443"
+      }
     ] : []
   )
 }
@@ -186,4 +192,18 @@ resource "aws_ecs_task_definition" "scheduler" {
   execution_role_arn       = var.execution_role_arn != null ? var.execution_role_arn : aws_iam_role.execution[0].arn
   task_role_arn            = var.scheduler_role_arn != null ? var.scheduler_role_arn : aws_iam_role.scheduler[0].arn
   container_definitions    = coalesce(var.scheduler_container_definition, local.default_scheduler_container_definition)
+}
+
+resource "aws_ecs_task_definition" "vcs_gateway" {
+  count = var.vcs_gateway_security_group_id != null ? 1 : 0
+
+  family = "vcs-gateway-${var.suffix}"
+
+  network_mode             = "awsvpc"
+  requires_compatibilities = ["FARGATE"]
+  cpu                      = var.vcs_gateway_cpu
+  memory                   = var.vcs_gateway_memory
+  execution_role_arn       = var.execution_role_arn != null ? var.execution_role_arn : aws_iam_role.execution[0].arn
+  task_role_arn            = aws_iam_role.vcs_gateway[0].arn
+  container_definitions    = coalesce(var.vcs_gateway_container_definition, local.default_vcs_gateway_container_definition)
 }

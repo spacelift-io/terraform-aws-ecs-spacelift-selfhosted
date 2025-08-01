@@ -7,6 +7,8 @@ locals {
   mqtt_broker_type     = var.mqtt_broker_type
   mqtt_broker_endpoint = var.mqtt_broker_type == "iotcore" ? coalesce(var.iot_endpoint, data.aws_iot_endpoint.iot[0].endpoint_address) : var.mqtt_broker_endpoint
 
+  # deploy_vcs_gateway = var.vcs_gateway_certificate_arn != null && var.vcs_gateway_security_group_id != null && var.vcs_gateway_domain != null
+
   sqs_queues = var.sqs_queues != null ? {
     deadletter      = data.aws_sqs_queue.deadletter[0].arn
     deadletter_fifo = data.aws_sqs_queue.deadletter_fifo[0].arn
@@ -38,11 +40,21 @@ module "lb" {
   suffix = local.suffix
   vpc_id = var.vpc_id
 
+  drain_security_group_id = var.drain_security_group_id
+
   server_port               = local.server_port
   server_lb_internal        = var.server_lb_internal
   server_lb_subnets         = var.server_lb_subnets
   server_lb_certificate_arn = var.server_lb_certificate_arn
   server_security_group_id  = var.server_security_group_id
+
+  vcs_gateway_external_port             = var.vcs_gateway_external_port
+  vcs_gateway_internal_port             = var.vcs_gateway_internal_port
+  vcs_gateway_internal                  = var.vcs_gateway_internal
+  vcs_gateway_lb_subnets                = var.vcs_gateway_lb_subnets
+  vcs_gateway_certificate_arn           = var.vcs_gateway_certificate_arn
+  vcs_gateway_service_security_group_id = var.vcs_gateway_security_group_id
+
 
   mqtt_port        = local.mqtt_port
   mqtt_lb_internal = var.mqtt_lb_internal
@@ -136,6 +148,17 @@ module "ecs" {
   server_security_group       = var.server_security_group_id
   server_target_group_arn     = module.lb.server_target_group_arn
   server_container_definition = var.server_container_definition
+
+  vcs_gateway_cpu                  = var.vcs_gateway_cpu
+  vcs_gateway_desired_count        = var.vcs_gateway_desired_count
+  vcs_gateway_domain               = var.vcs_gateway_domain
+  vcs_gateway_external_port        = var.vcs_gateway_external_port
+  vcs_gateway_internal_port        = var.vcs_gateway_internal_port
+  vcs_gateway_log_configuration    = var.vcs_gateway_log_configuration
+  vcs_gateway_memory               = var.vcs_gateway_memory
+  vcs_gateway_security_group_id    = var.vcs_gateway_security_group_id
+  vcs_gateway_target_group_arn     = module.lb.vcs_gateway_target_group_arn
+  vcs_gateway_container_definition = var.vcs_gateway_container_definition
 
   ecs_service_az_rebalancing_enabled    = var.ecs_service_az_rebalancing_enabled
   additional_env_vars                   = var.additional_env_vars

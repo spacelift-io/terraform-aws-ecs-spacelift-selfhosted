@@ -59,6 +59,60 @@ variable "drain_desired_count" {
   description = "The desired count of the drain service."
 }
 
+variable "vcs_gateway_domain" {
+  type        = string
+  description = "The domain of the VCS Gateway service. This should be the domain name without the protocol, for example vcs-gateway.example.com, not https://vcs-gateway.example.com."
+  validation {
+    condition     = var.vcs_gateway_domain == null || (!startswith(var.vcs_gateway_domain, "http://") && !startswith(var.vcs_gateway_domain, "https://"))
+    error_message = "vcs_gateway_domain should not include a protocol ('http://' or 'https://')"
+  }
+}
+
+variable "vcs_gateway_security_group_id" {
+  type        = string
+  description = "The security group ID for the VCS gateway service."
+}
+
+variable "vcs_gateway_desired_count" {
+  type        = number
+  description = "The desired count of the VCS gateway service."
+}
+
+variable "vcs_gateway_external_port" {
+  type        = number
+  description = "The external port for the VCS gateway service. This is the port that remote agents will connect to."
+}
+
+variable "vcs_gateway_internal_port" {
+  type        = number
+  description = "The internal port for the VCS gateway service. This is the port that the VCS gateway will listen on internally."
+}
+
+variable "vcs_gateway_target_group_arn" {
+  type        = string
+  description = "The ARN of the target group for the VCS gateway service."
+}
+
+variable "vcs_gateway_log_configuration" {
+  type        = any
+  description = "The log configuration for the VCS gateway service. See https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_LogConfiguration.html for the definition."
+}
+
+variable "vcs_gateway_container_definition" {
+  type        = string
+  description = "The default container definition for the VCS gateway service. If empty, a default container definition will be used."
+}
+
+variable "vcs_gateway_cpu" {
+  type        = number
+  description = "The CPU units to allocate to the VCS gateway service."
+}
+
+variable "vcs_gateway_memory" {
+  type        = number
+  description = "The memory to allocate to the VCS gateway service."
+}
+
 variable "scheduler_container_definition" {
   type        = string
   description = "The default container definition for the scheduler service. If empty, a default container definition will be used."
