@@ -337,6 +337,82 @@ variable "server_role_arn" {
   default     = null
 }
 
+variable "vcs_gateway_domain" {
+  type        = string
+  description = "The domain of the VCS Gateway service. This should be the domain name without the protocol, for example vcs-gateway.example.com, not https://vcs-gateway.example.com."
+  default     = null
+  validation {
+    condition     = var.vcs_gateway_domain == null || (!startswith(var.vcs_gateway_domain, "http://") && !startswith(var.vcs_gateway_domain, "https://"))
+    error_message = "vcs_gateway_domain should not include a protocol ('http://' or 'https://')"
+  }
+}
+
+variable "vcs_gateway_log_configuration" {
+  type        = any
+  description = "The log configuration for the VCS Gateway service. See https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_LogConfiguration.html for the definition."
+  default     = null
+}
+
+variable "vcs_gateway_desired_count" {
+  type        = number
+  description = "The desired count of the VCS gateway service. Defaults to 3 (one per availability zone)."
+  default     = 3
+}
+
+variable "vcs_gateway_cpu" {
+  type        = number
+  description = "The CPU units to allocate to the VCS gateway service."
+  default     = 1024
+}
+
+variable "vcs_gateway_container_definition" {
+  type        = string
+  description = "The container definition for the VCS gateway service. If empty, a default container definition will be used."
+  default     = null
+}
+
+variable "vcs_gateway_memory" {
+  type        = number
+  description = "The memory to allocate to the VCS gateway service."
+  default     = 2048
+}
+
+variable "vcs_gateway_security_group_id" {
+  type        = string
+  description = "The security group ID to use for the VCS gateway service."
+  default     = null
+}
+
+variable "vcs_gateway_external_port" {
+  type        = number
+  description = "The external port for the VCS gateway load balancer used by the gRPC listener. This is used by the remote VCS Agents that connect to the VCS Gateway."
+  default     = 1984
+}
+
+variable "vcs_gateway_internal_port" {
+  type        = number
+  description = "The port for the VCS gateway load balancer used by the internal services (server and drain)."
+  default     = 1985
+}
+
+variable "vcs_gateway_internal" {
+  type        = bool
+  description = "Whether the VCS gateway load balancer should be internal or internet-facing. Defaults to false (internet-facing)."
+  default     = false
+}
+
+variable "vcs_gateway_lb_subnets" {
+  type        = list(string)
+  description = "The subnets to deploy the VCS gateway load balancer in. If vcs_gateway_internal is true provide the private subnets, otherwise the public ones."
+  default     = []
+}
+
+variable "vcs_gateway_certificate_arn" {
+  type        = string
+  description = "The ARN of the ACM certificate to use for the VCS gateway load balancer."
+  default     = null
+}
+
 variable "observability_vendor" {
   type        = string
   description = "The observability vendor to use for metrics and logs."

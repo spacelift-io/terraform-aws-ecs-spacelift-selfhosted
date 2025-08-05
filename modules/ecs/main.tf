@@ -108,3 +108,36 @@ resource "aws_ecs_service" "scheduler" {
     subnets          = var.subnets
   }
 }
+
+resource "aws_ecs_service" "vcs_gateway" {
+  count = var.vcs_gateway_security_group_id != null ? 1 : 0
+
+  name    = "vcs-gateway"
+  cluster = aws_ecs_cluster.cluster.id
+
+  desired_count   = var.vcs_gateway_desired_count
+  task_definition = aws_ecs_task_definition.vcs_gateway[0].arn
+
+  deployment_minimum_healthy_percent = 100
+  deployment_maximum_percent         = 200
+  availability_zone_rebalancing      = var.ecs_service_az_rebalancing_enabled ? "ENABLED" : "DISABLED"
+  wait_for_steady_state              = true
+
+  capacity_provider_strategy {
+    base              = 1
+    capacity_provider = "FARGATE"
+    weight            = 100
+  }
+
+  network_configuration {
+    assign_public_ip = false
+    security_groups  = [var.vcs_gateway_security_group_id]
+    subnets          = var.subnets
+  }
+
+  load_balancer {
+    target_group_arn = var.vcs_gateway_target_group_arn
+    container_name   = "vcs-gateway"
+    container_port   = var.vcs_gateway_external_port
+  }
+}

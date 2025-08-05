@@ -4,6 +4,10 @@ This module creates an ECS cluster with all the necessary resources to run Space
 
 This module is closely tied to the [terraform-aws-spacelift-selfhosted](https://github.com/spacelift-io/terraform-aws-spacelift-selfhosted) module, which contains the necessary surrounding infrastructure.
 
+## Module registries
+
+The module is also available [on the OpenTofu registry](https://search.opentofu.org/module/spacelift-io/ecs-spacelift-selfhosted/aws/latest) where you can browse the input and output variables.
+
 ## State storage
 
 Check out the [Terraform](https://developer.hashicorp.com/terraform/language/backend) or the [OpenTofu](https://opentofu.org/docs/language/settings/backends/configuration/) backend documentation for more information on how to configure the state storage.
@@ -30,7 +34,7 @@ module "spacelift_infra" {
 }
 
 module "spacelift_services" {
-  source = "github.com/spacelift-io/terraform-aws-ecs-spacelift-selfhosted?ref=v1.2.0"
+  source = "github.com/spacelift-io/terraform-aws-ecs-spacelift-selfhosted?ref=v1.3.0"
 
   region               = local.region
   unique_suffix        = module.spacelift_infra.unique_suffix
@@ -110,7 +114,7 @@ You can pass in a log configuration for each service. See [the official document
 
 ```hcl
 module "spacelift_services" {
-  source = "github.com/spacelift-io/terraform-aws-ecs-spacelift-selfhosted?ref=v1.2.0"
+  source = "github.com/spacelift-io/terraform-aws-ecs-spacelift-selfhosted?ref=v1.3.0"
 
   server_log_configuration = {
     logDriver : "awslogs",
@@ -156,7 +160,7 @@ module "spacelift_services" {
 
 ```hcl
 module "spacelift_services" {
-  source = "github.com/spacelift-io/terraform-aws-ecs-spacelift-selfhosted?ref=v1.2.0"
+  source = "github.com/spacelift-io/terraform-aws-ecs-spacelift-selfhosted?ref=v1.3.0"
 
   execution_role_arn = aws_iam_role.execution_role.arn
   server_role_arn    = aws_iam_role.spacelift_server_role.arn
@@ -187,9 +191,28 @@ resource "aws_iam_role" "spacelift_scheduler_role" {
 }
 ```
 
-## Module registries
+### Deploy VCS Gateway service
 
-The module is also available [on the OpenTofu registry](https://search.opentofu.org/module/spacelift-io/ecs-spacelift-selfhosted/aws/latest) where you can browse the input and output variables.
+If you'd like to use [VCS Agent Pools](https://docs.spacelift.io/concepts/vcs-agent-pools.html), you'll need to deploy the VCS Gateway service. The service is responsible for the communication between the VCS Agents and the Spacelift backend.
+
+You will need to create a DNS record for it, then pass the following configuration to the module:
+
+```hcl
+module "spacelift_services" {
+  source = "github.com/spacelift-io/terraform-aws-ecs-spacelift-selfhosted?ref=v1.3.0"
+
+  vcs_gateway_domain = "vcs-gateway.mycorp.io" # The DNS record for the VCS Gateway service, without protocol.
+  vcs_gateway_security_group_id = module.spacelift_infra.vcs_gateway_security_group_id
+  vcs_gateway_certificate_arn = "<VCS Gateway certificate ARN>" # Note that this certificate MUST be successfully issued. It cannot be attached to the load balancer in a pending state.
+  vcs_gateway_lb_subnets = module.spacelift_infra.public_subnet_ids # The subnets for the load balancer. Make these are public if the LB is internet-facing (default). The LB scheme can be modified with the `vcs_gateway_internal` variable.
+
+  # Further configuration removed for brevity
+}
+```
+
+This will create an Application Load Balancer and a new ECS service. The ECS service exposes a gRPC endpoint that [VCS Agents](https://github.com/spacelift-io/vcs-agent) will connect to.
+
+Once the service is successfully deployed, don't forget to add [the required environment variables](https://docs.spacelift.io/concepts/vcs-agent-pools.html#private-workers) to the private workers.
 
 ## Additional Configuration Options
 
