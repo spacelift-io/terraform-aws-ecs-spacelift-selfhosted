@@ -82,7 +82,9 @@ module "ecs" {
   launcher_image     = var.launcher_image
   launcher_image_tag = var.launcher_image_tag
 
-  license_token = var.license_token
+  license_token            = var.license_token
+  license_token_wo         = var.license_token_wo
+  license_token_wo_version = var.license_token_wo_version
 
   server_port                  = local.server_port
   mqtt_broker_port             = local.mqtt_port

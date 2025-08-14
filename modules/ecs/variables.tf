@@ -373,6 +373,18 @@ variable "license_token" {
   sensitive   = true
 }
 
+variable "license_token_wo" {
+  type        = string
+  description = "The license token for selfhosted, issued by Spacelift." # TODO
+  sensitive   = true
+  ephemeral   = true
+}
+
+variable "license_token_wo_version" {
+  type        = number
+  description = "The license token for selfhosted, issued by Spacelift." # TODO
+}
+
 variable "observability_vendor" {
   type        = string
   description = "The observability vendor to use for metrics and logs."
