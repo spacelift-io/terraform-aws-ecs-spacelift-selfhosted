@@ -2,6 +2,10 @@ output "server_lb_dns" {
   value = aws_lb.server.dns_name
 }
 
+output "server_lb_arn" {
+  value = aws_lb.server.arn
+}
+
 output "mqtt_lb_dns" {
   value = var.mqtt_broker_type == "builtin" ? aws_lb.mqtt[0].dns_name : null
 }

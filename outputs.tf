@@ -3,6 +3,11 @@ output "server_lb_dns_name" {
   description = "The DNS name of the server load balancer"
 }
 
+output "server_lb_arn" {
+  value       = module.lb.server_lb_arn
+  description = "The ARN of the server load balancer"
+}
+
 output "mqtt_lb_dns_name" {
   value       = module.lb.mqtt_lb_dns
   description = "The DNS name of the mqtt load balancer"
