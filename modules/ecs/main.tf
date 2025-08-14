@@ -57,6 +57,15 @@ resource "aws_ecs_service" "server" {
       container_port   = var.mqtt_broker_port
     }
   }
+
+  dynamic "load_balancer" {
+    for_each = toset(var.byo_server_target_group_arns)
+    content {
+      target_group_arn = load_balancer.value
+      container_name   = "server"
+      container_port   = var.server_port
+    }
+  }
 }
 
 resource "aws_ecs_service" "drain" {

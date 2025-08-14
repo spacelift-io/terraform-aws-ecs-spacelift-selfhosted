@@ -337,6 +337,12 @@ variable "server_role_arn" {
   default     = null
 }
 
+variable "byo_server_target_group_arns" {
+  type        = list(string)
+  description = "The target groups ARNs of the BYO load balancer for server service."
+  default     = []
+}
+
 variable "vcs_gateway_domain" {
   type        = string
   description = "The domain of the VCS Gateway service. This should be the domain name without the protocol, for example vcs-gateway.example.com, not https://vcs-gateway.example.com."
