@@ -110,6 +110,7 @@ variable "launcher_image_tag" {
 variable "license_token" {
   type        = string
   description = "The license token for selfhosted, issued by Spacelift."
+  sensitive   = true
 }
 
 variable "database_url" {
