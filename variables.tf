@@ -339,7 +339,7 @@ variable "server_role_arn" {
 
 variable "byo_server_target_group_arns" {
   type        = list(string)
-  description = "The target groups ARNs of the BYO load balancer for server service."
+  description = "The ARNs of the server service BYO target groups. This makes server service register into additional target group(s), which can be used with custom load balancers and thus allow more flexible routing"
   default     = []
 }
 
