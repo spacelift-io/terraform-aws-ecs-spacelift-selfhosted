@@ -89,6 +89,7 @@ module "ecs" {
   mqtt_broker_type             = local.mqtt_broker_type
   mqtt_broker_endpoint         = local.mqtt_broker_endpoint
   mqtt_server_target_group_arn = module.lb.mqtt_target_group_arn
+  byo_server_target_group_arns = var.byo_server_target_group_arns
 
   database_url           = var.database_url
   database_read_only_url = var.database_read_only_url

@@ -203,6 +203,12 @@ variable "mqtt_server_target_group_arn" {
   description = "The ARN of the MQTT server target group."
 }
 
+variable "byo_server_target_group_arns" {
+  type        = list(string)
+  description = "The ARNs of the server service BYO target groups. This makes server service register into additional target group(s), which can be used with custom load balancers and thus allow more flexible routing"
+  default     = []
+}
+
 variable "server_port" {
   type        = number
   description = "The port the server service listens on."

@@ -337,6 +337,12 @@ variable "server_role_arn" {
   default     = null
 }
 
+variable "byo_server_target_group_arns" {
+  type        = list(string)
+  description = "The ARNs of the server service BYO target groups. This makes server service register into additional target group(s), which can be used with custom load balancers and thus allow more flexible routing"
+  default     = []
+}
+
 variable "vcs_gateway_domain" {
   type        = string
   description = "The domain of the VCS Gateway service. This should be the domain name without the protocol, for example vcs-gateway.example.com, not https://vcs-gateway.example.com."
