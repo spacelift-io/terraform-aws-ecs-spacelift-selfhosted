@@ -18,6 +18,11 @@ output "vcs_gateway_lb_dns_name" {
   description = "The DNS name of the VCS gateway load balancer"
 }
 
+output "ecs_cluster_name" {
+  value       = module.ecs.ecs_cluster_name
+  description = "The name of the ECS cluster"
+}
+
 output "server_service_name" {
   value       = module.ecs.server_service_name
   description = "The name of the server ECS service"
