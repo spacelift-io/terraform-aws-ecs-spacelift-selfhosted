@@ -6,6 +6,10 @@ output "server_lb_arn" {
   value = aws_lb.server.arn
 }
 
+output "server_lb_arn_suffix" {
+  value = aws_lb.server.arn_suffix
+}
+
 output "server_lb_name" {
   value = aws_lb.server.name
 }
@@ -16,6 +20,10 @@ output "mqtt_lb_dns" {
 
 output "mqtt_lb_arn" {
   value = var.mqtt_broker_type == "builtin" ? aws_lb.mqtt[0].arn : null
+}
+
+output "mqtt_lb_arn_suffix" {
+  value = var.mqtt_broker_type == "builtin" ? aws_lb.mqtt[0].arn_suffix : null
 }
 
 output "mqtt_lb_name" {

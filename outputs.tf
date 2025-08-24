@@ -8,6 +8,11 @@ output "server_lb_arn" {
   description = "The ARN of the server load balancer"
 }
 
+output "server_lb_arn_suffix" {
+  value       = module.lb.server_lb_arn_suffix
+  description = "The ARN suffix of the server load balancer for use with CloudWatch"
+}
+
 output "server_lb_name" {
   value       = module.lb.server_lb_name
   description = "The name of the server load balancer"
@@ -21,6 +26,11 @@ output "mqtt_lb_dns_name" {
 output "mqtt_lb_arn" {
   value       = module.lb.mqtt_lb_arn
   description = "The ARN of the mqtt load balancer"
+}
+
+output "mqtt_lb_arn_suffix" {
+  value       = module.lb.mqtt_lb_arn_suffix
+  description = "The ARN suffix of the mqtt load balancer for use with CloudWatch"
 }
 
 output "mqtt_lb_name" {
