@@ -8,14 +8,44 @@ output "server_lb_arn" {
   description = "The ARN of the server load balancer"
 }
 
+output "server_lb_arn_suffix" {
+  value       = module.lb.server_lb_arn_suffix
+  description = "The ARN suffix of the server load balancer for use with CloudWatch"
+}
+
+output "server_lb_name" {
+  value       = module.lb.server_lb_name
+  description = "The name of the server load balancer"
+}
+
 output "mqtt_lb_dns_name" {
   value       = module.lb.mqtt_lb_dns
   description = "The DNS name of the mqtt load balancer"
 }
 
+output "mqtt_lb_arn" {
+  value       = module.lb.mqtt_lb_arn
+  description = "The ARN of the mqtt load balancer"
+}
+
+output "mqtt_lb_arn_suffix" {
+  value       = module.lb.mqtt_lb_arn_suffix
+  description = "The ARN suffix of the mqtt load balancer for use with CloudWatch"
+}
+
+output "mqtt_lb_name" {
+  value       = module.lb.mqtt_lb_name
+  description = "The name of the mqtt load balancer"
+}
+
 output "vcs_gateway_lb_dns_name" {
   value       = module.lb.vcs_gateway_lb_dns
   description = "The DNS name of the VCS gateway load balancer"
+}
+
+output "ecs_cluster_name" {
+  value       = module.ecs.ecs_cluster_name
+  description = "The name of the ECS cluster"
 }
 
 output "server_service_name" {
