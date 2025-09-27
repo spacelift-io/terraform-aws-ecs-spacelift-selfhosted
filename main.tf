@@ -7,8 +7,6 @@ locals {
   mqtt_broker_type     = var.mqtt_broker_type
   mqtt_broker_endpoint = var.mqtt_broker_type == "iotcore" ? coalesce(var.iot_endpoint, data.aws_iot_endpoint.iot[0].endpoint_address) : var.mqtt_broker_endpoint
 
-  # deploy_vcs_gateway = var.vcs_gateway_certificate_arn != null && var.vcs_gateway_security_group_id != null && var.vcs_gateway_domain != null
-
   sqs_queues = var.sqs_queues != null ? {
     deadletter      = data.aws_sqs_queue.deadletter[0].arn
     deadletter_fifo = data.aws_sqs_queue.deadletter_fifo[0].arn
