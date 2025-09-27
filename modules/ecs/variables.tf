@@ -62,10 +62,6 @@ variable "drain_desired_count" {
 variable "vcs_gateway_domain" {
   type        = string
   description = "The domain of the VCS Gateway service. This should be the domain name without the protocol, for example vcs-gateway.example.com, not https://vcs-gateway.example.com."
-  validation {
-    condition     = var.vcs_gateway_domain == null || (!startswith(var.vcs_gateway_domain, "http://") && !startswith(var.vcs_gateway_domain, "https://"))
-    error_message = "vcs_gateway_domain should not include a protocol ('http://' or 'https://')"
-  }
 }
 
 variable "vcs_gateway_security_group_id" {
