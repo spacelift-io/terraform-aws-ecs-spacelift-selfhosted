@@ -40,7 +40,9 @@ module "lb" {
 
   drain_security_group_id = var.drain_security_group_id
 
+
   server_port               = local.server_port
+  server_lb_name            = var.server_lb_name
   server_lb_internal        = var.server_lb_internal
   server_lb_subnets         = var.server_lb_subnets
   server_lb_certificate_arn = var.server_lb_certificate_arn
