@@ -23,6 +23,11 @@ variable "server_port" {
   description = "The port the server is listening on."
 }
 
+variable "server_lb_name" {
+  type        = string
+  description = "The name of the server load balancer."
+}
+
 variable "server_lb_subnets" {
   type        = list(string)
   description = "The subnets to deploy the server load balancer in."
