@@ -49,6 +49,7 @@ variable "kms_signing_key_arn" {
 variable "server_lb_name" {
   type        = string
   description = "The name of the server load balancer."
+  default     = null
 }
 
 variable "lb_certificate_arn" {

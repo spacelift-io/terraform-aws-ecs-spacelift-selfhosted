@@ -38,6 +38,7 @@ variable "vpc_id" {
 variable "server_lb_name" {
   type        = string
   description = "The name of the server load balancer."
+  default     = null
 }
 
 variable "server_lb_internal" {
