@@ -87,3 +87,9 @@ variable "vcs_gateway_certificate_arn" {
   type        = string
   description = "The ARN of the certificate to use for the VCS gateway load balancer."
 }
+
+variable "load_balancer_security_group_id" {
+  type        = string
+  default     = null
+  description = "The security group ID to use for the main load balancer. If not provided, a new security group will be created."
+}

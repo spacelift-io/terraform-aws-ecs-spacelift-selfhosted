@@ -1,11 +1,13 @@
 resource "aws_security_group" "load_balancer_sg" {
+  count = var.load_balancer_security_group_id == null ? 1 : 0
+
   name        = "load_balancer_sg_${var.suffix}"
   description = "Allow HTTP and HTTPS traffic to the load balancer"
   vpc_id      = var.vpc_id
 }
 
 resource "aws_vpc_security_group_egress_rule" "lb_http_towards_server" {
-  security_group_id = aws_security_group.load_balancer_sg.id
+  security_group_id = local.load_balancer_security_group_id
 
   description                  = "Allow all traffic to the server"
   from_port                    = var.server_port
@@ -17,7 +19,7 @@ resource "aws_vpc_security_group_egress_rule" "lb_http_towards_server" {
 resource "aws_vpc_security_group_egress_rule" "lb_mqtt_towards_server" {
   count = var.mqtt_broker_type == "builtin" ? 1 : 0
 
-  security_group_id = aws_security_group.load_balancer_sg.id
+  security_group_id = local.load_balancer_security_group_id
 
   description                  = "Allow all traffic to the server"
   from_port                    = var.mqtt_port
@@ -27,7 +29,7 @@ resource "aws_vpc_security_group_egress_rule" "lb_mqtt_towards_server" {
 }
 
 resource "aws_vpc_security_group_ingress_rule" "tls" {
-  security_group_id = aws_security_group.load_balancer_sg.id
+  security_group_id = local.load_balancer_security_group_id
 
   description = "Accept HTTP connections on port 443"
   from_port   = 443
@@ -39,7 +41,7 @@ resource "aws_vpc_security_group_ingress_rule" "tls" {
 resource "aws_vpc_security_group_ingress_rule" "mqtt" {
   count = var.mqtt_broker_type == "builtin" ? 1 : 0
 
-  security_group_id = aws_security_group.load_balancer_sg.id
+  security_group_id = local.load_balancer_security_group_id
 
   description = "Accept TLS connections on port 1984 for built in MQTT server"
   from_port   = var.mqtt_port
@@ -55,7 +57,7 @@ resource "aws_vpc_security_group_ingress_rule" "http_lb_to_server" {
   from_port                    = var.server_port
   to_port                      = var.server_port
   ip_protocol                  = "tcp"
-  referenced_security_group_id = aws_security_group.load_balancer_sg.id
+  referenced_security_group_id = local.load_balancer_security_group_id
 }
 
 resource "aws_vpc_security_group_ingress_rule" "mqtt_lb_to_server" {
@@ -67,7 +69,7 @@ resource "aws_vpc_security_group_ingress_rule" "mqtt_lb_to_server" {
   from_port                    = var.mqtt_port
   to_port                      = var.mqtt_port
   ip_protocol                  = "tcp"
-  referenced_security_group_id = aws_security_group.load_balancer_sg.id
+  referenced_security_group_id = local.load_balancer_security_group_id
 }
 
 resource "aws_security_group" "vcs_gateway_lb_sg" {

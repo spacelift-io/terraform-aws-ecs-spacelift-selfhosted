@@ -1,7 +1,7 @@
 resource "aws_lb" "server" {
-  name               = "server-lb-${var.suffix}"
+  name               = "spacelift-server-lb-${var.suffix}"
   load_balancer_type = "application"
-  security_groups    = [aws_security_group.load_balancer_sg.id]
+  security_groups    = [local.load_balancer_security_group_id]
   subnets            = var.server_lb_subnets
   internal           = var.server_lb_internal
 }
