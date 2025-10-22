@@ -45,3 +45,8 @@ output "vcs_gateway_target_group_arn" {
 output "vcs_gateway_lb_dns" {
   value = var.vcs_gateway_service_security_group_id != null ? aws_lb.vcs_gateway[0].dns_name : null
 }
+
+output "load_balancer_security_group_id" {
+  value       = local.load_balancer_security_group_id
+  description = "The security group ID used by the main load balancer (either provided or created)"
+}

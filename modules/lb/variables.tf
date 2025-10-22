@@ -23,6 +23,12 @@ variable "server_port" {
   description = "The port the server is listening on."
 }
 
+variable "server_lb_name" {
+  type        = string
+  description = "The name of the server load balancer."
+  default     = null
+}
+
 variable "server_lb_subnets" {
   type        = list(string)
   description = "The subnets to deploy the server load balancer in."
@@ -86,4 +92,10 @@ variable "vcs_gateway_lb_subnets" {
 variable "vcs_gateway_certificate_arn" {
   type        = string
   description = "The ARN of the certificate to use for the VCS gateway load balancer."
+}
+
+variable "load_balancer_security_group_id" {
+  type        = string
+  default     = null
+  description = "The security group ID to use for the main load balancer. If not provided, a new security group will be created."
 }

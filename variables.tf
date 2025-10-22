@@ -35,6 +35,12 @@ variable "vpc_id" {
   description = "The VPC ID to deploy the load balancers in."
 }
 
+variable "server_lb_name" {
+  type        = string
+  description = "The name of the server load balancer."
+  default     = null
+}
+
 variable "server_lb_internal" {
   type        = bool
   description = "Whether the server load balancer should be internal or internet-facing. It's false (internet-facing) by default."

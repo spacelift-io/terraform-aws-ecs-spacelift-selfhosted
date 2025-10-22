@@ -35,6 +35,7 @@ module "this" {
   vpc_id      = var.vpc_id
   ecs_subnets = var.private_subnet_ids
 
+  server_lb_name            = var.server_lb_name
   server_lb_subnets         = var.public_subnet_ids
   server_security_group_id  = var.server_security_group_id
   server_lb_certificate_arn = var.lb_certificate_arn

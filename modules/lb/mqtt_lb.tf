@@ -1,7 +1,7 @@
 resource "aws_lb" "mqtt" {
   count              = var.mqtt_broker_type == "builtin" ? 1 : 0
   name               = "spacelift-mqtt-${var.suffix}"
-  security_groups    = [aws_security_group.load_balancer_sg.id]
+  security_groups    = [local.load_balancer_security_group_id]
   subnets            = var.mqtt_lb_subnets
   load_balancer_type = "network"
   internal           = var.mqtt_lb_internal
