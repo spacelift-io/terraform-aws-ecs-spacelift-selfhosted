@@ -1,5 +1,5 @@
 resource "aws_lb" "server" {
-  name               = coalesce(var.server_lb_name, "spacelift-server-lb-${var.suffix}")
+  name               = coalesce(var.server_lb_name, "server-lb-${var.suffix}")
   load_balancer_type = "application"
   security_groups    = [local.load_balancer_security_group_id]
   subnets            = var.server_lb_subnets
