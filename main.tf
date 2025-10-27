@@ -48,6 +48,8 @@ module "lb" {
   server_lb_certificate_arn = var.server_lb_certificate_arn
   server_security_group_id  = var.server_security_group_id
 
+  load_balancer_security_group_id = var.load_balancer_security_group_id
+
   vcs_gateway_external_port             = var.vcs_gateway_external_port
   vcs_gateway_internal_port             = var.vcs_gateway_internal_port
   vcs_gateway_internal                  = var.vcs_gateway_internal

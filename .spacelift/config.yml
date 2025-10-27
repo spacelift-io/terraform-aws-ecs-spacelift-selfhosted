@@ -1,5 +1,5 @@
 version: 2
-module_version: "1.0.2"
+module_version: "1.5.2"
 
 tests:
   - name: Basic example
