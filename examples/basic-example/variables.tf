@@ -71,3 +71,9 @@ variable "ecr_backend_repository_url" {
 variable "ecr_launcher_repository_url" {
   type = string
 }
+
+variable "load_balancer_security_group_id" {
+  type        = string
+  default     = null
+  description = "The security group ID to use for the main load balancer. If not provided, a new security group will be created."
+}

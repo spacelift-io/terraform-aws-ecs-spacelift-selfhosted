@@ -500,3 +500,9 @@ variable "mqtt_broker_type" {
     error_message = "mqtt_broker_type must be either 'builtin' or 'iotcore'"
   }
 }
+
+variable "load_balancer_security_group_id" {
+  type        = string
+  default     = null
+  description = "The security group ID to use for the main load balancer. If not provided, a new security group will be created."
+}

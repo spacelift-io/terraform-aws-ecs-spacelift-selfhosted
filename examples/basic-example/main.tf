@@ -35,11 +35,12 @@ module "this" {
   vpc_id      = var.vpc_id
   ecs_subnets = var.private_subnet_ids
 
-  server_lb_name            = var.server_lb_name
-  server_lb_subnets         = var.public_subnet_ids
-  server_security_group_id  = var.server_security_group_id
-  server_lb_certificate_arn = var.lb_certificate_arn
-  server_desired_count      = 0
+  server_lb_name                  = var.server_lb_name
+  server_lb_subnets               = var.public_subnet_ids
+  server_security_group_id        = var.server_security_group_id
+  load_balancer_security_group_id = var.load_balancer_security_group_id
+  server_lb_certificate_arn       = var.lb_certificate_arn
+  server_desired_count            = 0
 
   drain_security_group_id = var.drain_security_group_id
   drain_desired_count     = 0
