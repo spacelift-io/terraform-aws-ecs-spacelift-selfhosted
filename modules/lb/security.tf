@@ -7,6 +7,7 @@ resource "aws_security_group" "load_balancer_sg" {
 }
 
 resource "aws_vpc_security_group_egress_rule" "lb_http_towards_server" {
+  count             = var.load_balancer_security_group_id == null ? 1 : 0
   security_group_id = local.load_balancer_security_group_id
 
   description                  = "Allow all traffic to the server"
@@ -29,6 +30,7 @@ resource "aws_vpc_security_group_egress_rule" "lb_mqtt_towards_server" {
 }
 
 resource "aws_vpc_security_group_ingress_rule" "tls" {
+  count             = var.load_balancer_security_group_id == null ? 1 : 0
   security_group_id = local.load_balancer_security_group_id
 
   description = "Accept HTTP connections on port 443"
@@ -51,6 +53,7 @@ resource "aws_vpc_security_group_ingress_rule" "mqtt" {
 }
 
 resource "aws_vpc_security_group_ingress_rule" "http_lb_to_server" {
+  count             = var.load_balancer_security_group_id == null ? 1 : 0
   security_group_id = var.server_security_group_id
 
   description                  = "Allow http connections from the load balancer"
