@@ -115,14 +115,14 @@ variable "launcher_image_tag" {
 
 variable "license_token" {
   type        = string
-  description = "The license token for selfhosted, issued by Spacelift. This cannot be combined with license_token_wo."
+  description = "The license token for selfhosted, issued by Spacelift. Prefer license_token_wo/license_token_wo_version instead, as those don't store the license token in the state file."
   sensitive   = true
   default     = null
 }
 
 variable "license_token_wo" {
   type        = string
-  description = "The license token for selfhosted, issued by Spacelift. Saved using write-only attribute. This cannot be combined with license_token."
+  description = "The license token for selfhosted, issued by Spacelift. Saved using write-only attribute. This cannot be combined with license_token. When defined, you must also set license_token_wo_version."
   sensitive   = true
   ephemeral   = true
   default     = null
@@ -130,7 +130,7 @@ variable "license_token_wo" {
 
 variable "license_token_wo_version" {
   type        = number
-  description = "The license token for selfhosted, issued by Spacelift. This is required if license_token_wo is set."
+  description = "Mandatory when license_token_wo is set. Increment this value when an update to license_token_wo is required."
   default     = null
 }
 

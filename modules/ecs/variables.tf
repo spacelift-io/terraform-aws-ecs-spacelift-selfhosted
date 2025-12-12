@@ -371,20 +371,20 @@ variable "database_read_only_url" {
 
 variable "license_token" {
   type        = string
-  description = "The license token for selfhosted, issued by Spacelift."
+  description = "The license token for selfhosted, issued by Spacelift. Prefer license_token_wo/license_token_wo_version instead, as those don't store the license token in the state file."
   sensitive   = true
 }
 
 variable "license_token_wo" {
   type        = string
-  description = "The license token for selfhosted, issued by Spacelift." # TODO
+  description = "The license token for selfhosted, issued by Spacelift."
   sensitive   = true
   ephemeral   = true
 }
 
 variable "license_token_wo_version" {
   type        = number
-  description = "The license token for selfhosted, issued by Spacelift." # TODO
+  description = "The license token for selfhosted, issued by Spacelift. This is required if license_token_wo is set. Increment this value when an update to license_token_wo is required."
 }
 
 variable "observability_vendor" {

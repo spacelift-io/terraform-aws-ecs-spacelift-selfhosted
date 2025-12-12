@@ -27,14 +27,14 @@ locals {
 }
 
 module "spacelift_infra" {
-  source = "github.com/spacelift-io/terraform-aws-spacelift-selfhosted?ref=v1.4.0"
+  source = "github.com/spacelift-io/terraform-aws-spacelift-selfhosted?ref=v1.10.0"
 
   region           = local.region
   website_endpoint = local.website_endpoint
 }
 
 module "spacelift_services" {
-  source = "github.com/spacelift-io/terraform-aws-ecs-spacelift-selfhosted?ref=v1.3.0"
+  source = "github.com/spacelift-io/terraform-aws-ecs-spacelift-selfhosted?ref=v1.6.0"
 
   region               = local.region
   unique_suffix        = module.spacelift_infra.unique_suffix
@@ -42,7 +42,8 @@ module "spacelift_services" {
   server_domain        = local.website_domain
   mqtt_broker_endpoint = local.mqtt_endpoint
 
-  license_token = "<your-license-token-issued-by-Spacelift>"
+  license_token_wo = "<your-license-token-issued-by-Spacelift>" # 'wo' stands for 'write-only', it means that the token will not be stored in the state file
+  license_token_wo_version = "1" # Bump this when rotating the token
 
   encryption_type        = "kms"
   kms_encryption_key_arn = module.spacelift_infra.kms_encryption_key_arn
@@ -114,7 +115,7 @@ You can pass in a log configuration for each service. See [the official document
 
 ```hcl
 module "spacelift_services" {
-  source = "github.com/spacelift-io/terraform-aws-ecs-spacelift-selfhosted?ref=v1.3.0"
+  source = "github.com/spacelift-io/terraform-aws-ecs-spacelift-selfhosted?ref=v1.6.0"
 
   server_log_configuration = {
     logDriver : "awslogs",
@@ -160,7 +161,7 @@ module "spacelift_services" {
 
 ```hcl
 module "spacelift_services" {
-  source = "github.com/spacelift-io/terraform-aws-ecs-spacelift-selfhosted?ref=v1.3.0"
+  source = "github.com/spacelift-io/terraform-aws-ecs-spacelift-selfhosted?ref=v1.6.0"
 
   execution_role_arn = aws_iam_role.execution_role.arn
   server_role_arn    = aws_iam_role.spacelift_server_role.arn
@@ -199,7 +200,7 @@ You will need to create a DNS record for it, then pass the following configurati
 
 ```hcl
 module "spacelift_services" {
-  source = "github.com/spacelift-io/terraform-aws-ecs-spacelift-selfhosted?ref=v1.3.0"
+  source = "github.com/spacelift-io/terraform-aws-ecs-spacelift-selfhosted?ref=v1.6.0"
 
   vcs_gateway_domain = "vcs-gateway.mycorp.io" # The DNS record for the VCS Gateway service, without protocol.
   vcs_gateway_security_group_id = module.spacelift_infra.vcs_gateway_security_group_id
