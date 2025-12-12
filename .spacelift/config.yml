@@ -1,5 +1,5 @@
 version: 2
-module_version: "1.5.3"
+module_version: "1.6.0"
 
 tests:
   - name: Basic example
@@ -22,3 +22,5 @@ tests:
       TF_VAR_ecr_backend_repository_url: "666640173260.dkr.ecr.eu-central-1.amazonaws.com/spacelift-backend-e89fd"
       TF_VAR_ecr_launcher_repository_url: "666640173260.dkr.ecr.eu-central-1.amazonaws.com/spacelift-launcher-e89fd"
       TF_VAR_spacelift_version: "v0.0.1-moduletests"
+      TF_VAR_license_token_wo: "<YOUR_LICENSE_TOKEN_HERE>"
+      TF_VAR_license_token_wo_version: 1
