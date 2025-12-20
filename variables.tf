@@ -115,35 +115,10 @@ variable "launcher_image_tag" {
 
 variable "license_token" {
   type        = string
-  description = "The license token for selfhosted, issued by Spacelift. Prefer license_token_wo/license_token_wo_version instead, as those don't store the license token in the state file."
+  description = "The license token for selfhosted, issued by Spacelift. It'll be stored in Secrets Manager using write-only attribute to prevent storage in state file."
   sensitive   = true
   default     = null
-}
-
-variable "license_token_wo" {
-  type        = string
-  description = "The license token for selfhosted, issued by Spacelift. Saved using write-only attribute. This cannot be combined with license_token. When defined, you must also set license_token_wo_version."
-  sensitive   = true
-  ephemeral   = true
-  default     = null
-}
-
-variable "license_token_wo_version" {
-  type        = number
-  description = "Mandatory when license_token_wo is set. Increment this value when an update to license_token_wo is required."
-  default     = null
-}
-
-variable "database_url" {
-  type        = string
-  description = "The connection string to the database. If not provided, the connection string URL must be passed in as part of the sensitive_env_vars variable."
-  default     = null
-}
-
-variable "database_read_only_url" {
-  type        = string
-  description = "The read-only connection string to the database (ideally a replica). If left empty, the main database URL will be used. Optionally, this can be passed in as part of the sensitive_env_vars variable."
-  default     = null
+  # We don't mark it as 'ephemeral' because we use the sha256 value to calculate it for triggering secret updates.
 }
 
 variable "deliveries_bucket_name" {
@@ -439,7 +414,7 @@ variable "vcs_gateway_certificate_arn" {
 
 variable "observability_vendor" {
   type        = string
-  description = "The observability vendor to use for metrics and logs."
+  description = "The observability vendor to use for metrics and logs. The 'AWS' option is deprecated since OpenTelemetry can send data to XRay as well."
 
   validation {
     condition     = contains(["AWS", "Datadog", "OpenTelemetry", "Disabled"], var.observability_vendor)
@@ -521,4 +496,54 @@ variable "load_balancer_security_group_id" {
   type        = string
   default     = null
   description = "The security group ID to use for the main load balancer. If not provided, a new security group will be created."
+}
+
+variable "enable_datadog_agent_sidecar" {
+  type        = bool
+  description = "Enable Datadog agent sidecar container for APM and metrics collection."
+  default     = false
+}
+
+variable "datadog_api_key" {
+  type        = string
+  description = "Datadog API key. Required if enable_datadog_agent_sidecar is true. It'll be stored in Secrets Manager using write-only attribute to prevent storage in state file."
+  sensitive   = true
+  default     = null
+}
+
+variable "datadog_agent_config" {
+  type = object({
+    image             = optional(string, "public.ecr.aws/datadog/agent:latest")
+    site              = optional(string, "datadoghq.com")
+    tags              = optional(list(string), [])
+    log_configuration = optional(any)
+    additional_env_vars = optional(list(object({
+      name  = string
+      value = string
+    })), [])
+  })
+  description = "Configuration for the Datadog agent sidecar container. Required if enable_datadog_agent_sidecar is true. The agent uses standard ports: 8125 (StatsD) and 8126 (APM traces). Set log_configuration to enable CloudWatch logging for debugging."
+  default     = null
+}
+
+variable "enable_otel_sidecar" {
+  type        = bool
+  description = "Enable OpenTelemetry Collector sidecar for traces and metrics."
+  default     = false
+}
+
+variable "otel_config" {
+  type = object({
+    image = optional(string, "public.ecr.aws/aws-observability/aws-otel-collector:latest")
+    # Available config files: https://github.com/aws-observability/aws-otel-collector/tree/v0.46.0/config/ecs
+    config_file       = optional(string, "/etc/ecs/ecs-default-config.yaml")
+    config_content    = optional(string) # Custom OTEL config content. If provided, takes precedence over config_file and is stored in Secrets Manager.
+    log_configuration = optional(any)
+    additional_env_vars = optional(list(object({
+      name  = string
+      value = string
+    })), [])
+  })
+  description = "Configuration for the OpenTelemetry Collector sidecar. The collector uses standard ports: 2000 (X-Ray UDP), 4317 (OTLP gRPC), and 4318 (OTLP HTTP). Set log_configuration to enable CloudWatch logging for debugging."
+  default     = null
 }

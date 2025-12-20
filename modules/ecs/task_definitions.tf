@@ -3,6 +3,9 @@ locals {
   webhooks_endpoint = "https://${var.server_domain}/webhooks"
   backend_image     = "${var.backend_image}:${var.backend_image_tag}"
 
+  # Determine observability vendor based on enabled sidecars
+  observability_vendor = var.enable_datadog_agent_sidecar ? "Datadog" : (var.enable_otel_sidecar ? "OpenTelemetry" : var.observability_vendor)
+
   shared_envs = concat(
     var.additional_env_vars,
     [
@@ -112,21 +115,9 @@ locals {
       },
       {
         name  = "OBSERVABILITY_VENDOR"
-        value = var.observability_vendor
+        value = local.observability_vendor
       }
     ],
-    var.database_url != null ? [
-      {
-        name  = "DATABASE_URL"
-        value = var.database_url
-      }
-    ] : [],
-    var.database_read_only_url != null ? [
-      {
-        name  = "DATABASE_READ_ONLY_URL"
-        value = var.database_read_only_url
-      }
-    ] : [],
     var.sqs_queues != null ? [
       {
         name  = "MESSAGE_QUEUE_SQS_ASYNC_URL"
@@ -154,8 +145,71 @@ locals {
         name  = "VCS_GATEWAY_ENDPOINT"
         value = "${var.vcs_gateway_domain}:443"
       }
+    ] : [],
+    var.enable_datadog_agent_sidecar ? [
+      {
+        name  = "DD_AGENT_HOST"
+        value = "127.0.0.1"
+      }
+    ] : [],
+    var.enable_otel_sidecar ? [
+      {
+        name  = "OTEL_EXPORTER_OTLP_ENDPOINT"
+        value = "http://localhost:4317"
+      }
     ] : []
   )
+}
+
+module "container_definitions" {
+  source = "./container_definitions"
+
+  # Backend configuration
+  backend_image     = local.backend_image
+  backend_image_tag = var.backend_image_tag
+
+  # Shared environment variables
+  shared_envs = local.shared_envs
+
+  # Service-specific configuration
+  server_port                   = var.server_port
+  mqtt_broker_port              = var.mqtt_broker_port
+  server_log_configuration      = var.server_log_configuration
+  drain_log_configuration       = var.drain_log_configuration
+  scheduler_log_configuration   = var.scheduler_log_configuration
+  vcs_gateway_log_configuration = var.vcs_gateway_log_configuration
+  vcs_gateway_external_port     = var.vcs_gateway_external_port
+  vcs_gateway_internal_port     = var.vcs_gateway_internal_port
+
+  # Authentication
+  admin_username = var.admin_username
+  admin_password = var.admin_password
+
+  # Webhooks
+  webhooks_endpoint = local.webhooks_endpoint
+
+  # Launcher configuration
+  launcher_image                        = var.launcher_image
+  launcher_image_tag                    = var.launcher_image_tag
+  enable_automatic_usage_data_reporting = var.enable_automatic_usage_data_reporting
+
+  # SQS queues
+  sqs_queues = var.sqs_queues
+
+  # Secrets
+  shared_secrets_arn = aws_secretsmanager_secret.shared_secrets.arn
+  sensitive_env_vars = var.sensitive_env_vars
+
+  # AWS configuration
+  aws_region = var.aws_region
+
+  # Datadog sidecar configuration
+  enable_datadog_agent_sidecar = var.enable_datadog_agent_sidecar
+  datadog_agent_config         = var.datadog_agent_config
+
+  # OpenTelemetry sidecar configuration
+  enable_otel_sidecar = var.enable_otel_sidecar
+  otel_config         = var.otel_config
 }
 
 resource "aws_ecs_task_definition" "server" {
@@ -167,7 +221,7 @@ resource "aws_ecs_task_definition" "server" {
   memory                   = var.server_memory
   execution_role_arn       = var.execution_role_arn != null ? var.execution_role_arn : aws_iam_role.execution[0].arn
   task_role_arn            = var.server_role_arn != null ? var.server_role_arn : aws_iam_role.server[0].arn
-  container_definitions    = coalesce(var.server_container_definition, local.default_server_container_definition)
+  container_definitions    = coalesce(var.server_container_definition, module.container_definitions.server_container_definition)
 }
 
 resource "aws_ecs_task_definition" "drain" {
@@ -179,7 +233,7 @@ resource "aws_ecs_task_definition" "drain" {
   memory                   = var.drain_memory
   execution_role_arn       = var.execution_role_arn != null ? var.execution_role_arn : aws_iam_role.execution[0].arn
   task_role_arn            = var.drain_role_arn != null ? var.drain_role_arn : aws_iam_role.drain[0].arn
-  container_definitions    = coalesce(var.drain_container_definitions, local.default_drain_container_definition)
+  container_definitions    = coalesce(var.drain_container_definitions, module.container_definitions.drain_container_definition)
 }
 
 resource "aws_ecs_task_definition" "scheduler" {
@@ -191,7 +245,7 @@ resource "aws_ecs_task_definition" "scheduler" {
   memory                   = var.scheduler_memory
   execution_role_arn       = var.execution_role_arn != null ? var.execution_role_arn : aws_iam_role.execution[0].arn
   task_role_arn            = var.scheduler_role_arn != null ? var.scheduler_role_arn : aws_iam_role.scheduler[0].arn
-  container_definitions    = coalesce(var.scheduler_container_definition, local.default_scheduler_container_definition)
+  container_definitions    = coalesce(var.scheduler_container_definition, module.container_definitions.scheduler_container_definition)
 }
 
 resource "aws_ecs_task_definition" "vcs_gateway" {
@@ -205,5 +259,5 @@ resource "aws_ecs_task_definition" "vcs_gateway" {
   memory                   = var.vcs_gateway_memory
   execution_role_arn       = var.execution_role_arn != null ? var.execution_role_arn : aws_iam_role.execution[0].arn
   task_role_arn            = aws_iam_role.vcs_gateway[0].arn
-  container_definitions    = coalesce(var.vcs_gateway_container_definition, local.default_vcs_gateway_container_definition)
+  container_definitions    = coalesce(var.vcs_gateway_container_definition, module.container_definitions.vcs_gateway_container_definition)
 }
