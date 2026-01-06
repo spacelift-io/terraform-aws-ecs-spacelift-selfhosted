@@ -4,6 +4,73 @@ This module creates an ECS cluster with all the necessary resources to run Space
 
 This module is closely tied to the [terraform-aws-spacelift-selfhosted](https://github.com/spacelift-io/terraform-aws-spacelift-selfhosted) module, which contains the necessary surrounding infrastructure.
 
+> [!IMPORTANT]
+> ## 🔄 Upgrading to v2.0.0 - New features and breaking changes
+>
+> Click below to see the full upgrade guide with breaking changes and new features.
+
+<details>
+<summary><h3>📋 Full v2.0.0 Upgrade Guide</h3></summary>
+
+<br>
+
+Version 2.0.0 adds observability features and simplifies secret management. A few variables have been removed - see below for details.
+
+### ✨ New Features
+
+**Improved Secret Handling**
+- License token is now protected from state file exposure using write-only attributes
+- Secrets are automatically versioned when changed - no manual tracking needed (`license_token_wo_version` removed)
+
+**Observability & Tracing Support**
+
+This module now supports **Datadog** and **OpenTelemetry (OTEL)** sidecar containers for comprehensive application tracing and metrics:
+- **Datadog**: Full APM support with the Datadog agent sidecar
+- **OpenTelemetry**: Flexible OTEL collector sidecar that can be fully customized or configured for AWS X-Ray compatibility
+
+**Important**: AWS X-Ray SDK/Daemon enters maintenance mode on **February 25th, 2026**, with AWS limiting releases to security fixes only. AWS is transitioning to OpenTelemetry as the primary instrumentation standard for application tracing. We recommend using the OpenTelemetry sidecar option for X-Ray integration rather than the legacy X-Ray daemon.
+
+See [examples/with-datadog-tracing](./examples/with-datadog-tracing), [examples/with-xray-tracing](./examples/with-xray-tracing), and [examples/with-otel-tracing](./examples/with-otel-tracing) for complete configuration examples.
+
+### ⚠️ Breaking Changes
+
+**Removed Variables**
+- `database_url` and `database_read_only_url` (already discouraged in v1.x) - use `sensitive_env_vars` instead
+- `license_token_wo` and `license_token_wo_version` - consolidated into single `license_token` variable
+
+**Migration:**
+
+**Database URLs** (if you were still using these variables):
+```hcl
+# Before (v1.x)
+database_url           = "<connection-string>"
+database_read_only_url = "<read-only-connection-string>"
+
+# After (v2.0.0)
+sensitive_env_vars = [
+  {
+    name      = "DATABASE_URL"
+    valueFrom = "${module.spacelift_infra.database_secret_arn}:DATABASE_URL::"
+  },
+  {
+    name      = "DATABASE_READ_ONLY_URL"
+    valueFrom = "${module.spacelift_infra.database_secret_arn}:DATABASE_READ_ONLY_URL::"
+  }
+]
+```
+
+**License Token**:
+```hcl
+# Before (v1.x)
+license_token_wo         = "<your-license-token>"
+license_token_wo_version = 1  # Had to manually increment on rotation
+
+# After (v2.0.0)
+license_token = "<your-license-token>"  # Automatically versioned
+```
+
+</details>
+
 ## Module registries
 
 The module is also available [on the OpenTofu registry](https://search.opentofu.org/module/spacelift-io/ecs-spacelift-selfhosted/aws/latest) where you can browse the input and output variables.
@@ -12,7 +79,8 @@ The module is also available [on the OpenTofu registry](https://search.opentofu.
 
 Check out the [Terraform](https://developer.hashicorp.com/terraform/language/backend) or the [OpenTofu](https://opentofu.org/docs/language/settings/backends/configuration/) backend documentation for more information on how to configure the state storage.
 
-> ⚠️ Do **not** import the state into Spacelift after the installation: that would cause circular dependencies, and in case you accidentally break the Spacelift installation, you wouldn't be able to fix it.
+> [!WARNING]
+> Do **not** import the state into Spacelift after the installation: that would cause circular dependencies, and in case you accidentally break the Spacelift installation, you wouldn't be able to fix it.
 
 ## ✨ Usage
 
@@ -34,7 +102,7 @@ module "spacelift_infra" {
 }
 
 module "spacelift_services" {
-  source = "github.com/spacelift-io/terraform-aws-ecs-spacelift-selfhosted?ref=v1.6.0"
+  source = "github.com/spacelift-io/terraform-aws-ecs-spacelift-selfhosted"
 
   region               = local.region
   unique_suffix        = module.spacelift_infra.unique_suffix
@@ -42,10 +110,9 @@ module "spacelift_services" {
   server_domain        = local.website_domain
   mqtt_broker_endpoint = local.mqtt_endpoint
 
-  license_token_wo = "<your-license-token-issued-by-Spacelift>" # 'wo' stands for 'write-only', it means that the token will not be stored in the state file
-  license_token_wo_version = "1" # Bump this when rotating the token
+  license_token = "<your-license-token-issued-by-Spacelift>"
 
-  encryption_type        = "kms"
+  encryption_type = "kms"
   kms_encryption_key_arn = module.spacelift_infra.kms_encryption_key_arn
   kms_signing_key_arn    = module.spacelift_infra.kms_signing_key_arn
 
@@ -115,7 +182,7 @@ You can pass in a log configuration for each service. See [the official document
 
 ```hcl
 module "spacelift_services" {
-  source = "github.com/spacelift-io/terraform-aws-ecs-spacelift-selfhosted?ref=v1.6.0"
+  source = "github.com/spacelift-io/terraform-aws-ecs-spacelift-selfhosted"
 
   server_log_configuration = {
     logDriver : "awslogs",
@@ -161,7 +228,7 @@ module "spacelift_services" {
 
 ```hcl
 module "spacelift_services" {
-  source = "github.com/spacelift-io/terraform-aws-ecs-spacelift-selfhosted?ref=v1.6.0"
+  source = "github.com/spacelift-io/terraform-aws-ecs-spacelift-selfhosted"
 
   execution_role_arn = aws_iam_role.execution_role.arn
   server_role_arn    = aws_iam_role.spacelift_server_role.arn
@@ -200,7 +267,7 @@ You will need to create a DNS record for it, then pass the following configurati
 
 ```hcl
 module "spacelift_services" {
-  source = "github.com/spacelift-io/terraform-aws-ecs-spacelift-selfhosted?ref=v1.6.0"
+  source = "github.com/spacelift-io/terraform-aws-ecs-spacelift-selfhosted"
 
   vcs_gateway_domain = "vcs-gateway.mycorp.io" # The DNS record for the VCS Gateway service, without protocol.
   vcs_gateway_security_group_id = module.spacelift_infra.vcs_gateway_security_group_id

@@ -84,9 +84,7 @@ module "ecs" {
   launcher_image     = var.launcher_image
   launcher_image_tag = var.launcher_image_tag
 
-  license_token            = var.license_token
-  license_token_wo         = var.license_token_wo
-  license_token_wo_version = var.license_token_wo_version
+  license_token = var.license_token
 
   server_port                  = local.server_port
   mqtt_broker_port             = local.mqtt_port
@@ -94,9 +92,6 @@ module "ecs" {
   mqtt_broker_endpoint         = local.mqtt_broker_endpoint
   mqtt_server_target_group_arn = module.lb.mqtt_target_group_arn
   byo_server_target_group_arns = var.byo_server_target_group_arns
-
-  database_url           = var.database_url
-  database_read_only_url = var.database_read_only_url
 
   deliveries_bucket_arn                = "arn:${data.aws_partition.current.partition}:s3:::${var.deliveries_bucket_name}"
   deliveries_bucket_name               = var.deliveries_bucket_name
@@ -173,4 +168,11 @@ module "ecs" {
   enable_automatic_usage_data_reporting = var.enable_automatic_usage_data_reporting
   sqs_queues                            = local.sqs_queues
   iot_topic                             = local.iot_topic
+
+  # Sidecar configurations
+  enable_datadog_agent_sidecar = var.enable_datadog_agent_sidecar
+  datadog_api_key              = var.datadog_api_key
+  datadog_agent_config         = var.datadog_agent_config
+  enable_otel_sidecar          = var.enable_otel_sidecar
+  otel_config                  = var.otel_config
 }

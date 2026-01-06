@@ -202,7 +202,6 @@ variable "mqtt_server_target_group_arn" {
 variable "byo_server_target_group_arns" {
   type        = list(string)
   description = "The ARNs of the server service BYO target groups. This makes server service register into additional target group(s), which can be used with custom load balancers and thus allow more flexible routing"
-  default     = []
 }
 
 variable "server_port" {
@@ -359,32 +358,10 @@ variable "uploads_bucket_url" {
   description = "The URL of the uploads S3 bucket."
 }
 
-variable "database_url" {
-  type        = string
-  description = "The connection string for the database."
-}
-
-variable "database_read_only_url" {
-  type        = string
-  description = "The read only connection string for the database."
-}
-
 variable "license_token" {
   type        = string
-  description = "The license token for selfhosted, issued by Spacelift. Prefer license_token_wo/license_token_wo_version instead, as those don't store the license token in the state file."
+  description = "The license token for selfhosted, issued by Spacelift. Saved using write-only attribute to prevent storage in state file. Secret versions are automatically managed."
   sensitive   = true
-}
-
-variable "license_token_wo" {
-  type        = string
-  description = "The license token for selfhosted, issued by Spacelift."
-  sensitive   = true
-  ephemeral   = true
-}
-
-variable "license_token_wo_version" {
-  type        = number
-  description = "The license token for selfhosted, issued by Spacelift. This is required if license_token_wo is set. Increment this value when an update to license_token_wo is required."
 }
 
 variable "observability_vendor" {
@@ -489,4 +466,49 @@ variable "sqs_queues" {
 variable "iot_topic" {
   type        = string
   description = "The IoT topic when AWS IoT is used as a message broker."
+}
+
+variable "enable_datadog_agent_sidecar" {
+  type        = bool
+  description = "Enable Datadog agent sidecar container for APM and metrics collection."
+}
+
+variable "datadog_api_key" {
+  type        = string
+  description = "Datadog API key. Required if enable_datadog_agent_sidecar is true."
+  sensitive   = true
+}
+
+variable "datadog_agent_config" {
+  type = object({
+    image             = string
+    site              = optional(string, "datadoghq.com")
+    tags              = optional(list(string), [])
+    log_configuration = optional(any)
+    additional_env_vars = optional(list(object({
+      name  = string
+      value = string
+    })), [])
+  })
+  description = "Configuration for the Datadog agent sidecar container. Required if enable_datadog_agent_sidecar is true. The agent uses standard ports: 8125 (StatsD) and 8126 (APM traces). Set log_configuration to enable CloudWatch logging for debugging."
+}
+
+variable "enable_otel_sidecar" {
+  type        = bool
+  description = "Enable OpenTelemetry Collector sidecar for traces and metrics."
+}
+
+variable "otel_config" {
+  type = object({
+    image = optional(string, "public.ecr.aws/aws-observability/aws-otel-collector:v0.46.0")
+    # Available config files: https://github.com/aws-observability/aws-otel-collector/tree/v0.46.0/config/ecs
+    config_file       = optional(string, "/etc/ecs/ecs-default-config.yaml")
+    config_content    = optional(string) # Custom OTEL config content. If provided, takes precedence over config_file and is stored in Secrets Manager.
+    log_configuration = optional(any)
+    additional_env_vars = optional(list(object({
+      name  = string
+      value = string
+    })), [])
+  })
+  description = "Configuration for the OpenTelemetry Collector sidecar. The collector uses standard ports: 2000 (X-Ray UDP), 4317 (OTLP gRPC), and 4318 (OTLP HTTP). Set log_configuration to enable CloudWatch logging for debugging."
 }
