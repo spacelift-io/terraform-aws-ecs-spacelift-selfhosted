@@ -1,9 +1,16 @@
+data "aws_rds_engine_version" "pgversion" {
+  engine       = "aurora-postgresql"
+  default_only = true
+  latest       = true
+}
+
 module "spacelift" {
   # Since we're using this internally for testing, let's not pin to a specific version.
   source = "github.com/spacelift-io/terraform-aws-spacelift-selfhosted"
 
-  region          = var.aws_region
-  rds_engine_mode = "provisioned"
+  region             = var.aws_region
+  rds_engine_version = data.aws_rds_engine_version.pgversion.version_actual
+  rds_engine_mode    = "provisioned"
   rds_instance_configuration = {
     "primary" : {
       instance_identifier : "primary"
