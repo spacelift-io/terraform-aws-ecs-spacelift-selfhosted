@@ -6,8 +6,7 @@ locals {
   # Determine observability vendor based on enabled sidecars
   observability_vendor = var.enable_datadog_agent_sidecar ? "Datadog" : (var.enable_otel_sidecar ? "OpenTelemetry" : var.observability_vendor)
 
-  shared_envs = concat(
-    var.additional_env_vars,
+  default_envs = concat(
     [
       {
         name  = "AWS_ACCOUNT_ID"
@@ -159,6 +158,11 @@ locals {
       }
     ] : []
   )
+
+  shared_envs = values(merge(
+    { for e in local.default_envs : e.name => e },
+    { for e in var.additional_env_vars : e.name => e },
+  ))
 }
 
 module "container_definitions" {
