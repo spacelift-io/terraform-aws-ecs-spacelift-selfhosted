@@ -39,6 +39,46 @@ variable "drain_log_configuration" {
   description = "Log configuration for drain container"
 }
 
+variable "drain_concurrency_async_jobs" {
+  type        = number
+  description = "Number of concurrent receivers for the async-jobs queue per drain task."
+}
+
+variable "drain_concurrency_async_jobs_fifo" {
+  type        = number
+  description = "Number of concurrent receivers for the async-jobs.fifo queue per drain task."
+}
+
+variable "drain_concurrency_cronjobs" {
+  type        = number
+  description = "Number of concurrent receivers for the cronjobs queue per drain task."
+}
+
+variable "drain_concurrency_dlq" {
+  type        = number
+  description = "Number of concurrent receivers for the DLQ queue per drain task."
+}
+
+variable "drain_concurrency_dlq_fifo" {
+  type        = number
+  description = "Number of concurrent receivers for the DLQ FIFO queue per drain task."
+}
+
+variable "drain_concurrency_events" {
+  type        = number
+  description = "Number of concurrent receivers for the events-inbox queue per drain task."
+}
+
+variable "drain_concurrency_iot" {
+  type        = number
+  description = "Number of concurrent receivers for the IoT queue per drain task."
+}
+
+variable "drain_concurrency_webhooks" {
+  type        = number
+  description = "Number of concurrent receivers for the webhooks queue per drain task."
+}
+
 variable "scheduler_log_configuration" {
   type        = any
   description = "Log configuration for scheduler container"

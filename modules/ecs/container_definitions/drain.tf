@@ -42,6 +42,38 @@ locals {
               {
                 name  = "SPACELIFT_PUBLIC_API"
                 value = var.enable_automatic_usage_data_reporting ? local.spacelift_public_api : ""
+              },
+              {
+                name  = "DRAIN_CONCURRENCY_ASYNC_JOBS"
+                value = tostring(var.drain_concurrency_async_jobs)
+              },
+              {
+                name  = "DRAIN_CONCURRENCY_ASYNC_JOBS_FIFO"
+                value = tostring(var.drain_concurrency_async_jobs_fifo)
+              },
+              {
+                name  = "DRAIN_CONCURRENCY_CRONJOBS"
+                value = tostring(var.drain_concurrency_cronjobs)
+              },
+              {
+                name  = "DRAIN_CONCURRENCY_DLQ"
+                value = tostring(var.drain_concurrency_dlq)
+              },
+              {
+                name  = "DRAIN_CONCURRENCY_DLQ_FIFO"
+                value = tostring(var.drain_concurrency_dlq_fifo)
+              },
+              {
+                name  = "DRAIN_CONCURRENCY_EVENTS"
+                value = tostring(var.drain_concurrency_events)
+              },
+              {
+                name  = "DRAIN_CONCURRENCY_IOT"
+                value = tostring(var.drain_concurrency_iot)
+              },
+              {
+                name  = "DRAIN_CONCURRENCY_WEBHOOKS"
+                value = tostring(var.drain_concurrency_webhooks)
               }
             ],
             var.sqs_queues != null ? [
