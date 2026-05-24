@@ -182,14 +182,7 @@ module "container_definitions" {
   vcs_gateway_internal_port     = var.vcs_gateway_internal_port
 
   # Drain per-queue concurrency
-  drain_concurrency_async_jobs      = var.drain_concurrency_async_jobs
-  drain_concurrency_async_jobs_fifo = var.drain_concurrency_async_jobs_fifo
-  drain_concurrency_cronjobs        = var.drain_concurrency_cronjobs
-  drain_concurrency_dlq             = var.drain_concurrency_dlq
-  drain_concurrency_dlq_fifo        = var.drain_concurrency_dlq_fifo
-  drain_concurrency_events          = var.drain_concurrency_events
-  drain_concurrency_iot             = var.drain_concurrency_iot
-  drain_concurrency_webhooks        = var.drain_concurrency_webhooks
+  drain_concurrency = var.drain_concurrency
 
   # Authentication
   admin_username = var.admin_username
