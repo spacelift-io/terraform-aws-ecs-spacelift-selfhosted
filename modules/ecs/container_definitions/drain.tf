@@ -45,35 +45,35 @@ locals {
               },
               {
                 name  = "DRAIN_CONCURRENCY_ASYNC_JOBS"
-                value = tostring(var.drain_concurrency.async_jobs)
+                value = tostring(var.drain_concurrency_async_jobs)
               },
               {
                 name  = "DRAIN_CONCURRENCY_ASYNC_JOBS_FIFO"
-                value = tostring(var.drain_concurrency.async_jobs_fifo)
+                value = tostring(var.drain_concurrency_async_jobs_fifo)
               },
               {
                 name  = "DRAIN_CONCURRENCY_CRONJOBS"
-                value = tostring(var.drain_concurrency.cronjobs)
+                value = tostring(var.drain_concurrency_cronjobs)
               },
               {
                 name  = "DRAIN_CONCURRENCY_DLQ"
-                value = tostring(var.drain_concurrency.dlq)
+                value = tostring(var.drain_concurrency_dlq)
               },
               {
                 name  = "DRAIN_CONCURRENCY_DLQ_FIFO"
-                value = tostring(var.drain_concurrency.dlq_fifo)
+                value = tostring(var.drain_concurrency_dlq_fifo)
               },
               {
                 name  = "DRAIN_CONCURRENCY_EVENTS"
-                value = tostring(var.drain_concurrency.events)
+                value = tostring(var.drain_concurrency_events)
               },
               {
                 name  = "DRAIN_CONCURRENCY_IOT"
-                value = tostring(var.drain_concurrency.iot)
+                value = tostring(var.drain_concurrency_iot)
               },
               {
                 name  = "DRAIN_CONCURRENCY_WEBHOOKS"
-                value = tostring(var.drain_concurrency.webhooks)
+                value = tostring(var.drain_concurrency_webhooks)
               }
             ],
             var.sqs_queues != null ? [

@@ -131,7 +131,14 @@ module "ecs" {
   drain_security_group        = var.drain_security_group_id
   drain_container_definitions = var.drain_container_definitions
 
-  drain_concurrency = var.drain_concurrency
+  drain_concurrency_async_jobs      = var.drain_concurrency_async_jobs
+  drain_concurrency_async_jobs_fifo = var.drain_concurrency_async_jobs_fifo
+  drain_concurrency_cronjobs        = var.drain_concurrency_cronjobs
+  drain_concurrency_dlq             = var.drain_concurrency_dlq
+  drain_concurrency_dlq_fifo        = var.drain_concurrency_dlq_fifo
+  drain_concurrency_events          = var.drain_concurrency_events
+  drain_concurrency_iot             = var.drain_concurrency_iot
+  drain_concurrency_webhooks        = var.drain_concurrency_webhooks
 
   scheduler_cpu                  = var.scheduler_cpu
   scheduler_desired_count        = var.scheduler_desired_count
