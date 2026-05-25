@@ -269,7 +269,7 @@ variable "drain_concurrency" {
     webhooks        = optional(number, 1)
   })
   default     = {}
-  description = "Per-queue concurrent receivers for the drain task. Defaults to 1 per queue (behaviour-preserving)."
+  description = "Per-queue concurrent receivers for the drain task."
 }
 
 variable "scheduler_container_definition" {
