@@ -139,6 +139,7 @@ module "ecs" {
   drain_concurrency_events          = var.drain_concurrency_events
   drain_concurrency_iot             = var.drain_concurrency_iot
   drain_concurrency_webhooks        = var.drain_concurrency_webhooks
+  drain_scheduler_enabled           = var.drain_scheduler_enabled
 
   scheduler_cpu                  = var.scheduler_cpu
   scheduler_desired_count        = var.scheduler_desired_count
