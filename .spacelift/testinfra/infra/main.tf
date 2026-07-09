@@ -15,17 +15,7 @@ module "spacelift" {
   region             = var.aws_region
   rds_engine_version = data.aws_rds_engine_version.pgversion.version_actual
   rds_engine_mode    = "provisioned"
-  rds_instance_configuration = {
-    "primary" : {
-      instance_identifier : "primary"
-      instance_class : "db.serverless"
-    }
-  }
-
-  rds_serverlessv2_scaling_configuration = {
-    min_capacity = 0
-    max_capacity = 1.0
-  }
+  rds_instance_configuration = {}
 
   rds_delete_protection_enabled = false
   s3_retain_on_destroy          = false
