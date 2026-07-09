@@ -194,6 +194,7 @@ module "container_definitions" {
   drain_concurrency_events          = var.drain_concurrency_events
   drain_concurrency_iot             = var.drain_concurrency_iot
   drain_concurrency_webhooks        = var.drain_concurrency_webhooks
+  drain_scheduler_enabled           = var.drain_scheduler_enabled
 
   # Authentication
   admin_username = var.admin_username

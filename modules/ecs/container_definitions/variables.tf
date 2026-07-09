@@ -79,6 +79,11 @@ variable "drain_concurrency_webhooks" {
   description = "Number of concurrent receivers for the webhooks queue per drain pod."
 }
 
+variable "drain_scheduler_enabled" {
+  type        = bool
+  description = "When true, the drain also runs the cron scheduler. Leave false to keep using the standalone scheduler deployment."
+}
+
 variable "scheduler_log_configuration" {
   type        = any
   description = "Log configuration for scheduler container"
