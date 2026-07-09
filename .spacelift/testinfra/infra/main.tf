@@ -1,7 +1,11 @@
 data "aws_rds_engine_version" "pgversion" {
-  engine       = "aurora-postgresql"
-  default_only = true
-  latest       = true
+  engine = "aurora-postgresql"
+  latest = true
+
+  filter {
+    name   = "engine-mode"
+    values = ["provisioned"]
+  }
 }
 
 module "spacelift" {
