@@ -19,12 +19,12 @@ variable "suffix" {
 
 variable "backend_image" {
   type        = string
-  description = "The ECR image to use for the server, scheduler and drain services."
+  description = "The ECR image to use for the server and drain services."
 }
 
 variable "backend_image_tag" {
   type        = string
-  description = "The ECR image tag to use for the server, scheduler and drain services."
+  description = "The ECR image tag to use for the server and drain services."
 }
 
 variable "admin_username" {
@@ -109,16 +109,6 @@ variable "vcs_gateway_memory" {
   description = "The memory to allocate to the VCS gateway service."
 }
 
-variable "scheduler_container_definition" {
-  type        = string
-  description = "The default container definition for the scheduler service. If empty, a default container definition will be used."
-}
-
-variable "scheduler_desired_count" {
-  type        = number
-  description = "The desired count of the scheduler service."
-}
-
 variable "drain_security_group" {
   type        = string
   description = "The security group to attach to the drain service."
@@ -164,19 +154,9 @@ variable "drain_concurrency_webhooks" {
   description = "Number of concurrent receivers for the webhooks queue per drain pod."
 }
 
-variable "drain_scheduler_enabled" {
-  type        = bool
-  description = "When true, the drain also runs the cron scheduler. Leave false to keep using the standalone scheduler deployment."
-}
-
 variable "server_security_group" {
   type        = string
   description = "The security group to attach to the server service."
-}
-
-variable "scheduler_security_group" {
-  type        = string
-  description = "The security group to attach to the scheduler service."
 }
 
 variable "subnets" {
@@ -194,11 +174,6 @@ variable "server_cpu" {
   description = "The CPU units to allocate to the server service."
 }
 
-variable "scheduler_cpu" {
-  type        = number
-  description = "The CPU units to allocate to the scheduler service."
-}
-
 variable "drain_memory" {
   type        = number
   description = "The memory to allocate to the drain service."
@@ -207,11 +182,6 @@ variable "drain_memory" {
 variable "server_memory" {
   type        = number
   description = "The memory to allocate to the server service."
-}
-
-variable "scheduler_memory" {
-  type        = number
-  description = "The memory to allocate to the scheduler service."
 }
 
 variable "execution_role_arn" {
@@ -227,11 +197,6 @@ variable "server_role_arn" {
 variable "drain_role_arn" {
   type        = string
   description = "The ARN of the drain ECS task role."
-}
-
-variable "scheduler_role_arn" {
-  type        = string
-  description = "The ARN of the scheduler ECS task role."
 }
 
 variable "server_target_group_arn" {
@@ -439,11 +404,6 @@ variable "drain_log_configuration" {
   description = "The log configuration for the drain service. See https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_LogConfiguration.html for the definition."
 }
 
-variable "scheduler_log_configuration" {
-  type        = any
-  description = "The log configuration for the scheduler service. See https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_LogConfiguration.html for the definition."
-}
-
 variable "launcher_image" {
   type        = string
   description = "The ECR image URL to use for the launcher service. Example: 123456789012.dkr.ecr.us-west-2.amazonaws.com/spacelift-launcher"
@@ -472,11 +432,6 @@ variable "server_service_name" {
 variable "drain_service_name" {
   type        = string
   description = "The name of the drain ECS service. Defaults to 'drain'."
-}
-
-variable "scheduler_service_name" {
-  type        = string
-  description = "The name of the scheduler ECS service. Defaults to 'scheduler'."
 }
 
 variable "vcs_gateway_service_name" {

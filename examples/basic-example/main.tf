@@ -45,9 +45,6 @@ module "this" {
   drain_security_group_id = var.drain_security_group_id
   drain_desired_count     = 0
 
-  scheduler_security_group_id = var.scheduler_security_group_id
-  scheduler_desired_count     = 0
-
   mqtt_lb_subnets = var.public_subnet_ids
 
   # The bucket names doesn't need to be valid since the service desired count is 0

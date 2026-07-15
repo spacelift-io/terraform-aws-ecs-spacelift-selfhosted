@@ -33,11 +33,6 @@ output "database_security_group_id" {
   description = "ID of the security group for the Spacelift database."
 }
 
-output "scheduler_security_group_id" {
-  value       = module.spacelift.scheduler_security_group_id
-  description = "ID of the scheduler security group"
-}
-
 output "database_url" {
   value       = module.spacelift.database_url
   description = "The URL to the write endpoint of the database."

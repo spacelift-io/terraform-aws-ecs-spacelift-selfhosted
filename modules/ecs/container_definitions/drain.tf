@@ -74,10 +74,6 @@ locals {
               {
                 name  = "DRAIN_CONCURRENCY_WEBHOOKS"
                 value = tostring(var.drain_concurrency_webhooks)
-              },
-              {
-                name  = "DRAIN_SCHEDULER_ENABLED"
-                value = tostring(var.drain_scheduler_enabled)
               }
             ],
             var.sqs_queues != null ? [

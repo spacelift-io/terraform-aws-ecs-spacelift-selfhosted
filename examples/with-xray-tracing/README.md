@@ -1,6 +1,6 @@
 # AWS OpenTelemetry X-Ray Sidecar Configuration
 
-This module supports injecting an AWS OpenTelemetry (OTEL) Collector sidecar container for X-Ray tracing and CloudWatch metrics into all ECS services (server, drain, scheduler, and vcs-gateway).
+This module supports injecting an AWS OpenTelemetry (OTEL) Collector sidecar container for X-Ray tracing and CloudWatch metrics into all ECS services (server, drain, and vcs-gateway).
 
 > [!IMPORTANT]
 > **X-Ray via OpenTelemetry Collector**

@@ -13,11 +13,6 @@ output "drain_service_name" {
   description = "The name of the drain ECS service"
 }
 
-output "scheduler_service_name" {
-  value       = aws_ecs_service.scheduler.name
-  description = "The name of the scheduler ECS service"
-}
-
 output "vcs_gateway_service_name" {
   value       = one(aws_ecs_service.vcs_gateway[*].name)
   description = "The name of the VCS gateway ECS service"
