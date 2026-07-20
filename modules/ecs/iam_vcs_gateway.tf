@@ -4,6 +4,8 @@ resource "aws_iam_role" "vcs_gateway" {
   name               = "spacelift-vcs-gateway-role-${var.suffix}"
   description        = "Role used by VCS gateway"
   assume_role_policy = module.iam_roles_and_policies.vcs_gateway.assume_role
+
+  tags = var.tags
 }
 
 resource "aws_iam_policy" "vcs_gateway" {
@@ -11,6 +13,8 @@ resource "aws_iam_policy" "vcs_gateway" {
 
   name   = "${aws_iam_role.vcs_gateway[0].name}-${each.key}"
   policy = each.value
+
+  tags = var.tags
 }
 
 resource "aws_iam_role_policy_attachment" "vcs_gateway" {

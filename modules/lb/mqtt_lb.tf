@@ -5,6 +5,8 @@ resource "aws_lb" "mqtt" {
   subnets            = var.mqtt_lb_subnets
   load_balancer_type = "network"
   internal           = var.mqtt_lb_internal
+
+  tags = var.tags
 }
 
 resource "aws_lb_target_group" "mqtt" {
@@ -14,6 +16,8 @@ resource "aws_lb_target_group" "mqtt" {
   protocol    = "TCP"
   target_type = "ip"
   vpc_id      = var.vpc_id
+
+  tags = var.tags
 }
 
 resource "aws_lb_listener" "mqtt" {
@@ -26,4 +30,6 @@ resource "aws_lb_listener" "mqtt" {
     type             = "forward"
     target_group_arn = aws_lb_target_group.mqtt[0].arn
   }
+
+  tags = var.tags
 }

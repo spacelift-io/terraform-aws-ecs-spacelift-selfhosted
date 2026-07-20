@@ -237,6 +237,8 @@ resource "aws_ecs_task_definition" "server" {
   execution_role_arn       = var.execution_role_arn != null ? var.execution_role_arn : aws_iam_role.execution[0].arn
   task_role_arn            = var.server_role_arn != null ? var.server_role_arn : aws_iam_role.server[0].arn
   container_definitions    = coalesce(var.server_container_definition, module.container_definitions.server_container_definition)
+
+  tags = var.tags
 }
 
 resource "aws_ecs_task_definition" "drain" {
@@ -249,6 +251,8 @@ resource "aws_ecs_task_definition" "drain" {
   execution_role_arn       = var.execution_role_arn != null ? var.execution_role_arn : aws_iam_role.execution[0].arn
   task_role_arn            = var.drain_role_arn != null ? var.drain_role_arn : aws_iam_role.drain[0].arn
   container_definitions    = coalesce(var.drain_container_definitions, module.container_definitions.drain_container_definition)
+
+  tags = var.tags
 }
 
 resource "aws_ecs_task_definition" "scheduler" {
@@ -261,6 +265,8 @@ resource "aws_ecs_task_definition" "scheduler" {
   execution_role_arn       = var.execution_role_arn != null ? var.execution_role_arn : aws_iam_role.execution[0].arn
   task_role_arn            = var.scheduler_role_arn != null ? var.scheduler_role_arn : aws_iam_role.scheduler[0].arn
   container_definitions    = coalesce(var.scheduler_container_definition, module.container_definitions.scheduler_container_definition)
+
+  tags = var.tags
 }
 
 resource "aws_ecs_task_definition" "vcs_gateway" {
@@ -275,4 +281,6 @@ resource "aws_ecs_task_definition" "vcs_gateway" {
   execution_role_arn       = var.execution_role_arn != null ? var.execution_role_arn : aws_iam_role.execution[0].arn
   task_role_arn            = aws_iam_role.vcs_gateway[0].arn
   container_definitions    = coalesce(var.vcs_gateway_container_definition, module.container_definitions.vcs_gateway_container_definition)
+
+  tags = var.tags
 }

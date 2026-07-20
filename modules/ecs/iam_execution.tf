@@ -3,6 +3,8 @@ resource "aws_iam_role" "execution" {
 
   name               = "spacelift-execution-role-${var.suffix}"
   assume_role_policy = module.iam_roles_and_policies.execution.assume_role
+
+  tags = var.tags
 }
 
 resource "aws_iam_role_policy" "execution" {

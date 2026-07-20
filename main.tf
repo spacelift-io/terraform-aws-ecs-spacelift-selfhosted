@@ -37,6 +37,7 @@ module "lb" {
 
   suffix = local.suffix
   vpc_id = var.vpc_id
+  tags   = var.tags
 
   drain_security_group_id = var.drain_security_group_id
 
@@ -73,6 +74,7 @@ module "ecs" {
   aws_partition  = data.aws_partition.current.partition
 
   suffix = local.suffix
+  tags   = var.tags
 
   subnets = var.ecs_subnets
 

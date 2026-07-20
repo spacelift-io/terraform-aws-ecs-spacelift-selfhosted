@@ -4,6 +4,8 @@ resource "aws_iam_role" "server" {
 
   name               = "spacelift-server-role-${var.suffix}"
   assume_role_policy = module.iam_roles_and_policies.server.assume_role
+
+  tags = var.tags
 }
 
 resource "aws_iam_policy" "server" {
@@ -11,6 +13,8 @@ resource "aws_iam_policy" "server" {
 
   name   = "${aws_iam_role.server[0].name}-${each.key}"
   policy = each.value
+
+  tags = var.tags
 }
 
 resource "aws_iam_role_policy_attachment" "server" {

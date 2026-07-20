@@ -5,6 +5,8 @@ resource "aws_ecs_cluster" "cluster" {
     name  = "containerInsights"
     value = "enabled"
   }
+
+  tags = var.tags
 }
 
 resource "aws_ecs_cluster_capacity_providers" "cluster" {
@@ -66,6 +68,8 @@ resource "aws_ecs_service" "server" {
       container_port   = var.server_port
     }
   }
+
+  tags = var.tags
 }
 
 resource "aws_ecs_service" "drain" {
@@ -91,6 +95,8 @@ resource "aws_ecs_service" "drain" {
     security_groups  = [var.drain_security_group]
     subnets          = var.subnets
   }
+
+  tags = var.tags
 }
 
 resource "aws_ecs_service" "scheduler" {
@@ -116,6 +122,8 @@ resource "aws_ecs_service" "scheduler" {
     security_groups  = [var.scheduler_security_group]
     subnets          = var.subnets
   }
+
+  tags = var.tags
 }
 
 resource "aws_ecs_service" "vcs_gateway" {
@@ -149,4 +157,6 @@ resource "aws_ecs_service" "vcs_gateway" {
     container_name   = "vcs-gateway"
     container_port   = var.vcs_gateway_external_port
   }
+
+  tags = var.tags
 }

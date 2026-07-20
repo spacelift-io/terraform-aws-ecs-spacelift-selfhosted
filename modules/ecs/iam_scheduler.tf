@@ -4,6 +4,8 @@ resource "aws_iam_role" "scheduler" {
   name               = "spacelift-scheduler-role-${var.suffix}"
   description        = "Role used by scheduler"
   assume_role_policy = module.iam_roles_and_policies.scheduler.assume_role
+
+  tags = var.tags
 }
 
 resource "aws_iam_policy" "scheduler" {
@@ -11,6 +13,8 @@ resource "aws_iam_policy" "scheduler" {
 
   name   = "${aws_iam_role.scheduler[0].name}-${each.key}"
   policy = each.value
+
+  tags = var.tags
 }
 
 resource "aws_iam_role_policy_attachment" "scheduler" {

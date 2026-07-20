@@ -7,6 +7,8 @@ resource "aws_lb" "vcs_gateway" {
   security_groups    = [aws_security_group.vcs_gateway_lb_sg[0].id]
   subnets            = var.vcs_gateway_lb_subnets
   internal           = var.vcs_gateway_internal
+
+  tags = var.tags
 }
 
 resource "aws_lb_target_group" "vcs_gateway" {
@@ -29,6 +31,8 @@ resource "aws_lb_target_group" "vcs_gateway" {
     healthy_threshold   = 5
     unhealthy_threshold = 2
   }
+
+  tags = var.tags
 }
 
 resource "aws_lb_listener" "vcs_gateway" {
@@ -44,4 +48,6 @@ resource "aws_lb_listener" "vcs_gateway" {
     target_group_arn = aws_lb_target_group.vcs_gateway[0].arn
     type             = "forward"
   }
+
+  tags = var.tags
 }

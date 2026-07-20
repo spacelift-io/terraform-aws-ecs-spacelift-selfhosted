@@ -4,6 +4,8 @@ resource "aws_security_group" "load_balancer_sg" {
   name        = "load_balancer_sg_${var.suffix}"
   description = "Allow HTTP and HTTPS traffic to the load balancer"
   vpc_id      = var.vpc_id
+
+  tags = var.tags
 }
 
 resource "aws_vpc_security_group_egress_rule" "lb_http_towards_server" {
@@ -15,6 +17,8 @@ resource "aws_vpc_security_group_egress_rule" "lb_http_towards_server" {
   to_port                      = var.server_port
   ip_protocol                  = "tcp"
   referenced_security_group_id = var.server_security_group_id
+
+  tags = var.tags
 }
 
 resource "aws_vpc_security_group_egress_rule" "lb_mqtt_towards_server" {
@@ -27,6 +31,8 @@ resource "aws_vpc_security_group_egress_rule" "lb_mqtt_towards_server" {
   to_port                      = var.mqtt_port
   ip_protocol                  = "tcp"
   referenced_security_group_id = var.server_security_group_id
+
+  tags = var.tags
 }
 
 resource "aws_vpc_security_group_ingress_rule" "tls" {
@@ -38,6 +44,8 @@ resource "aws_vpc_security_group_ingress_rule" "tls" {
   to_port     = 443
   ip_protocol = "tcp"
   cidr_ipv4   = "0.0.0.0/0"
+
+  tags = var.tags
 }
 
 resource "aws_vpc_security_group_ingress_rule" "mqtt" {
@@ -50,6 +58,8 @@ resource "aws_vpc_security_group_ingress_rule" "mqtt" {
   to_port     = var.mqtt_port
   ip_protocol = "tcp"
   cidr_ipv4   = "0.0.0.0/0"
+
+  tags = var.tags
 }
 
 resource "aws_vpc_security_group_ingress_rule" "http_lb_to_server" {
@@ -61,6 +71,8 @@ resource "aws_vpc_security_group_ingress_rule" "http_lb_to_server" {
   to_port                      = var.server_port
   ip_protocol                  = "tcp"
   referenced_security_group_id = local.load_balancer_security_group_id
+
+  tags = var.tags
 }
 
 resource "aws_vpc_security_group_ingress_rule" "mqtt_lb_to_server" {
@@ -73,6 +85,8 @@ resource "aws_vpc_security_group_ingress_rule" "mqtt_lb_to_server" {
   to_port                      = var.mqtt_port
   ip_protocol                  = "tcp"
   referenced_security_group_id = local.load_balancer_security_group_id
+
+  tags = var.tags
 }
 
 resource "aws_security_group" "vcs_gateway_lb_sg" {
@@ -81,6 +95,8 @@ resource "aws_security_group" "vcs_gateway_lb_sg" {
   name        = "vcs-gateway-loadbalancer-sg-${var.suffix}"
   description = "Allow HTTPS traffic to the VCS gateway"
   vpc_id      = var.vpc_id
+
+  tags = var.tags
 }
 
 resource "aws_vpc_security_group_ingress_rule" "vcs_gateway_https" {
@@ -93,6 +109,8 @@ resource "aws_vpc_security_group_ingress_rule" "vcs_gateway_https" {
   to_port     = 443
   ip_protocol = "tcp"
   cidr_ipv4   = "0.0.0.0/0"
+
+  tags = var.tags
 }
 
 resource "aws_vpc_security_group_egress_rule" "vcs_gateway_lb_to_gateway_service" {
@@ -105,6 +123,8 @@ resource "aws_vpc_security_group_egress_rule" "vcs_gateway_lb_to_gateway_service
   to_port                      = var.vcs_gateway_external_port
   ip_protocol                  = "tcp"
   referenced_security_group_id = var.vcs_gateway_service_security_group_id
+
+  tags = var.tags
 }
 
 resource "aws_vpc_security_group_ingress_rule" "vcs_gateway_service_grpc_from_lb" {
@@ -117,6 +137,8 @@ resource "aws_vpc_security_group_ingress_rule" "vcs_gateway_service_grpc_from_lb
   to_port                      = var.vcs_gateway_external_port
   ip_protocol                  = "tcp"
   referenced_security_group_id = aws_security_group.vcs_gateway_lb_sg[0].id
+
+  tags = var.tags
 }
 
 resource "aws_vpc_security_group_ingress_rule" "vcs_gateway_service_allow_from_server" {
@@ -129,6 +151,8 @@ resource "aws_vpc_security_group_ingress_rule" "vcs_gateway_service_allow_from_s
   to_port                      = var.vcs_gateway_internal_port
   ip_protocol                  = "tcp"
   referenced_security_group_id = var.server_security_group_id
+
+  tags = var.tags
 }
 
 resource "aws_vpc_security_group_ingress_rule" "vcs_gateway_service_allow_from_drain" {
@@ -141,4 +165,6 @@ resource "aws_vpc_security_group_ingress_rule" "vcs_gateway_service_allow_from_d
   to_port                      = var.vcs_gateway_internal_port
   ip_protocol                  = "tcp"
   referenced_security_group_id = var.drain_security_group_id
+
+  tags = var.tags
 }

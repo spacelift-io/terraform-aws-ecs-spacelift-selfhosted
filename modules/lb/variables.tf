@@ -99,3 +99,9 @@ variable "load_balancer_security_group_id" {
   default     = null
   description = "The security group ID to use for the main load balancer. If not provided, a new security group will be created."
 }
+
+variable "tags" {
+  type        = map(string)
+  description = "A map of tags to apply to all taggable resources created by this module."
+  default     = {}
+}

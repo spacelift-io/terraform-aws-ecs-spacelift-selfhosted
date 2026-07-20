@@ -4,6 +4,8 @@ resource "aws_lb" "server" {
   security_groups    = [local.load_balancer_security_group_id]
   subnets            = var.server_lb_subnets
   internal           = var.server_lb_internal
+
+  tags = var.tags
 }
 
 resource "aws_lb_target_group" "server" {
@@ -22,6 +24,8 @@ resource "aws_lb_target_group" "server" {
     path                = "/health"
     unhealthy_threshold = 2
   }
+
+  tags = var.tags
 }
 
 resource "aws_lb_listener" "server" {
@@ -35,4 +39,6 @@ resource "aws_lb_listener" "server" {
     target_group_arn = aws_lb_target_group.server.arn
     type             = "forward"
   }
+
+  tags = var.tags
 }
