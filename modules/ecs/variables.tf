@@ -453,6 +453,11 @@ variable "ecs_service_az_rebalancing_enabled" {
   description = "Enables automatic rebalancing of ECS service tasks across Availability Zones to maintain high availability and even task distribution without manual intervention. Enabled by default."
 }
 
+variable "ecs_service_name_suffix_enabled" {
+  type        = bool
+  description = "Appends the unique suffix to the ECS service names (for example server-<suffix>), consistent with the other resources created by this module."
+}
+
 variable "additional_env_vars" {
   type = list(object({
     name  = string

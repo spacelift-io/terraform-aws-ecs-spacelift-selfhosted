@@ -484,6 +484,12 @@ variable "ecs_service_az_rebalancing_enabled" {
   default     = true
 }
 
+variable "ecs_service_name_suffix_enabled" {
+  type        = bool
+  description = "Appends the unique suffix to the ECS service names (for example server-<suffix>), consistent with the other resources created by this module. Disabled by default for backwards compatibility: changing the name of an existing ECS service forces its replacement."
+  default     = false
+}
+
 variable "sensitive_env_vars" {
   type = list(object({
     name      = string

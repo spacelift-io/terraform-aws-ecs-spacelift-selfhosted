@@ -171,6 +171,7 @@ module "ecs" {
   vcs_gateway_container_definition = var.vcs_gateway_container_definition
 
   ecs_service_az_rebalancing_enabled    = var.ecs_service_az_rebalancing_enabled
+  ecs_service_name_suffix_enabled       = var.ecs_service_name_suffix_enabled
   additional_env_vars                   = var.additional_env_vars
   sensitive_env_vars                    = var.sensitive_env_vars
   secrets_manager_secret_arns           = var.secrets_manager_secret_arns
