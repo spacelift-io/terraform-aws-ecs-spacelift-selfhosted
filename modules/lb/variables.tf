@@ -23,6 +23,12 @@ variable "server_port" {
   description = "The port the server is listening on."
 }
 
+variable "create_server_lb" {
+  type        = bool
+  description = "Whether to create the server load balancer, its target group, listener and security group rules."
+  default     = true
+}
+
 variable "server_lb_name" {
   type        = string
   description = "The name of the server load balancer."
@@ -32,6 +38,7 @@ variable "server_lb_name" {
 variable "server_lb_subnets" {
   type        = list(string)
   description = "The subnets to deploy the server load balancer in."
+  default     = null
 }
 
 variable "server_lb_internal" {
@@ -42,6 +49,7 @@ variable "server_lb_internal" {
 variable "server_lb_certificate_arn" {
   type        = string
   description = "The ARN of the certificate to use for the server load balancer."
+  default     = null
 }
 
 variable "mqtt_lb_subnets" {

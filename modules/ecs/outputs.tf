@@ -19,6 +19,6 @@ output "scheduler_service_name" {
 }
 
 output "vcs_gateway_service_name" {
-  value       = var.vcs_gateway_security_group_id != null ? aws_ecs_service.vcs_gateway[0].name : null
+  value       = one(aws_ecs_service.vcs_gateway[*].name)
   description = "The name of the VCS gateway ECS service"
 }

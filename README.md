@@ -165,7 +165,7 @@ module "spacelift_services" {
 This module creates:
 
 - Load balancers
-  - An ALB for the Spacelift server (needs a valid ACM certificate)
+  - An ALB for the Spacelift server (needs a valid ACM certificate). This is skipped when you bring your own load balancer, see [below](#bring-your-own-load-balancer).
   - A network load balancer for the MQTT broker (when using the default `builtin` broker type)
   - A security group for the load balancers
 - ECS
@@ -175,6 +175,24 @@ This module creates:
   - A SecretsManager secret for storing sensitive environment variables, such as the license token
 
 Once it succeeded, don't forget to create a DNS record (`CNAME`) for the server and MQTT load balancer (if using the `builtin` broker type).
+
+### Bring your own load balancer
+
+If you already run your own load balancer for the server (for example with custom routing, WAF rules or a shared ALB), register the server service into your own target groups via `byo_server_target_group_arns`:
+
+```hcl
+module "spacelift_services" {
+  source = "github.com/spacelift-io/terraform-aws-ecs-spacelift-selfhosted"
+
+  byo_server_target_group_arns = [aws_lb_target_group.my_server.arn]
+
+  # server_lb_subnets and server_lb_certificate_arn are no longer required
+}
+```
+
+Once `byo_server_target_group_arns` is set, the module no longer provisions the server ALB, its target group, listener and the associated security group rules, so you don't pay for an unused load balancer. The MQTT broker load balancer is unaffected by this setting.
+
+See [examples/with-byo-load-balancer](./examples/with-byo-load-balancer) for a complete setup that provisions a self-managed ALB, target group, listener and security group rules and wires them into the module.
 
 ### With CloudWatch logging
 
