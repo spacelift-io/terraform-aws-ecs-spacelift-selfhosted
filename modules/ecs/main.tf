@@ -43,10 +43,13 @@ resource "aws_ecs_service" "server" {
     subnets          = var.subnets
   }
 
-  load_balancer {
-    target_group_arn = var.server_target_group_arn
-    container_name   = "server"
-    container_port   = var.server_port
+  dynamic "load_balancer" {
+    for_each = var.server_target_group_arn != null ? [1] : []
+    content {
+      target_group_arn = var.server_target_group_arn
+      container_name   = "server"
+      container_port   = var.server_port
+    }
   }
 
   dynamic "load_balancer" {

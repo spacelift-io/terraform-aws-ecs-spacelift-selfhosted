@@ -49,12 +49,14 @@ variable "server_lb_internal" {
 
 variable "server_lb_subnets" {
   type        = list(string)
-  description = "The subnets to deploy the server load balancer in."
+  description = "The subnets to deploy the server load balancer in. Required unless byo_server_target_group_arns is set, in which case the module-managed server load balancer is not created."
+  default     = null
 }
 
 variable "server_lb_certificate_arn" {
   type        = string
-  description = "The ARN of the ACM certificate to use for the server load balancer."
+  description = "The ARN of the ACM certificate to use for the server load balancer. Required unless byo_server_target_group_arns is set, in which case the module-managed server load balancer is not created."
+  default     = null
 }
 
 variable "server_security_group_id" {
@@ -390,7 +392,7 @@ variable "server_role_arn" {
 
 variable "byo_server_target_group_arns" {
   type        = list(string)
-  description = "The ARNs of the server service BYO target groups. This makes server service register into additional target group(s), which can be used with custom load balancers and thus allow more flexible routing"
+  description = "Target group ARNs to register the server service into, for use with a load balancer you manage yourself. When set, the module does not create its own server load balancer, target group, listener or the related security group rules, and server_lb_subnets and server_lb_certificate_arn are no longer required. You are responsible for the listener, TLS certificate and the security group rule allowing your load balancer to reach the server service."
   default     = []
 }
 

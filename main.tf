@@ -4,6 +4,8 @@ locals {
   server_port = 1983
   mqtt_port   = var.mqtt_broker_endpoint != null ? tonumber(split(":", var.mqtt_broker_endpoint)[2]) : 0
 
+  create_server_lb = length(var.byo_server_target_group_arns) == 0
+
   mqtt_broker_type     = var.mqtt_broker_type
   mqtt_broker_endpoint = var.mqtt_broker_type == "iotcore" ? coalesce(var.iot_endpoint, data.aws_iot_endpoint.iot[0].endpoint_address) : var.mqtt_broker_endpoint
 
@@ -41,6 +43,7 @@ module "lb" {
   drain_security_group_id = var.drain_security_group_id
 
 
+  create_server_lb          = local.create_server_lb
   server_port               = local.server_port
   server_lb_name            = var.server_lb_name
   server_lb_internal        = var.server_lb_internal

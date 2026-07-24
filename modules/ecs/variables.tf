@@ -236,7 +236,8 @@ variable "scheduler_role_arn" {
 
 variable "server_target_group_arn" {
   type        = string
-  description = "The ARN of the server target group."
+  description = "The ARN of the server target group. Null when the module-managed server load balancer is disabled."
+  default     = null
 }
 
 variable "mqtt_server_target_group_arn" {
