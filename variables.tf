@@ -486,6 +486,30 @@ variable "ecs_service_az_rebalancing_enabled" {
   default     = true
 }
 
+variable "server_service_name" {
+  type        = string
+  description = "The name of the server ECS service. Defaults to 'server'. Changing the name of an existing service forces its replacement."
+  default     = null
+}
+
+variable "drain_service_name" {
+  type        = string
+  description = "The name of the drain ECS service. Defaults to 'drain'. Changing the name of an existing service forces its replacement."
+  default     = null
+}
+
+variable "scheduler_service_name" {
+  type        = string
+  description = "The name of the scheduler ECS service. Defaults to 'scheduler'. Changing the name of an existing service forces its replacement."
+  default     = null
+}
+
+variable "vcs_gateway_service_name" {
+  type        = string
+  description = "The name of the VCS gateway ECS service. Defaults to 'vcs-gateway'. Changing the name of an existing service forces its replacement."
+  default     = null
+}
+
 variable "sensitive_env_vars" {
   type = list(object({
     name      = string

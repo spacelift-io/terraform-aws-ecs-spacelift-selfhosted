@@ -20,7 +20,7 @@ resource "aws_ecs_cluster_capacity_providers" "cluster" {
 }
 
 resource "aws_ecs_service" "server" {
-  name    = "server"
+  name    = coalesce(var.server_service_name, "server")
   cluster = aws_ecs_cluster.cluster.id
 
   desired_count   = var.server_desired_count
@@ -72,7 +72,7 @@ resource "aws_ecs_service" "server" {
 }
 
 resource "aws_ecs_service" "drain" {
-  name    = "drain"
+  name    = coalesce(var.drain_service_name, "drain")
   cluster = aws_ecs_cluster.cluster.id
 
   desired_count   = var.drain_desired_count
@@ -97,7 +97,7 @@ resource "aws_ecs_service" "drain" {
 }
 
 resource "aws_ecs_service" "scheduler" {
-  name    = "scheduler"
+  name    = coalesce(var.scheduler_service_name, "scheduler")
   cluster = aws_ecs_cluster.cluster.id
 
   desired_count   = var.scheduler_desired_count
@@ -124,7 +124,7 @@ resource "aws_ecs_service" "scheduler" {
 resource "aws_ecs_service" "vcs_gateway" {
   count = var.vcs_gateway_security_group_id != null ? 1 : 0
 
-  name    = "vcs-gateway"
+  name    = coalesce(var.vcs_gateway_service_name, "vcs-gateway")
   cluster = aws_ecs_cluster.cluster.id
 
   desired_count   = var.vcs_gateway_desired_count
