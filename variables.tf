@@ -484,10 +484,28 @@ variable "ecs_service_az_rebalancing_enabled" {
   default     = true
 }
 
-variable "ecs_service_name_suffix_enabled" {
-  type        = bool
-  description = "Appends the unique suffix to the ECS service names (for example server-<suffix>), consistent with the other resources created by this module. Disabled by default for backwards compatibility: changing the name of an existing ECS service forces its replacement."
-  default     = false
+variable "server_service_name" {
+  type        = string
+  description = "The name of the server ECS service. Defaults to 'server'. Changing the name of an existing service forces its replacement."
+  default     = null
+}
+
+variable "drain_service_name" {
+  type        = string
+  description = "The name of the drain ECS service. Defaults to 'drain'. Changing the name of an existing service forces its replacement."
+  default     = null
+}
+
+variable "scheduler_service_name" {
+  type        = string
+  description = "The name of the scheduler ECS service. Defaults to 'scheduler'. Changing the name of an existing service forces its replacement."
+  default     = null
+}
+
+variable "vcs_gateway_service_name" {
+  type        = string
+  description = "The name of the VCS gateway ECS service. Defaults to 'vcs-gateway'. Changing the name of an existing service forces its replacement."
+  default     = null
 }
 
 variable "sensitive_env_vars" {

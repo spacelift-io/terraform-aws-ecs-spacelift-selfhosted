@@ -453,9 +453,24 @@ variable "ecs_service_az_rebalancing_enabled" {
   description = "Enables automatic rebalancing of ECS service tasks across Availability Zones to maintain high availability and even task distribution without manual intervention. Enabled by default."
 }
 
-variable "ecs_service_name_suffix_enabled" {
-  type        = bool
-  description = "Appends the unique suffix to the ECS service names (for example server-<suffix>), consistent with the other resources created by this module."
+variable "server_service_name" {
+  type        = string
+  description = "The name of the server ECS service. Defaults to 'server'."
+}
+
+variable "drain_service_name" {
+  type        = string
+  description = "The name of the drain ECS service. Defaults to 'drain'."
+}
+
+variable "scheduler_service_name" {
+  type        = string
+  description = "The name of the scheduler ECS service. Defaults to 'scheduler'."
+}
+
+variable "vcs_gateway_service_name" {
+  type        = string
+  description = "The name of the VCS gateway ECS service. Defaults to 'vcs-gateway'."
 }
 
 variable "additional_env_vars" {
