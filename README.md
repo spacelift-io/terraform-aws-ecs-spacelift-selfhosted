@@ -11,12 +11,6 @@ This module is closely tied to the [terraform-aws-spacelift-selfhosted](https://
 > scheduler runs inside the drain. **Requires Self-Hosted v6.4.0 or newer**, the
 > first release whose drain always schedules cron jobs. Nothing has to be
 > configured for it.
->
-> Removed variables: `drain_scheduler_enabled`, `scheduler_container_definition`,
-> `scheduler_cpu`, `scheduler_memory`, `scheduler_desired_count`,
-> `scheduler_log_configuration`, `scheduler_role_arn`, `scheduler_security_group_id`,
-> `scheduler_service_name`. Removed output: `scheduler_service_name`. On upgrade,
-> Terraform destroys the scheduler ECS service, its task definition and its IAM role.
 
 > [!IMPORTANT]
 > ## 🔄 Upgrading to v2.0.0 - New features and breaking changes
