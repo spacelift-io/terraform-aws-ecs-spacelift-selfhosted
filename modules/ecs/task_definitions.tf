@@ -184,7 +184,6 @@ module "container_definitions" {
   mqtt_broker_port              = var.mqtt_broker_port
   server_log_configuration      = var.server_log_configuration
   drain_log_configuration       = var.drain_log_configuration
-  scheduler_log_configuration   = var.scheduler_log_configuration
   vcs_gateway_log_configuration = var.vcs_gateway_log_configuration
   vcs_gateway_external_port     = var.vcs_gateway_external_port
   vcs_gateway_internal_port     = var.vcs_gateway_internal_port
@@ -198,7 +197,6 @@ module "container_definitions" {
   drain_concurrency_events          = var.drain_concurrency_events
   drain_concurrency_iot             = var.drain_concurrency_iot
   drain_concurrency_webhooks        = var.drain_concurrency_webhooks
-  drain_scheduler_enabled           = var.drain_scheduler_enabled
 
   # Authentication
   admin_username = var.admin_username
@@ -253,18 +251,6 @@ resource "aws_ecs_task_definition" "drain" {
   execution_role_arn       = var.execution_role_arn != null ? var.execution_role_arn : aws_iam_role.execution[0].arn
   task_role_arn            = var.drain_role_arn != null ? var.drain_role_arn : aws_iam_role.drain[0].arn
   container_definitions    = coalesce(var.drain_container_definitions, module.container_definitions.drain_container_definition)
-}
-
-resource "aws_ecs_task_definition" "scheduler" {
-  family = "scheduler-${var.suffix}"
-
-  network_mode             = "awsvpc"
-  requires_compatibilities = ["FARGATE"]
-  cpu                      = var.scheduler_cpu
-  memory                   = var.scheduler_memory
-  execution_role_arn       = var.execution_role_arn != null ? var.execution_role_arn : aws_iam_role.execution[0].arn
-  task_role_arn            = var.scheduler_role_arn != null ? var.scheduler_role_arn : aws_iam_role.scheduler[0].arn
-  container_definitions    = coalesce(var.scheduler_container_definition, module.container_definitions.scheduler_container_definition)
 }
 
 resource "aws_ecs_task_definition" "vcs_gateway" {

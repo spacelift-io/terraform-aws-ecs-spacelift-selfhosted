@@ -144,15 +144,6 @@ module "ecs" {
   drain_concurrency_events          = var.drain_concurrency_events
   drain_concurrency_iot             = var.drain_concurrency_iot
   drain_concurrency_webhooks        = var.drain_concurrency_webhooks
-  drain_scheduler_enabled           = var.drain_scheduler_enabled
-
-  scheduler_cpu                  = var.scheduler_cpu
-  scheduler_desired_count        = var.scheduler_desired_count
-  scheduler_log_configuration    = var.scheduler_log_configuration
-  scheduler_memory               = var.scheduler_memory
-  scheduler_role_arn             = var.scheduler_role_arn
-  scheduler_security_group       = var.scheduler_security_group_id
-  scheduler_container_definition = var.scheduler_container_definition
 
   server_cpu                  = var.server_cpu
   server_desired_count        = var.server_desired_count
@@ -178,7 +169,6 @@ module "ecs" {
   ecs_service_az_rebalancing_enabled    = var.ecs_service_az_rebalancing_enabled
   server_service_name                   = var.server_service_name
   drain_service_name                    = var.drain_service_name
-  scheduler_service_name                = var.scheduler_service_name
   vcs_gateway_service_name              = var.vcs_gateway_service_name
   additional_env_vars                   = var.additional_env_vars
   sensitive_env_vars                    = var.sensitive_env_vars

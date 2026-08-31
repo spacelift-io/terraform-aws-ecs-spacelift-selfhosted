@@ -97,7 +97,7 @@ variable "admin_password" {
 
 variable "backend_image" {
   type        = string
-  description = "The ECR image to use for the server, scheduler and drain services."
+  description = "The ECR image to use for the server and drain services."
 }
 
 variable "backend_image_tag" {
@@ -312,53 +312,6 @@ variable "drain_concurrency_webhooks" {
   default     = 1
 }
 
-variable "drain_scheduler_enabled" {
-  type        = bool
-  description = "When true, the drain also runs the cron scheduler. Leave false to keep using the standalone scheduler deployment."
-  default     = false
-}
-
-variable "scheduler_container_definition" {
-  type        = string
-  description = "The container definition for the scheduler service. If empty, a default container definition will be used."
-  default     = null
-}
-
-variable "scheduler_cpu" {
-  type        = number
-  description = "The CPU units to allocate to the scheduler service."
-  default     = 256
-}
-
-variable "scheduler_memory" {
-  type        = number
-  description = "The memory to allocate to the scheduler service."
-  default     = 512
-}
-
-variable "scheduler_desired_count" {
-  type        = number
-  description = "The desired count of the scheduler service. Defaults to 3 (one per availability zone)."
-  default     = 3
-}
-
-variable "scheduler_log_configuration" {
-  type        = any
-  description = "The log configuration for the scheduler service. See https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_LogConfiguration.html for the definition."
-  default     = null
-}
-
-variable "scheduler_role_arn" {
-  type        = string
-  description = "The ARN of the IAM role to use for the scheduler service. If empty, a new role will be created."
-  default     = null
-}
-
-variable "scheduler_security_group_id" {
-  type        = string
-  description = "The security group ID to use for the scheduler service."
-}
-
 variable "server_container_definition" {
   type        = string
   description = "The container definition for the server service. If empty, a default container definition will be used."
@@ -500,12 +453,6 @@ variable "server_service_name" {
 variable "drain_service_name" {
   type        = string
   description = "The name of the drain ECS service. Defaults to 'drain'. Changing the name of an existing service forces its replacement."
-  default     = null
-}
-
-variable "scheduler_service_name" {
-  type        = string
-  description = "The name of the scheduler ECS service. Defaults to 'scheduler'. Changing the name of an existing service forces its replacement."
   default     = null
 }
 

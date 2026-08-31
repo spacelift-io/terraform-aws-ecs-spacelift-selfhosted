@@ -96,31 +96,6 @@ resource "aws_ecs_service" "drain" {
   }
 }
 
-resource "aws_ecs_service" "scheduler" {
-  name    = coalesce(var.scheduler_service_name, "scheduler")
-  cluster = aws_ecs_cluster.cluster.id
-
-  desired_count   = var.scheduler_desired_count
-  task_definition = aws_ecs_task_definition.scheduler.arn
-
-  deployment_minimum_healthy_percent = 100
-  deployment_maximum_percent         = 200
-  availability_zone_rebalancing      = var.ecs_service_az_rebalancing_enabled ? "ENABLED" : "DISABLED"
-  wait_for_steady_state              = true
-
-  capacity_provider_strategy {
-    base              = 1
-    capacity_provider = "FARGATE"
-    weight            = 100
-  }
-
-  network_configuration {
-    assign_public_ip = false
-    security_groups  = [var.scheduler_security_group]
-    subnets          = var.subnets
-  }
-}
-
 resource "aws_ecs_service" "vcs_gateway" {
   count = var.vcs_gateway_security_group_id != null ? 1 : 0
 

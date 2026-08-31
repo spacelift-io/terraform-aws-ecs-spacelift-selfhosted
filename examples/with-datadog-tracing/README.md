@@ -1,6 +1,6 @@
 # Datadog Agent Sidecar Configuration
 
-This module supports injecting a Datadog agent sidecar container into all ECS services (server, drain, scheduler, and vcs-gateway).
+This module supports injecting a Datadog agent sidecar container into all ECS services (server, drain, and vcs-gateway).
 
 ## Usage
 

@@ -5,6 +5,14 @@ This module creates an ECS cluster with all the necessary resources to run Space
 This module is closely tied to the [terraform-aws-spacelift-selfhosted](https://github.com/spacelift-io/terraform-aws-spacelift-selfhosted) module, which contains the necessary surrounding infrastructure.
 
 > [!IMPORTANT]
+> ## Upgrading to v3.0.0 - standalone scheduler removed
+>
+> The module no longer deploys the standalone `scheduler` ECS service: the cron
+> scheduler runs inside the drain. **Requires Self-Hosted v6.4.0 or newer**, the
+> first release whose drain always schedules cron jobs. Nothing has to be
+> configured for it.
+
+> [!IMPORTANT]
 > ## 🔄 Upgrading to v2.0.0 - New features and breaking changes
 >
 > Click below to see the full upgrade guide with breaking changes and new features.
@@ -144,7 +152,6 @@ module "spacelift_services" {
   server_lb_certificate_arn   = "<LB certificate ARN>" # Note that this certificate MUST be successfully issued. It cannot be attached to the load balancer in a pending state.
 
   drain_security_group_id     = module.spacelift_infra.drain_security_group_id
-  scheduler_security_group_id = module.spacelift_infra.scheduler_security_group_id
 
   mqtt_lb_subnets = module.spacelift_infra.public_subnet_ids
 
@@ -171,7 +178,7 @@ This module creates:
   - A security group for the load balancers
 - ECS
   - An ECS cluster
-  - Three services (server, drain, scheduler)
+  - Two services (server, drain); the cron scheduler runs inside the drain
   - IAM roles and policies for the corresponding services
   - A SecretsManager secret for storing sensitive environment variables, such as the license token
 
@@ -227,18 +234,6 @@ module "spacelift_services" {
     }
   }
 
-  scheduler_log_configuration = {
-    logDriver : "awslogs",
-    options : {
-      "awslogs-region" : var.region,
-      "awslogs-group" : "/ecs/spacelift-scheduler",
-      "awslogs-create-group" : "true",
-      "awslogs-stream-prefix" : "scheduler"
-      "mode": "non-blocking"
-      "max-buffer-size": 25m
-    }
-  }
-
   # Further configuration removed for brevity
 }
 ```
@@ -252,7 +247,6 @@ module "spacelift_services" {
   execution_role_arn = aws_iam_role.execution_role.arn
   server_role_arn    = aws_iam_role.spacelift_server_role.arn
   drain_role_arn     = aws_iam_role.spacelift_drain_role.arn
-  scheduler_role_arn = aws_iam_role.spacelift_scheduler_role.arn
 
   # Further configuration removed for brevity
 }
@@ -269,11 +263,6 @@ resource "aws_iam_role" "spacelift_server_role" {
 
 resource "aws_iam_role" "spacelift_drain_role" {
   name = "spacelift-drain-role"
-  # Further configuration removed for brevity
-}
-
-resource "aws_iam_role" "spacelift_scheduler_role" {
-  name = "spacelift-scheduler-role"
   # Further configuration removed for brevity
 }
 ```

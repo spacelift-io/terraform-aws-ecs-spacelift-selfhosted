@@ -30,10 +30,6 @@ variable "drain_security_group_id" {
   type = string
 }
 
-variable "scheduler_security_group_id" {
-  type = string
-}
-
 variable "kms_key_arn" {
   type = string
 }

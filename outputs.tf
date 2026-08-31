@@ -58,11 +58,6 @@ output "drain_service_name" {
   description = "The name of the drain ECS service"
 }
 
-output "scheduler_service_name" {
-  value       = module.ecs.scheduler_service_name
-  description = "The name of the scheduler ECS service"
-}
-
 output "vcs_gateway_service_name" {
   value       = module.ecs.vcs_gateway_service_name
   description = "The name of the VCS gateway ECS service"
