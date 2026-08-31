@@ -108,6 +108,8 @@ module "ecs" {
   policy_inputs_bucket_name            = var.policy_inputs_bucket_name
   run_logs_bucket_arn                  = "arn:${data.aws_partition.current.partition}:s3:::${var.run_logs_bucket_name}"
   run_logs_bucket_name                 = var.run_logs_bucket_name
+  run_observability_bucket_arn         = "arn:${data.aws_partition.current.partition}:s3:::${var.run_observability_bucket_name}"
+  run_observability_bucket_name        = var.run_observability_bucket_name
   states_bucket_arn                    = "arn:${data.aws_partition.current.partition}:s3:::${var.states_bucket_name}"
   states_bucket_name                   = var.states_bucket_name
   uploads_bucket_arn                   = "arn:${data.aws_partition.current.partition}:s3:::${var.uploads_bucket_name}"

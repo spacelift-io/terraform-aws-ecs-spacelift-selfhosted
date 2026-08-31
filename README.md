@@ -154,6 +154,7 @@ module "spacelift_services" {
   modules_bucket_name                  = module.spacelift_infra.modules_bucket_name
   policy_inputs_bucket_name            = module.spacelift_infra.policy_inputs_bucket_name
   run_logs_bucket_name                 = module.spacelift_infra.run_logs_bucket_name
+  run_observability_bucket_name        = module.spacelift_infra.run_observability_bucket_name
   states_bucket_name                   = module.spacelift_infra.states_bucket_name
   uploads_bucket_name                  = module.spacelift_infra.uploads_bucket_name
   uploads_bucket_url                   = module.spacelift_infra.uploads_bucket_url

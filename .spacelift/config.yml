@@ -12,7 +12,10 @@ tests:
       TF_VAR_public_subnet_ids: '["subnet-0b85be8982fda3156","subnet-04989d92e35a8f637","subnet-01b90610f74f60c2b"]'
       TF_VAR_server_security_group_id: "sg-000e8ff37e8793659"
       TF_VAR_drain_security_group_id: "sg-02f5938fb08692bbb"
-      TF_VAR_scheduler_security_group_id: "sg-07172bf10bb3e4cf3"
+      # TODO(run-observability): the dedicated scheduler SG was deleted as part of the
+      # scheduler removal work (#56); reuse the drain SG until #56 merges and this branch
+      # is rebased (at which point this variable disappears entirely).
+      TF_VAR_scheduler_security_group_id: "sg-02f5938fb08692bbb"
       TF_VAR_kms_key_arn: "arn:aws:kms:eu-central-1:666640173260:key/mrk-586b3c36796644acb2920a968b4c40c6"
       TF_VAR_kms_encryption_key_arn: "arn:aws:kms:eu-central-1:666640173260:key/mrk-56bdca0baed847659f227414cca441e8"
       TF_VAR_kms_signing_key_arn: "arn:aws:kms:eu-central-1:666640173260:key/mrk-149b214956914505924283421ae467ed"
@@ -34,7 +37,10 @@ tests:
       TF_VAR_public_subnet_ids: '["subnet-0b85be8982fda3156","subnet-04989d92e35a8f637","subnet-01b90610f74f60c2b"]'
       TF_VAR_server_security_group_id: "sg-000e8ff37e8793659"
       TF_VAR_drain_security_group_id: "sg-02f5938fb08692bbb"
-      TF_VAR_scheduler_security_group_id: "sg-07172bf10bb3e4cf3"
+      # TODO(run-observability): the dedicated scheduler SG was deleted as part of the
+      # scheduler removal work (#56); reuse the drain SG until #56 merges and this branch
+      # is rebased (at which point this variable disappears entirely).
+      TF_VAR_scheduler_security_group_id: "sg-02f5938fb08692bbb"
       TF_VAR_kms_key_arn: "arn:aws:kms:eu-central-1:666640173260:key/mrk-586b3c36796644acb2920a968b4c40c6"
       TF_VAR_kms_encryption_key_arn: "arn:aws:kms:eu-central-1:666640173260:key/mrk-56bdca0baed847659f227414cca441e8"
       TF_VAR_kms_signing_key_arn: "arn:aws:kms:eu-central-1:666640173260:key/mrk-149b214956914505924283421ae467ed"
