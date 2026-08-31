@@ -57,6 +57,7 @@ module "this" {
   modules_bucket_name                  = "modules"
   policy_inputs_bucket_name            = "policy-inputs"
   run_logs_bucket_name                 = "run-logs"
+  run_observability_bucket_name        = "run-observability"
   states_bucket_name                   = "states"
   uploads_bucket_name                  = "uploads"
   uploads_bucket_url                   = "uploads"

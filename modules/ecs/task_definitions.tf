@@ -81,6 +81,10 @@ locals {
         value = var.run_logs_bucket_name
       },
       {
+        name  = "OBJECT_STORAGE_BUCKET_RUN_OBSERVABILITY"
+        value = var.run_observability_bucket_name
+      },
+      {
         name  = "OBJECT_STORAGE_BUCKET_METADATA"
         value = var.metadata_bucket_name
       },
