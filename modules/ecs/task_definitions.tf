@@ -119,6 +119,14 @@ locals {
       {
         name  = "OBSERVABILITY_VENDOR"
         value = local.observability_vendor
+      },
+      {
+        name  = "LAUNCHER_IMAGE"
+        value = var.launcher_image
+      },
+      {
+        name  = "LAUNCHER_IMAGE_TAG"
+        value = var.launcher_image_tag
       }
     ],
     var.sqs_queues != null ? [
@@ -206,8 +214,6 @@ module "container_definitions" {
   webhooks_endpoint = local.webhooks_endpoint
 
   # Launcher configuration
-  launcher_image                        = var.launcher_image
-  launcher_image_tag                    = var.launcher_image_tag
   enable_automatic_usage_data_reporting = var.enable_automatic_usage_data_reporting
 
   # SQS queues

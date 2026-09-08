@@ -114,16 +114,6 @@ variable "webhooks_endpoint" {
 }
 
 # Launcher configuration
-variable "launcher_image" {
-  type        = string
-  description = "Launcher image URL"
-}
-
-variable "launcher_image_tag" {
-  type        = string
-  description = "Launcher image tag"
-}
-
 variable "enable_automatic_usage_data_reporting" {
   type        = bool
   description = "Enable automatic usage data reporting"
