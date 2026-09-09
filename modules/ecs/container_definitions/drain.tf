@@ -32,14 +32,6 @@ locals {
             var.shared_envs,
             [
               {
-                name  = "LAUNCHER_IMAGE"
-                value = var.launcher_image
-              },
-              {
-                name  = "LAUNCHER_IMAGE_TAG"
-                value = var.launcher_image_tag
-              },
-              {
                 name  = "SPACELIFT_PUBLIC_API"
                 value = var.enable_automatic_usage_data_reporting ? local.spacelift_public_api : ""
               },
