@@ -1,5 +1,5 @@
 module "iam_roles_and_policies" {
-  source = "github.com/spacelift-io/terraform-aws-iam-spacelift-selfhosted?ref=v1.9.0"
+  source = "github.com/spacelift-io/terraform-aws-iam-spacelift-selfhosted?ref=v1.10.0"
 
   write_as_files = false
   aws_partition  = var.aws_partition
