@@ -579,3 +579,30 @@ variable "otel_config" {
   description = "Configuration for the OpenTelemetry Collector sidecar. The collector uses standard ports: 2000 (X-Ray UDP), 4317 (OTLP gRPC), and 4318 (OTLP HTTP). Set log_configuration to enable CloudWatch logging for debugging."
   default     = null
 }
+
+variable "rds_iam_auth" {
+  type = object({
+    cluster_resource_id = string
+    db_username         = string
+  })
+  description = <<-EOT
+    Switches the services over to passwordless RDS authentication. Leave null to keep using a password.
+
+    What it sets up: `rds-db:connect` on `db_username` for the task roles, and the environment the services
+    need to use it. The connection string you pass in has to name that user - see the README.
+
+    What you still have to do: create the user in Postgres and grant it `rds_iam` (see the README).
+    It must not be the master user - granting it `rds_iam` costs you password login, and with it break-glass access.
+
+    `cluster_resource_id` is the cluster's resource ID (`cluster-ABC...`), not its identifier.
+  EOT
+  default     = null
+
+  validation {
+    condition = var.rds_iam_auth == null || (
+      try(var.rds_iam_auth.cluster_resource_id, null) != null &&
+      try(var.rds_iam_auth.db_username, null) != null
+    )
+    error_message = "rds_iam_auth needs a cluster_resource_id and a db_username."
+  }
+}
