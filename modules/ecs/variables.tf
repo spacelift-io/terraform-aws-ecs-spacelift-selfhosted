@@ -383,6 +383,7 @@ variable "license_token" {
   type        = string
   description = "The license token for selfhosted, issued by Spacelift. Saved using write-only attribute to prevent storage in state file. Secret versions are automatically managed."
   sensitive   = true
+  ephemeral   = true
 }
 
 variable "observability_vendor" {
