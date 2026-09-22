@@ -107,3 +107,8 @@ variable "load_balancer_security_group_id" {
   default     = null
   description = "The security group ID to use for the main load balancer. If not provided, a new security group will be created."
 }
+
+variable "region" {
+  type        = string
+  description = "AWS region to deploy resources."
+}

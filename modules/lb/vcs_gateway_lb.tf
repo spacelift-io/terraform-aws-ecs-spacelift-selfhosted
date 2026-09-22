@@ -2,6 +2,7 @@ resource "aws_lb" "vcs_gateway" {
   count = var.vcs_gateway_service_security_group_id != null ? 1 : 0
 
   name               = "vcs-gateway-lb-${var.suffix}"
+  region             = var.region
   load_balancer_type = "application"
   idle_timeout       = 3600
   security_groups    = [aws_security_group.vcs_gateway_lb_sg[0].id]
@@ -12,7 +13,8 @@ resource "aws_lb" "vcs_gateway" {
 resource "aws_lb_target_group" "vcs_gateway" {
   count = var.vcs_gateway_service_security_group_id != null ? 1 : 0
 
-  name = "vcs-gateway-tf-${var.suffix}"
+  name   = "vcs-gateway-tf-${var.suffix}"
+  region = var.region
 
   port                 = var.vcs_gateway_external_port
   protocol             = "HTTP"
@@ -35,6 +37,7 @@ resource "aws_lb_listener" "vcs_gateway" {
   count = var.vcs_gateway_service_security_group_id != null ? 1 : 0
 
   load_balancer_arn = aws_lb.vcs_gateway[0].arn
+  region            = var.region
   port              = 443
   protocol          = "HTTPS"
   certificate_arn   = var.vcs_gateway_certificate_arn

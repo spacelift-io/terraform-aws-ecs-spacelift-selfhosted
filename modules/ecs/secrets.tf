@@ -1,8 +1,10 @@
 resource "aws_secretsmanager_secret" "shared_secrets" {
   name                    = "spacelift/shared-secrets-${var.suffix}"
+  region                  = var.aws_region
   description             = "Secrets that are used by the Spacelift ECS services"
   recovery_window_in_days = 0
 }
+
 locals {
   payload = jsonencode({
     LICENSE_TOKEN      = try(tostring(var.license_token), "")
@@ -16,6 +18,7 @@ locals {
 }
 
 resource "aws_secretsmanager_secret_version" "shared_secrets" {
+  region           = var.aws_region
   secret_id        = aws_secretsmanager_secret.shared_secrets.id
   secret_string_wo = local.payload
 
