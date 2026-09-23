@@ -119,6 +119,7 @@ variable "license_token" {
   type        = string
   description = "The license token for selfhosted, issued by Spacelift. It'll be stored in Secrets Manager using write-only attribute to prevent storage in state file."
   sensitive   = true
+  ephemeral   = true
   default     = null
   # We don't mark it as 'ephemeral' because we use the sha256 value to calculate it for triggering secret updates.
 }
