@@ -336,6 +336,49 @@ The Spacelift server supports two types of message queues:
    }
    ```
 
+### RDS passwordless authentication (IAM auth)
+
+Set `rds_iam_auth` to give the server, drain and VCS gateway task roles `rds-db:connect` on a database user, so they authenticate with short-lived IAM tokens instead of a password:
+
+```hcl
+rds_iam_auth = {
+  cluster_resource_id = module.spacelift_infra.rds_cluster_resource_id
+  db_username         = "spacelift_iam"
+}
+```
+
+This module doesn't create the database, so the cluster resource ID has to be passed in. With an external database, take the `cluster-ABC...` resource ID (not the cluster identifier) from wherever you manage it.
+
+`db_username` covers the IAM permissions and the service environment. It doesn't decide who you connect as - the connection string does, and it has to name the IAM user, not the master one. From v3.2.0, [terraform-aws-spacelift-selfhosted](https://github.com/spacelift-io/terraform-aws-spacelift-selfhosted) writes passwordless strings for `rds_iam_username` into the same secret, so you only point at different keys:
+
+```diff
+ sensitive_env_vars = [
+   {
+     name      = "DATABASE_URL"
+-    valueFrom = "${module.spacelift_infra.database_secret_arn}:DATABASE_URL::"
++    valueFrom = "${module.spacelift_infra.database_secret_arn}:DATABASE_IAM_URL::"
+   },
+   {
+     name      = "DATABASE_READ_ONLY_URL"
+-    valueFrom = "${module.spacelift_infra.database_secret_arn}:DATABASE_READ_ONLY_URL::"
++    valueFrom = "${module.spacelift_infra.database_secret_arn}:DATABASE_IAM_READ_ONLY_URL::"
+   }
+ ]
+```
+
+With a database you manage yourself, build the same thing by hand: the usual connection string with the IAM user and no password.
+
+> [!IMPORTANT]
+> This user is **not** created for you, and it is **not** the master user. It's a separate Postgres user that you have to create explicitly, connected as the master user:
+>
+> ```sql
+> CREATE USER spacelift_iam;
+> GRANT rds_iam TO spacelift_iam;
+> GRANT spacelift TO spacelift_iam;
+> ```
+>
+> The last grant makes the IAM user a member of the `spacelift` role that owns the database, so it can alter the schema and not just read and write rows. Don't grant `rds_iam` to the master user itself - it loses password authentication, and with it your break-glass access.
+
 ## 🚀 Release
 
 We have a [GitHub workflow](./.github/workflows/release.yaml) to automatically create a tag and a release based on the version number in [`.spacelift/config.yml`](./.spacelift/config.yml) file.
