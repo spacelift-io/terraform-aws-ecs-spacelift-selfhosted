@@ -244,6 +244,7 @@ module "container_definitions" {
 resource "aws_ecs_task_definition" "server" {
   family = "server-${var.suffix}"
 
+  region                   = var.aws_region
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
   cpu                      = var.server_cpu
@@ -256,6 +257,7 @@ resource "aws_ecs_task_definition" "server" {
 resource "aws_ecs_task_definition" "drain" {
   family = "drain-${var.suffix}"
 
+  region                   = var.aws_region
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
   cpu                      = var.drain_cpu
@@ -270,6 +272,7 @@ resource "aws_ecs_task_definition" "vcs_gateway" {
 
   family = "vcs-gateway-${var.suffix}"
 
+  region                   = var.aws_region
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
   cpu                      = var.vcs_gateway_cpu

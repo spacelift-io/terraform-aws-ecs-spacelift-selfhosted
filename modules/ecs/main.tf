@@ -1,5 +1,6 @@
 resource "aws_ecs_cluster" "cluster" {
-  name = "spacelift-${var.suffix}"
+  name   = "spacelift-${var.suffix}"
+  region = var.aws_region
 
   setting {
     name  = "containerInsights"
@@ -9,6 +10,7 @@ resource "aws_ecs_cluster" "cluster" {
 
 resource "aws_ecs_cluster_capacity_providers" "cluster" {
   cluster_name = aws_ecs_cluster.cluster.name
+  region       = var.aws_region
 
   capacity_providers = ["FARGATE"]
 
@@ -22,6 +24,7 @@ resource "aws_ecs_cluster_capacity_providers" "cluster" {
 resource "aws_ecs_service" "server" {
   name    = coalesce(var.server_service_name, "server")
   cluster = aws_ecs_cluster.cluster.id
+  region  = var.aws_region
 
   desired_count   = var.server_desired_count
   task_definition = aws_ecs_task_definition.server.arn
@@ -74,6 +77,7 @@ resource "aws_ecs_service" "server" {
 resource "aws_ecs_service" "drain" {
   name    = coalesce(var.drain_service_name, "drain")
   cluster = aws_ecs_cluster.cluster.id
+  region  = var.aws_region
 
   desired_count   = var.drain_desired_count
   task_definition = aws_ecs_task_definition.drain.arn
@@ -101,6 +105,7 @@ resource "aws_ecs_service" "vcs_gateway" {
 
   name    = coalesce(var.vcs_gateway_service_name, "vcs-gateway")
   cluster = aws_ecs_cluster.cluster.id
+  region  = var.aws_region
 
   desired_count   = var.vcs_gateway_desired_count
   task_definition = aws_ecs_task_definition.vcs_gateway[0].arn
