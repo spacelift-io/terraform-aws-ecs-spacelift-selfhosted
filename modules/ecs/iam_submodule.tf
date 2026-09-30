@@ -6,7 +6,7 @@ module "iam_roles_and_policies" {
   aws_partition  = var.aws_partition
 
   secrets_manager_secret_arns = concat(
-    [aws_secretsmanager_secret.shared_secrets.arn],
+    [local.shared_secrets_arn],
     local.use_registry_credentials ? [local.registry_credentials_secret_arn] : [],
     var.secrets_manager_secret_arns
   )
