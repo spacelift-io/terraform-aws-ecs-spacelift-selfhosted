@@ -1,6 +1,7 @@
 resource "aws_lb" "mqtt" {
   count              = var.mqtt_broker_type == "builtin" ? 1 : 0
   name               = "spacelift-mqtt-${var.suffix}"
+  region             = var.region
   security_groups    = [local.load_balancer_security_group_id]
   subnets            = var.mqtt_lb_subnets
   load_balancer_type = "network"
@@ -10,6 +11,7 @@ resource "aws_lb" "mqtt" {
 resource "aws_lb_target_group" "mqtt" {
   count       = var.mqtt_broker_type == "builtin" ? 1 : 0
   name        = "spacelift-mqtt-tg-${var.suffix}"
+  region      = var.region
   port        = var.mqtt_port
   protocol    = "TCP"
   target_type = "ip"
@@ -18,6 +20,7 @@ resource "aws_lb_target_group" "mqtt" {
 
 resource "aws_lb_listener" "mqtt" {
   count             = var.mqtt_broker_type == "builtin" ? 1 : 0
+  region            = var.region
   load_balancer_arn = aws_lb.mqtt[0].arn
   port              = var.mqtt_port
   protocol          = "TCP"

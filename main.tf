@@ -39,9 +39,9 @@ module "lb" {
 
   suffix = local.suffix
   vpc_id = var.vpc_id
+  region = var.region
 
   drain_security_group_id = var.drain_security_group_id
-
 
   create_server_lb          = local.create_server_lb
   server_port               = local.server_port

@@ -2,6 +2,7 @@ resource "aws_lb" "server" {
   count = var.create_server_lb ? 1 : 0
 
   name               = coalesce(var.server_lb_name, "server-lb-${var.suffix}")
+  region             = var.region
   load_balancer_type = "application"
   security_groups    = [local.load_balancer_security_group_id]
   subnets            = var.server_lb_subnets
@@ -11,7 +12,8 @@ resource "aws_lb" "server" {
 resource "aws_lb_target_group" "server" {
   count = var.create_server_lb ? 1 : 0
 
-  name = "spacelift-server-tf-${var.suffix}"
+  name   = "spacelift-server-tf-${var.suffix}"
+  region = var.region
 
   deregistration_delay = 90
   slow_start           = 45
@@ -31,6 +33,7 @@ resource "aws_lb_target_group" "server" {
 resource "aws_lb_listener" "server" {
   count = var.create_server_lb ? 1 : 0
 
+  region            = var.region
   load_balancer_arn = aws_lb.server[0].arn
   port              = 443
   protocol          = "HTTPS"
