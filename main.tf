@@ -120,6 +120,8 @@ module "ecs" {
   workspace_bucket_arn                 = "arn:${data.aws_partition.current.partition}:s3:::${var.workspace_bucket_name}"
   workspace_bucket_name                = var.workspace_bucket_name
 
+  rds_iam_auth = var.rds_iam_auth
+
   encryption_type        = var.encryption_type
   rsa_private_key        = var.rsa_private_key
   kms_encryption_key_arn = var.kms_encryption_key_arn

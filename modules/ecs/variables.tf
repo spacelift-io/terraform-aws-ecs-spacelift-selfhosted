@@ -543,3 +543,11 @@ variable "otel_config" {
   })
   description = "Configuration for the OpenTelemetry Collector sidecar. The collector uses standard ports: 2000 (X-Ray UDP), 4317 (OTLP gRPC), and 4318 (OTLP HTTP). Set log_configuration to enable CloudWatch logging for debugging."
 }
+
+variable "rds_iam_auth" {
+  type = object({
+    cluster_resource_id = string
+    db_username         = string
+  })
+  description = "Grants the task roles rds-db:connect on the given database user. Null keeps password authentication."
+}

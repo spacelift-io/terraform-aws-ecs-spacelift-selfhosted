@@ -151,6 +151,12 @@ locals {
         value = var.sqs_queues.webhooks_url
       }
     ] : [],
+    var.rds_iam_auth != null ? [
+      {
+        name  = "DATABASE_IAM_AUTH"
+        value = "true"
+      }
+    ] : [],
     var.vcs_gateway_domain != null ? [
       {
         name  = "VCS_GATEWAY_ENDPOINT"
