@@ -190,6 +190,8 @@ module "container_definitions" {
   backend_image     = local.backend_image
   backend_image_tag = var.backend_image_tag
 
+  registry_credentials_secret_arn = one(aws_secretsmanager_secret.registry_credentials[*].arn)
+
   # Shared environment variables
   shared_envs = local.shared_envs
 

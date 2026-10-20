@@ -6,6 +6,7 @@ module "iam_roles_and_policies" {
 
   secrets_manager_secret_arns = concat(
     [aws_secretsmanager_secret.shared_secrets.arn],
+    aws_secretsmanager_secret.registry_credentials[*].arn,
     var.secrets_manager_secret_arns
   )
 

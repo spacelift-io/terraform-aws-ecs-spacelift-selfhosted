@@ -115,6 +115,22 @@ variable "launcher_image_tag" {
   description = "The tag of the launcher image."
 }
 
+variable "registry_credentials" {
+  type = object({
+    username = string
+    password = string
+  })
+  description = <<-EOT
+    Username and password for the registry that hosts backend_image, for example registry.spacelift.io. Leave null when the execution role can already pull the image, as with ECR in the same account.
+
+    The module stores them in a Secrets Manager secret using a write-only attribute, so the password stays out of the state. The server, drain and VCS gateway containers pull with it through `repositoryCredentials`.
+
+    With your own execution_role_arn, give that role `secretsmanager:GetSecretValue` on the `registry_credentials_secret_arn` output.
+  EOT
+  sensitive   = true
+  default     = null
+}
+
 variable "license_token" {
   type        = string
   description = "The license token for selfhosted, issued by Spacelift. It'll be stored in Secrets Manager using write-only attribute to prevent storage in state file."

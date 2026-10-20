@@ -17,3 +17,8 @@ output "vcs_gateway_service_name" {
   value       = one(aws_ecs_service.vcs_gateway[*].name)
   description = "The name of the VCS gateway ECS service"
 }
+
+output "registry_credentials_secret_arn" {
+  value       = one(aws_secretsmanager_secret.registry_credentials[*].arn)
+  description = "The ARN of the Secrets Manager secret with the registry credentials"
+}
