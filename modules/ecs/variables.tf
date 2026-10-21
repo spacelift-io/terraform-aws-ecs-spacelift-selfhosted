@@ -27,6 +27,15 @@ variable "backend_image_tag" {
   description = "The ECR image tag to use for the server and drain services."
 }
 
+variable "registry_credentials" {
+  type = object({
+    username = string
+    password = string
+  })
+  description = "Username and password for the registry that hosts backend_image. Null when the execution role can already pull the image."
+  sensitive   = true
+}
+
 variable "admin_username" {
   type        = string
   description = "The admin username for the initial setup. Can be set to an empty string after the initial setup."

@@ -267,6 +267,8 @@ resource "aws_iam_role" "spacelift_drain_role" {
 }
 ```
 
+If you also set `registry_credentials`, give the execution role `secretsmanager:GetSecretValue` on the `registry_credentials_secret_arn` output. See [Pull images from registry.spacelift.io](#pull-images-from-registryspaceliftio).
+
 ### Deploy VCS Gateway service
 
 If you'd like to use [VCS Agent Pools](https://docs.spacelift.io/concepts/vcs-agent-pools.html), you'll need to deploy the VCS Gateway service. The service is responsible for the communication between the VCS Agents and the Spacelift backend.
@@ -378,6 +380,34 @@ With a database you manage yourself, build the same thing by hand: the usual con
 > ```
 >
 > The last grant makes the IAM user a member of the `spacelift` role that owns the database, so it can alter the schema and not just read and write rows. Don't grant `rds_iam` to the master user itself - it loses password authentication, and with it your break-glass access.
+
+### Pull images from registry.spacelift.io
+
+To pull the backend image straight from `registry.spacelift.io`, point `backend_image` at it and pass your registry credentials:
+
+```hcl
+module "spacelift_services" {
+  source = "github.com/spacelift-io/terraform-aws-ecs-spacelift-selfhosted"
+
+  backend_image     = "registry.spacelift.io/deploy/backend"
+  backend_image_tag = local.spacelift_version
+
+  registry_credentials = {
+    username = "<your-registry-username>"
+    password = "<your-registry-password>"
+  }
+
+  # Further configuration removed for brevity
+}
+```
+
+The module stores the credentials in a Secrets Manager secret using a write-only attribute, so the password doesn't end up in the state. It sets [`repositoryCredentials`](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/private-auth.html) on the server, drain and VCS gateway containers, and gives the execution role `secretsmanager:GetSecretValue` on the secret.
+
+ECS reads the secret only when a task starts. After you change the password, running tasks keep working, and new tasks use the new password.
+
+If you bring your own `execution_role_arn`, the module can't change its policy. Give the role `secretsmanager:GetSecretValue` on the `registry_credentials_secret_arn` output yourself.
+
+Leave `registry_credentials` unset when you mirror the image to your own ECR repository, as before.
 
 ## 🚀 Release
 

@@ -87,6 +87,8 @@ module "ecs" {
   launcher_image     = var.launcher_image
   launcher_image_tag = var.launcher_image_tag
 
+  registry_credentials = var.registry_credentials
+
   license_token = var.license_token
 
   server_port                  = local.server_port

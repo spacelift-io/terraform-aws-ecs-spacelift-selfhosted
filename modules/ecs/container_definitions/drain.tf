@@ -95,6 +95,9 @@ locals {
         },
         length(local.drain_sidecar_dependencies) > 0 ? {
           dependsOn = local.drain_sidecar_dependencies
+        } : {},
+        var.registry_credentials_secret_arn != null ? {
+          repositoryCredentials = { credentialsParameter = var.registry_credentials_secret_arn }
         } : {}
       )
     ],
