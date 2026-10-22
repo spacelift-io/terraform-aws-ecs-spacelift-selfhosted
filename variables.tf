@@ -97,7 +97,7 @@ variable "admin_password" {
 
 variable "backend_image" {
   type        = string
-  description = "The ECR image to use for the server and drain services."
+  description = "The image to use for the server, drain and VCS gateway services, for example an ECR repository URL or registry.spacelift.io/deploy/backend."
 }
 
 variable "backend_image_tag" {
@@ -121,6 +121,32 @@ variable "license_token" {
   sensitive   = true
   default     = null
   # We don't mark it as 'ephemeral' because we use the sha256 value to calculate it for triggering secret updates.
+}
+
+variable "registry_credentials" {
+  type = object({
+    username = optional(string, "spacelift")
+    password = string
+  })
+  description = <<-EOT
+    Username and password for the registry that hosts backend_image, for example registry.spacelift.io. They'll be stored in Secrets Manager using write-only attribute to prevent storage in state file, and the server, drain and VCS gateway containers pull the image with them through repositoryCredentials.
+
+    Leave null when the execution role can already pull the image, as with ECR in the same account. Can't be combined with registry_credentials_secret_arn.
+  EOT
+  sensitive   = true
+  default     = null
+  # We don't mark it as 'ephemeral' because we use the sha256 value to calculate it for triggering secret updates.
+}
+
+variable "registry_credentials_secret_arn" {
+  type        = string
+  description = "The ARN of an existing Secrets Manager secret with the registry credentials for backend_image. The secret must be JSON with exactly the 'username' and 'password' keys. Use it instead of registry_credentials to keep the password out of plan files. Can't be combined with registry_credentials."
+  default     = null
+
+  validation {
+    condition     = var.registry_credentials_secret_arn == null || var.registry_credentials == null
+    error_message = "Set either registry_credentials or registry_credentials_secret_arn, not both."
+  }
 }
 
 variable "deliveries_bucket_name" {

@@ -6,6 +6,7 @@ module "iam_roles_and_policies" {
 
   secrets_manager_secret_arns = concat(
     [aws_secretsmanager_secret.shared_secrets.arn],
+    local.registry_credentials_secret_arn != null ? [local.registry_credentials_secret_arn] : [],
     var.secrets_manager_secret_arns
   )
 
