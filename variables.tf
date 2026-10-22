@@ -131,21 +131,26 @@ variable "registry_credentials" {
   description = <<-EOT
     Username and password for the registry that hosts backend_image, for example registry.spacelift.io. They'll be stored in Secrets Manager using write-only attribute to prevent storage in state file, and the server, drain and VCS gateway containers pull the image with them through repositoryCredentials.
 
-    Leave null when the execution role can already pull the image, as with ECR in the same account. Can't be combined with registry_credentials_secret_arn.
+    Leave null when the execution role can already pull the image, as with ECR in the same account. Can't be combined with byo_registry_credentials_secret.
   EOT
   sensitive   = true
   default     = null
   # We don't mark it as 'ephemeral' because we use the sha256 value to calculate it for triggering secret updates.
 }
 
-variable "registry_credentials_secret_arn" {
-  type        = string
-  description = "The ARN of an existing Secrets Manager secret with the registry credentials for backend_image. The secret must be JSON with exactly the 'username' and 'password' keys. Use it instead of registry_credentials to keep the password out of plan files. Can't be combined with registry_credentials."
+variable "byo_registry_credentials_secret" {
+  # An object instead of just a string: the object is known to be non-null at plan time
+  # even when the ARN comes from a secret created in the same apply, so the check below
+  # runs during plan instead of failing halfway through apply.
+  type = object({
+    arn = string
+  })
+  description = "An existing Secrets Manager secret with the registry credentials for backend_image. The secret must be JSON with exactly the 'username' and 'password' keys. Use it instead of registry_credentials to keep the password out of plan files. Can't be combined with registry_credentials."
   default     = null
 
   validation {
-    condition     = var.registry_credentials_secret_arn == null || var.registry_credentials == null
-    error_message = "Set either registry_credentials or registry_credentials_secret_arn, not both."
+    condition     = var.byo_registry_credentials_secret == null || var.registry_credentials == null
+    error_message = "Set either registry_credentials or byo_registry_credentials_secret, not both."
   }
 }
 

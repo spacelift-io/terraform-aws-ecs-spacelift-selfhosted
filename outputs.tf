@@ -65,5 +65,5 @@ output "vcs_gateway_service_name" {
 
 output "registry_credentials_secret_arn" {
   value       = module.ecs.registry_credentials_secret_arn
-  description = "The ARN of the Secrets Manager secret with the registry credentials. Null when neither registry_credentials nor registry_credentials_secret_arn is set."
+  description = "The ARN of the Secrets Manager secret with the registry credentials. Null when neither registry_credentials nor byo_registry_credentials_secret is set."
 }

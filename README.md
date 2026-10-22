@@ -298,13 +298,15 @@ module "spacelift_services" {
 
   backend_image                   = "registry.spacelift.io/deploy/backend"
   backend_image_tag               = local.spacelift_version
-  registry_credentials_secret_arn = aws_secretsmanager_secret.registry_credentials.arn
+  byo_registry_credentials_secret = {
+    arn = aws_secretsmanager_secret.registry_credentials.arn
+  }
 
   # Further configuration removed for brevity
 }
 ```
 
-`registry_credentials` and `registry_credentials_secret_arn` can't be set together. Some things to keep in mind:
+`registry_credentials` and `byo_registry_credentials_secret` can't be set together. Some things to keep in mind:
 
 - ECS reads the secret only when a task starts. After you change the password, running tasks keep working and new tasks use the new password.
 - If you bring your own `execution_role_arn`, the module can't change its policy. Give the role `secretsmanager:GetSecretValue` on the `registry_credentials_secret_arn` output yourself.

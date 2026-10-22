@@ -90,7 +90,7 @@ module "ecs" {
   license_token = var.license_token
 
   registry_credentials            = var.registry_credentials
-  registry_credentials_secret_arn = var.registry_credentials_secret_arn
+  byo_registry_credentials_secret = var.byo_registry_credentials_secret
 
   server_port                  = local.server_port
   mqtt_broker_port             = local.mqtt_port

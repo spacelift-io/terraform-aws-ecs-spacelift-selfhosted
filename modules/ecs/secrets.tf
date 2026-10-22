@@ -33,8 +33,11 @@ locals {
   registry_credentials_payload     = jsonencode(var.registry_credentials)
   registry_credentials_version_num = parseint(substr(sha256(local.registry_credentials_payload), 0, 8), 16)
 
+  # Known at plan time even when the BYO secret's ARN is not.
+  use_registry_credentials = local.create_registry_credentials_secret || var.byo_registry_credentials_secret != null
+
   # Null when the image is pulled without credentials.
-  registry_credentials_secret_arn = local.create_registry_credentials_secret ? aws_secretsmanager_secret.registry_credentials[0].arn : var.registry_credentials_secret_arn
+  registry_credentials_secret_arn = local.create_registry_credentials_secret ? aws_secretsmanager_secret.registry_credentials[0].arn : try(var.byo_registry_credentials_secret.arn, null)
 }
 
 resource "aws_secretsmanager_secret" "registry_credentials" {

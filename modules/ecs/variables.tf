@@ -394,9 +394,11 @@ variable "registry_credentials" {
   sensitive   = true
 }
 
-variable "registry_credentials_secret_arn" {
-  type        = string
-  description = "The ARN of an existing Secrets Manager secret with the registry credentials for backend_image. Null when not needed."
+variable "byo_registry_credentials_secret" {
+  type = object({
+    arn = string
+  })
+  description = "An existing Secrets Manager secret with the registry credentials for backend_image. Null when not needed."
 }
 
 variable "observability_vendor" {
