@@ -271,14 +271,14 @@ If you also pull the backend image with registry credentials, give the execution
 
 ### Pull the backend image with registry credentials
 
-To pull the backend image from a registry that needs a username and password, such as `registry.spacelift.io`, point `backend_image` at it and pass the credentials:
+By default the module pulls the backend image from `registry.spacelift.io/deploy/backend`, the Spacelift registry. It needs the registry username and password of your license:
 
 ```hcl
 module "spacelift_services" {
   source = "github.com/spacelift-io/terraform-aws-ecs-spacelift-selfhosted"
 
-  backend_image     = "registry.spacelift.io/deploy/backend"
-  backend_image_tag = local.spacelift_version
+  backend_image_tag  = local.spacelift_version
+  launcher_image_tag = local.spacelift_version
 
   registry_credentials = {
     password = var.spacelift_registry_password # username defaults to "spacelift"
@@ -296,8 +296,9 @@ To keep the password out of plan files as well, create the secret yourself and p
 module "spacelift_services" {
   source = "github.com/spacelift-io/terraform-aws-ecs-spacelift-selfhosted"
 
-  backend_image                   = "registry.spacelift.io/deploy/backend"
-  backend_image_tag               = local.spacelift_version
+  backend_image_tag  = local.spacelift_version
+  launcher_image_tag = local.spacelift_version
+
   byo_registry_credentials_secret = {
     arn = aws_secretsmanager_secret.registry_credentials.arn
   }
@@ -306,7 +307,9 @@ module "spacelift_services" {
 }
 ```
 
-`registry_credentials` and `byo_registry_credentials_secret` can't be set together. Some things to keep in mind:
+If you mirror the images to your own registry, for example ECR because the ECS subnets have no internet access or you run in GovCloud, set `backend_image` and `launcher_image` to it. ECR in the same account needs no credentials, the execution role pulls the image. Any other private registry works with the same two inputs.
+
+`registry_credentials` and `byo_registry_credentials_secret` can't be set together, and an image from `registry.spacelift.io` without either of them fails at plan. Some things to keep in mind:
 
 - ECS reads the secret only when a task starts. After you change the password, running tasks keep working and new tasks use the new password.
 - If you bring your own `execution_role_arn`, the module can't change its policy. Give the role `secretsmanager:GetSecretValue` on the `registry_credentials_secret_arn` output yourself.

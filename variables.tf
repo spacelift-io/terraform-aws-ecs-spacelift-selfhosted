@@ -97,7 +97,13 @@ variable "admin_password" {
 
 variable "backend_image" {
   type        = string
-  description = "The image to use for the server, drain and VCS gateway services, for example an ECR repository URL or registry.spacelift.io/deploy/backend."
+  description = "The image to use for the server, drain and VCS gateway services, without the tag. Defaults to the Spacelift registry, which needs registry_credentials or byo_registry_credentials_secret. Set it to your own registry, for example an ECR repository URL, if you mirror the images there."
+  default     = "registry.spacelift.io/deploy/backend"
+
+  validation {
+    condition     = !startswith(var.backend_image, "registry.spacelift.io/") || var.registry_credentials != null || var.byo_registry_credentials_secret != null
+    error_message = "Pulling the backend image from registry.spacelift.io needs credentials. Set registry_credentials or byo_registry_credentials_secret."
+  }
 }
 
 variable "backend_image_tag" {
@@ -107,7 +113,8 @@ variable "backend_image_tag" {
 
 variable "launcher_image" {
   type        = string
-  description = "The ECR image to use for the launcher service. This URL shouldn't contain the tag."
+  description = "The launcher image, without the tag. The server passes it to the workers as LAUNCHER_IMAGE. Defaults to the Spacelift registry. Set it to your own registry, for example an ECR repository URL, if you mirror the images there."
+  default     = "registry.spacelift.io/deploy/launcher"
 }
 
 variable "launcher_image_tag" {
