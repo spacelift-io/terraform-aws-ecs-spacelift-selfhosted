@@ -267,6 +267,56 @@ resource "aws_iam_role" "spacelift_drain_role" {
 }
 ```
 
+If you also pull the backend image with registry credentials, give the execution role `secretsmanager:GetSecretValue` on the `registry_credentials_secret_arn` output. See [Pull the backend image with registry credentials](#pull-the-backend-image-with-registry-credentials).
+
+### Pull the backend image with registry credentials
+
+By default the module pulls the backend image from `registry.spacelift.io/deploy/backend`, the Spacelift registry. It needs the registry username and password of your license:
+
+```hcl
+module "spacelift_services" {
+  source = "github.com/spacelift-io/terraform-aws-ecs-spacelift-selfhosted"
+
+  backend_image_tag  = local.spacelift_version
+  launcher_image_tag = local.spacelift_version
+
+  registry_credentials = {
+    password = var.spacelift_registry_password # username defaults to "spacelift"
+  }
+
+  # Further configuration removed for brevity
+}
+```
+
+The module stores the credentials in a Secrets Manager secret using a write-only attribute, so the password doesn't end up in the state.
+
+To keep the password out of plan files as well, create the secret yourself and pass its ARN instead. The secret must be JSON with exactly the `username` and `password` keys, and for `registry.spacelift.io` the username is always `spacelift`. For example, with the AWS CLI in the region where the ECS services run:
+
+```sh
+aws secretsmanager create-secret \
+  --region eu-west-1 \
+  --name spacelift/registry-credentials \
+  --secret-string '{"username":"spacelift","password":"<your-registry-password>"}' \
+  --query ARN --output text
+```
+
+The command prints the ARN of the secret. Pass it to the module:
+
+```hcl
+byo_registry_credentials_secret = {
+  arn = "arn:aws:secretsmanager:eu-west-1:123456789012:secret:spacelift/registry-credentials-AbCdEf"
+}
+```
+
+If you mirror the images to your own registry, for example ECR because the ECS subnets have no internet access or you run in GovCloud, set `backend_image` and `launcher_image` to it. ECR in the same account needs no credentials, the execution role pulls the image. Any other private registry works with the same two inputs.
+
+Some things to keep in mind:
+
+- ECS reads the secret only when a task starts, so after a password change running tasks keep working and new tasks use the new password.
+- If the secret uses a customer-managed KMS key, the execution role also needs `kms:Decrypt` on that key.
+- If you pass your own `server_container_definition`, `drain_container_definitions` or `vcs_gateway_container_definition`, add `repositoryCredentials` to it yourself.
+- The tasks reach the registry over the internet, so the ECS subnets need a NAT gateway or another route out. VPC endpoints for ECR don't cover it.
+
 ### Deploy VCS Gateway service
 
 If you'd like to use [VCS Agent Pools](https://docs.spacelift.io/concepts/vcs-agent-pools.html), you'll need to deploy the VCS Gateway service. The service is responsible for the communication between the VCS Agents and the Spacelift backend.

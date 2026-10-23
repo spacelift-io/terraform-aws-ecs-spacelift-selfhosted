@@ -9,6 +9,11 @@ variable "backend_image_tag" {
   description = "The backend image tag (for DD_VERSION)"
 }
 
+variable "registry_credentials_secret_arn" {
+  type        = string
+  description = "ARN of the secret with the registry credentials for the backend image. Null to pull without credentials."
+}
+
 # Shared environment variables
 variable "shared_envs" {
   type = list(object({

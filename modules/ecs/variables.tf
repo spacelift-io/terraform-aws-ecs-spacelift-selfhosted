@@ -19,7 +19,7 @@ variable "suffix" {
 
 variable "backend_image" {
   type        = string
-  description = "The ECR image to use for the server and drain services."
+  description = "The image to use for the server, drain and VCS gateway services."
 }
 
 variable "backend_image_tag" {
@@ -383,6 +383,22 @@ variable "license_token" {
   type        = string
   description = "The license token for selfhosted, issued by Spacelift. Saved using write-only attribute to prevent storage in state file. Secret versions are automatically managed."
   sensitive   = true
+}
+
+variable "registry_credentials" {
+  type = object({
+    username = string
+    password = string
+  })
+  description = "Username and password for the registry that hosts backend_image. Saved using write-only attribute to prevent storage in state file. Null when not needed."
+  sensitive   = true
+}
+
+variable "byo_registry_credentials_secret" {
+  type = object({
+    arn = string
+  })
+  description = "An existing Secrets Manager secret with the registry credentials for backend_image. Null when not needed."
 }
 
 variable "observability_vendor" {
