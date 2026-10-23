@@ -290,7 +290,19 @@ module "spacelift_services" {
 
 The module stores the credentials in a Secrets Manager secret using a write-only attribute, so the password doesn't end up in the state. It sets [`repositoryCredentials`](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/private-auth.html) on the server, drain and VCS gateway containers, and gives the execution role `secretsmanager:GetSecretValue` on the secret.
 
-To keep the password out of plan files as well, create the secret yourself and pass its ARN instead. The secret must be JSON with exactly the `username` and `password` keys:
+To keep the password out of plan files as well, create the secret yourself and pass its ARN instead. The secret must be JSON with exactly the `username` and `password` keys, and for `registry.spacelift.io` the username is always `spacelift`. For example, with the AWS CLI in the region where the ECS services run:
+
+```sh
+read -rs SPACELIFT_REGISTRY_PASSWORD # paste the registry password of your license, it isn't echoed
+
+aws secretsmanager create-secret \
+  --region eu-west-1 \
+  --name spacelift/registry-credentials \
+  --secret-string "{\"username\":\"spacelift\",\"password\":\"$SPACELIFT_REGISTRY_PASSWORD\"}" \
+  --query ARN --output text
+```
+
+The command prints the ARN of the secret. Pass it to the module:
 
 ```hcl
 module "spacelift_services" {
@@ -300,7 +312,7 @@ module "spacelift_services" {
   launcher_image_tag = local.spacelift_version
 
   byo_registry_credentials_secret = {
-    arn = aws_secretsmanager_secret.registry_credentials.arn
+    arn = "arn:aws:secretsmanager:eu-west-1:123456789012:secret:spacelift/registry-credentials-AbCdEf"
   }
 
   # Further configuration removed for brevity
@@ -311,7 +323,7 @@ If you mirror the images to your own registry, for example ECR because the ECS s
 
 `registry_credentials` and `byo_registry_credentials_secret` can't be set together, and an image from `registry.spacelift.io` without either of them fails at plan. Some things to keep in mind:
 
-- ECS reads the secret only when a task starts. After you change the password, running tasks keep working and new tasks use the new password.
+- ECS reads the secret only when a task starts. After you change the password, running tasks keep working and new tasks use the new password. With your own secret, change it with `aws secretsmanager put-secret-value --secret-id spacelift/registry-credentials --secret-string '...'` and the same JSON.
 - If you bring your own `execution_role_arn`, the module can't change its policy. Give the role `secretsmanager:GetSecretValue` on the `registry_credentials_secret_arn` output yourself.
 - If the secret uses a customer-managed KMS key, the execution role also needs `kms:Decrypt` on that key.
 - If you pass your own `server_container_definition`, `drain_container_definitions` or `vcs_gateway_container_definition`, add `repositoryCredentials` to it yourself.
