@@ -293,12 +293,10 @@ The module stores the credentials in a Secrets Manager secret using a write-only
 To keep the password out of plan files as well, create the secret yourself and pass its ARN instead. The secret must be JSON with exactly the `username` and `password` keys, and for `registry.spacelift.io` the username is always `spacelift`. For example, with the AWS CLI in the region where the ECS services run:
 
 ```sh
-read -rs SPACELIFT_REGISTRY_PASSWORD # paste the registry password of your license, it isn't echoed
-
 aws secretsmanager create-secret \
   --region eu-west-1 \
   --name spacelift/registry-credentials \
-  --secret-string "{\"username\":\"spacelift\",\"password\":\"$SPACELIFT_REGISTRY_PASSWORD\"}" \
+  --secret-string '{"username":"spacelift","password":"<your-registry-password>"}' \
   --query ARN --output text
 ```
 
