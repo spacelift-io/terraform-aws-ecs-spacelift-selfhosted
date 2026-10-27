@@ -10,7 +10,8 @@ This example uses Grafana Cloud as the destination for traces and metrics, but t
 
 ```hcl
 module "spacelift" {
-  source = "github.com/spacelift-io/terraform-aws-ecs-spacelift-selfhosted"
+  source  = "spacelift-io/ecs-spacelift-selfhosted/aws"
+  version = "~> 3.1"
 
   # ... other required variables ...
 

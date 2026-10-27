@@ -8,7 +8,8 @@ This module supports injecting a Datadog agent sidecar container into all ECS se
 
 ```hcl
 module "spacelift" {
-  source = "github.com/spacelift-io/terraform-aws-ecs-spacelift-selfhosted"
+  source  = "spacelift-io/ecs-spacelift-selfhosted/aws"
+  version = "~> 3.1"
 
   # ... other required variables ...
 

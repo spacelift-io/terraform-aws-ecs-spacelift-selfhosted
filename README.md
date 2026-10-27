@@ -81,7 +81,7 @@ license_token = "<your-license-token>"  # Automatically versioned
 
 ## Module registries
 
-The module is also available [on the OpenTofu registry](https://search.opentofu.org/module/spacelift-io/ecs-spacelift-selfhosted/aws/latest) where you can browse the input and output variables.
+The module is published on both the [Terraform registry](https://registry.terraform.io/modules/spacelift-io/ecs-spacelift-selfhosted/aws/latest) and the [OpenTofu registry](https://search.opentofu.org/module/spacelift-io/ecs-spacelift-selfhosted/aws/latest) under the same address, so the snippets below work with either tool. Both registries list the input and output variables.
 
 ## State storage
 
@@ -95,7 +95,7 @@ Check out the [Terraform](https://developer.hashicorp.com/terraform/language/bac
 ```hcl
 locals {
   region            = "eu-west-1"
-  spacelift_version = "v3.4.0"
+  spacelift_version = "v6.4.0"
   website_domain    = "spacelift.mycorp.io"
   website_endpoint  = "https://${local.website_domain}"
   mqtt_domain       = "spacelift-mqtt.mycorp.io"
@@ -103,14 +103,17 @@ locals {
 }
 
 module "spacelift_infra" {
-  source = "github.com/spacelift-io/terraform-aws-spacelift-selfhosted?ref=v1.10.0"
+  source  = "spacelift-io/spacelift-selfhosted/aws"
+  version = "~> 3.3"
 
-  region           = local.region
-  website_endpoint = local.website_endpoint
+  region             = local.region
+  website_endpoint   = local.website_endpoint
+  rds_engine_version = "18.3"
 }
 
 module "spacelift_services" {
-  source = "github.com/spacelift-io/terraform-aws-ecs-spacelift-selfhosted"
+  source  = "spacelift-io/ecs-spacelift-selfhosted/aws"
+  version = "~> 3.1"
 
   region               = local.region
   unique_suffix        = module.spacelift_infra.unique_suffix
@@ -120,18 +123,18 @@ module "spacelift_services" {
 
   license_token = "<your-license-token-issued-by-Spacelift>"
 
-  encryption_type = "kms"
+  encryption_type        = "kms"
   kms_encryption_key_arn = module.spacelift_infra.kms_encryption_key_arn
   kms_signing_key_arn    = module.spacelift_infra.kms_signing_key_arn
 
   secrets_manager_secret_arns = [module.spacelift_infra.database_secret_arn]
-  sensitive_env_vars          = [
+  sensitive_env_vars = [
     {
-      name = "DATABASE_URL"
+      name      = "DATABASE_URL"
       valueFrom = "${module.spacelift_infra.database_secret_arn}:DATABASE_URL::"
     },
     {
-      name = "DATABASE_READ_ONLY_URL"
+      name      = "DATABASE_READ_ONLY_URL"
       valueFrom = "${module.spacelift_infra.database_secret_arn}:DATABASE_READ_ONLY_URL::"
     }
   ]
@@ -141,17 +144,17 @@ module "spacelift_services" {
   launcher_image     = module.spacelift_infra.ecr_launcher_repository_url
   launcher_image_tag = local.spacelift_version
 
-  admin_username = "admin"      # Temporary for the initial setup, will be removed
-  admin_password = "1P@ssw0rd"  # Temporary for the initial setup, will be removed
+  admin_username = "admin"     # Temporary for the initial setup, will be removed
+  admin_password = "1P@ssw0rd" # Temporary for the initial setup, will be removed
 
   vpc_id      = module.spacelift_infra.vpc_id
   ecs_subnets = module.spacelift_infra.private_subnet_ids
 
-  server_lb_subnets           = module.spacelift_infra.public_subnet_ids
-  server_security_group_id    = module.spacelift_infra.server_security_group_id
-  server_lb_certificate_arn   = "<LB certificate ARN>" # Note that this certificate MUST be successfully issued. It cannot be attached to the load balancer in a pending state.
+  server_lb_subnets         = module.spacelift_infra.public_subnet_ids
+  server_security_group_id  = module.spacelift_infra.server_security_group_id
+  server_lb_certificate_arn = "<LB certificate ARN>" # Note that this certificate MUST be successfully issued. It cannot be attached to the load balancer in a pending state.
 
-  drain_security_group_id     = module.spacelift_infra.drain_security_group_id
+  drain_security_group_id = module.spacelift_infra.drain_security_group_id
 
   mqtt_lb_subnets = module.spacelift_infra.public_subnet_ids
 
@@ -190,7 +193,8 @@ If you already run your own load balancer for the server (for example with custo
 
 ```hcl
 module "spacelift_services" {
-  source = "github.com/spacelift-io/terraform-aws-ecs-spacelift-selfhosted"
+  source  = "spacelift-io/ecs-spacelift-selfhosted/aws"
+  version = "~> 3.1"
 
   byo_server_target_group_arns = [aws_lb_target_group.my_server.arn]
 
@@ -208,7 +212,8 @@ You can pass in a log configuration for each service. See [the official document
 
 ```hcl
 module "spacelift_services" {
-  source = "github.com/spacelift-io/terraform-aws-ecs-spacelift-selfhosted"
+  source  = "spacelift-io/ecs-spacelift-selfhosted/aws"
+  version = "~> 3.1"
 
   server_log_configuration = {
     logDriver : "awslogs",
@@ -216,9 +221,9 @@ module "spacelift_services" {
       "awslogs-region" : var.region,
       "awslogs-group" : "/ecs/spacelift-server",
       "awslogs-create-group" : "true",
-      "awslogs-stream-prefix" : "server"
-      "mode": "non-blocking"
-      "max-buffer-size": 25m
+      "awslogs-stream-prefix" : "server",
+      "mode" : "non-blocking",
+      "max-buffer-size" : "25m"
     }
   }
 
@@ -228,9 +233,9 @@ module "spacelift_services" {
       "awslogs-region" : var.region,
       "awslogs-group" : "/ecs/spacelift-drain",
       "awslogs-create-group" : "true",
-      "awslogs-stream-prefix" : "drain"
-      "mode": "non-blocking"
-      "max-buffer-size": 25m
+      "awslogs-stream-prefix" : "drain",
+      "mode" : "non-blocking",
+      "max-buffer-size" : "25m"
     }
   }
 
@@ -242,7 +247,8 @@ module "spacelift_services" {
 
 ```hcl
 module "spacelift_services" {
-  source = "github.com/spacelift-io/terraform-aws-ecs-spacelift-selfhosted"
+  source  = "spacelift-io/ecs-spacelift-selfhosted/aws"
+  version = "~> 3.1"
 
   execution_role_arn = aws_iam_role.execution_role.arn
   server_role_arn    = aws_iam_role.spacelift_server_role.arn
@@ -271,16 +277,17 @@ resource "aws_iam_role" "spacelift_drain_role" {
 
 If you'd like to use [VCS Agent Pools](https://docs.spacelift.io/concepts/vcs-agent-pools.html), you'll need to deploy the VCS Gateway service. The service is responsible for the communication between the VCS Agents and the Spacelift backend.
 
-You will need to create a DNS record for it, then pass the following configuration to the module:
+You will need to create a DNS record for it, then pass the following configuration to the module. The infra module only creates the VCS Gateway security group when you set `create_vcs_gateway = true` on it, otherwise `vcs_gateway_security_group_id` is `null`.
 
 ```hcl
 module "spacelift_services" {
-  source = "github.com/spacelift-io/terraform-aws-ecs-spacelift-selfhosted"
+  source  = "spacelift-io/ecs-spacelift-selfhosted/aws"
+  version = "~> 3.1"
 
-  vcs_gateway_domain = "vcs-gateway.mycorp.io" # The DNS record for the VCS Gateway service, without protocol.
+  vcs_gateway_domain            = "vcs-gateway.mycorp.io" # The DNS record for the VCS Gateway service, without protocol.
   vcs_gateway_security_group_id = module.spacelift_infra.vcs_gateway_security_group_id
-  vcs_gateway_certificate_arn = "<VCS Gateway certificate ARN>" # Note that this certificate MUST be successfully issued. It cannot be attached to the load balancer in a pending state.
-  vcs_gateway_lb_subnets = module.spacelift_infra.public_subnet_ids # The subnets for the load balancer. Make these are public if the LB is internet-facing (default). The LB scheme can be modified with the `vcs_gateway_internal` variable.
+  vcs_gateway_certificate_arn   = "<VCS Gateway certificate ARN>" # Note that this certificate MUST be successfully issued. It cannot be attached to the load balancer in a pending state.
+  vcs_gateway_lb_subnets        = module.spacelift_infra.public_subnet_ids # The subnets for the load balancer. Make sure these are public if the LB is internet-facing (default). The LB scheme can be modified with the `vcs_gateway_internal` variable.
 
   # Further configuration removed for brevity
 }
