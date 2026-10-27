@@ -1,6 +1,6 @@
-
 module "spacelift" {
-  source = "github.com/spacelift-io/terraform-aws-ecs-spacelift-selfhosted"
+  source  = "spacelift-io/ecs-spacelift-selfhosted/aws"
+  version = "~> 3.1"
 
   # ... other required variables ...
 

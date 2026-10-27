@@ -15,7 +15,8 @@ This module supports injecting an AWS OpenTelemetry (OTEL) Collector sidecar con
 
 ```hcl
 module "spacelift" {
-  source = "github.com/spacelift-io/terraform-aws-ecs-spacelift-selfhosted"
+  source  = "spacelift-io/ecs-spacelift-selfhosted/aws"
+  version = "~> 3.1"
 
   # ... other required variables ...
 
@@ -46,8 +47,9 @@ By default, the OTEL collector uses `/etc/ecs/ecs-default-config.yaml` which sen
 ### Advanced Example with Custom Configuration
 
 ```hcl
-module "ecs" {
-  source = "./modules/ecs"
+module "spacelift" {
+  source  = "spacelift-io/ecs-spacelift-selfhosted/aws"
+  version = "~> 3.1"
 
   # ... other required variables ...
 
