@@ -136,7 +136,7 @@ module "spacelift_services" {
     }
   ]
 
-  # Images come from registry.spacelift.io. For air-gapped or other custom setups, set backend_image and launcher_image to your own registry.
+  # Images come from oci.spacelift.io. For air-gapped or other custom setups, set backend_image and launcher_image to your own registry.
   backend_image_tag  = local.spacelift_version
   launcher_image_tag = local.spacelift_version
   registry_credentials = {
