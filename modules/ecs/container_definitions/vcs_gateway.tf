@@ -56,6 +56,9 @@ locals {
         },
         length(local.vcs_gateway_sidecar_dependencies) > 0 ? {
           dependsOn = local.vcs_gateway_sidecar_dependencies
+        } : {},
+        var.registry_credentials_secret_arn != null ? {
+          repositoryCredentials = { credentialsParameter = var.registry_credentials_secret_arn }
         } : {}
       )
     ],

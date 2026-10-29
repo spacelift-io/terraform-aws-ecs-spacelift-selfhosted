@@ -139,10 +139,12 @@ module "spacelift_services" {
     }
   ]
 
-  backend_image      = module.spacelift_infra.ecr_backend_repository_url
+  # Images come from oci.spacelift.io. For air-gapped or other custom setups, set backend_image and launcher_image to your own registry.
   backend_image_tag  = local.spacelift_version
-  launcher_image     = module.spacelift_infra.ecr_launcher_repository_url
   launcher_image_tag = local.spacelift_version
+  registry_credentials = {
+    password = "<your-registry-password-issued-by-Spacelift>" # username defaults to "spacelift"
+  }
 
   admin_username = "admin"     # Temporary for the initial setup, will be removed
   admin_password = "1P@ssw0rd" # Temporary for the initial setup, will be removed
@@ -183,7 +185,7 @@ This module creates:
   - An ECS cluster
   - Two services (server, drain); the cron scheduler runs inside the drain
   - IAM roles and policies for the corresponding services
-  - A SecretsManager secret for storing sensitive environment variables, such as the license token
+  - SecretsManager secrets for sensitive environment variables, such as the license token, and for the registry credentials
 
 Once it succeeded, don't forget to create a DNS record (`CNAME`) for the server and MQTT load balancer (if using the `builtin` broker type).
 
@@ -272,6 +274,15 @@ resource "aws_iam_role" "spacelift_drain_role" {
   # Further configuration removed for brevity
 }
 ```
+
+### Registry credentials
+
+The module keeps `registry_credentials` in a Secrets Manager secret through a write-only attribute, so the password stays out of the state. To keep it out of plan files too, create the secret yourself with exactly `{"username":"spacelift","password":"<your-registry-password>"}` and pass `byo_registry_credentials_secret = { arn = "<secret ARN>" }` instead.
+
+- With your own `execution_role_arn`, grant it `secretsmanager:GetSecretValue` on the `registry_credentials_secret_arn` output. If the secret uses a customer-managed KMS key, the execution role also needs `kms:Decrypt` on it.
+- With your own `server_container_definition`, `drain_container_definitions` or `vcs_gateway_container_definition`, add `repositoryCredentials` to them yourself.
+- The tasks reach the registry over the internet, so the ECS subnets need a NAT gateway or another route out. VPC endpoints for ECR don't cover it.
+- ECS reads the secret only when a task starts: after a password change running tasks keep working and new tasks use the new password.
 
 ### Deploy VCS Gateway service
 
