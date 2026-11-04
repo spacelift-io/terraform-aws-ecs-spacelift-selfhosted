@@ -1,4 +1,6 @@
 resource "aws_secretsmanager_secret" "shared_secrets" {
+  count = var.shared_secrets != null ? 1 : 0
+
   name                    = "spacelift/shared-secrets-${var.suffix}"
   region                  = var.aws_region
   description             = "Secrets that are used by the Spacelift ECS services"
@@ -18,8 +20,11 @@ locals {
 }
 
 resource "aws_secretsmanager_secret_version" "shared_secrets" {
-  region           = var.aws_region
-  secret_id        = aws_secretsmanager_secret.shared_secrets.id
+  count = var.shared_secrets != null ? 1 : 0
+
+  region = var.aws_region
+
+  secret_id        = aws_secretsmanager_secret.shared_secrets[0].id
   secret_string_wo = local.payload
 
   secret_string_wo_version = local.version_num
@@ -38,6 +43,9 @@ locals {
 
   # Null when the image is pulled without credentials.
   registry_credentials_secret_arn = local.create_registry_credentials_secret ? aws_secretsmanager_secret.registry_credentials[0].arn : try(var.byo_registry_credentials_secret.arn, null)
+
+  # The ARN of the shared secrets, either supplied by the caller, or created in this module
+  shared_secrets_arn = var.shared_secrets != null ? var.shared_secrets.arn : aws_secretsmanager_secret.shared_secrets[0].arn
 }
 
 resource "aws_secretsmanager_secret" "registry_credentials" {
