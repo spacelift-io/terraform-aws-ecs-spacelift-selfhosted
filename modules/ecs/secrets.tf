@@ -1,5 +1,5 @@
 resource "aws_secretsmanager_secret" "shared_secrets" {
-  count = var.shared_secrets != null ? 1 : 0
+  count = var.shared_secrets == null ? 1 : 0
 
   name                    = "spacelift/shared-secrets-${var.suffix}"
   region                  = var.aws_region
@@ -20,7 +20,7 @@ locals {
 }
 
 resource "aws_secretsmanager_secret_version" "shared_secrets" {
-  count = var.shared_secrets != null ? 1 : 0
+  count = var.shared_secrets == null ? 1 : 0
 
   region = var.aws_region
 
