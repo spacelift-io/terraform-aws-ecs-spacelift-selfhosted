@@ -393,9 +393,10 @@ With a database you manage yourself, build the same thing by hand: the usual con
 > CREATE USER spacelift_iam;
 > GRANT rds_iam TO spacelift_iam;
 > GRANT spacelift TO spacelift_iam;
+> ALTER ROLE spacelift_iam SET role = 'spacelift';
 > ```
 >
-> The last grant makes the IAM user a member of the `spacelift` role that owns the database, so it can alter the schema and not just read and write rows. Don't grant `rds_iam` to the master user itself - it loses password authentication, and with it your break-glass access.
+> The `spacelift` grant makes the IAM user a member of the `spacelift` role that owns the database, so it can alter the schema and not just read and write rows. The `ALTER ROLE` line makes it act as `spacelift` on every connection, so tables created by later upgrades are owned by `spacelift`, same as with password authentication. If you changed `rds_username`, use that name instead of `spacelift`. Don't grant `rds_iam` to the master user itself - it loses password authentication, and with it your break-glass access.
 
 ### License Token and Secrets
 
