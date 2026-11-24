@@ -308,6 +308,50 @@ This will create an Application Load Balancer and a new ECS service. The ECS ser
 
 Once the service is successfully deployed, don't forget to add [the required environment variables](https://docs.spacelift.io/concepts/vcs-agent-pools.html#private-workers) to the private workers.
 
+### Deploy Spacelift Flows
+
+To deploy [Spacelift Flows](https://docs.spacelift.io/flows/introduction) next to Spacelift, set the `flows` variable. Your license has to include Flows.
+
+The infra module creates the Flows bucket and its KMS key when you set `enable_flows = true` on it, and Flows shares the database cluster with Spacelift. Flows creates its own database on the cluster the first time it starts.
+
+```hcl
+module "spacelift_services" {
+  source  = "spacelift-io/ecs-spacelift-selfhosted/aws"
+  version = "~> 3.1"
+
+  flows = {
+    domain            = "flows.mycorp.io" # The DNS record for Flows, without protocol.
+    certificate_arn   = "<Flows certificate ARN>"
+    organization_name = "My Corp"
+    admin_email       = "admin@mycorp.io"
+    admin_password    = "<Flows admin password>"
+    database_url      = module.spacelift_infra.flows_database_url
+    bucket_name       = module.spacelift_infra.flows_bucket_name
+    kms_key_arn       = module.spacelift_infra.flows_kms_key_arn
+    lb_subnets        = module.spacelift_infra.public_subnet_ids # Make sure these are public if the LB is internet-facing (default). The LB scheme can be modified with `lb_internal`.
+  }
+
+  # Further configuration removed for brevity
+}
+```
+
+This will create an Application Load Balancer, three ECS services (the Flows server, worker and gateway) and an IAM role for them. It also tells the Spacelift server and drain about the Flows instance.
+
+> [!IMPORTANT]
+> Flows requires its own ACM certificate, separate from the server certificate. It must be successfully issued, and valid for the Flows domain (e.g., `flows.mycorp.io`) and for `*.endpoints.flows.mycorp.io`, `oauth.flows.mycorp.io`, `mcp.flows.mycorp.io` and `gateway.flows.mycorp.io`.
+
+Once it succeeded, create DNS records (`CNAME`) for those names that point to the `flows_lb_dns_name` output.
+
+A few things to know:
+
+- The Flows services run in the server's security group by default, because that one can already reach the database. Set `flows.security_group_id` to give them their own, and allow it to connect to the database.
+- The Flows image comes from `oci.spacelift.io` and is pulled with the same registry credentials as the backend image. If you mirror the images, set `flows.image`, for example to the `ecr_flows_backend_repository_url` output of the infra module.
+- Anything else Flows can be configured with, such as email settings, goes through `flows.additional_env_vars` and `flows.sensitive_env_vars`.
+- If you bring your own `execution_role_arn`, it needs access to the two Flows secrets the module creates in Secrets Manager.
+- The Flows agents are not deployed by this module. To configure them, use the `flows_agent_pool_id` output and the token stored in the secret from the `flows_agent_pool_token_secret_arn` output. The token is generated once and never stored in the state.
+
+See a full example in the [examples/with-flows](examples/with-flows) directory.
+
 ## Additional Configuration Options
 
 ### Message Broker Types

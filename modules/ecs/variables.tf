@@ -586,3 +586,48 @@ variable "rds_iam_auth" {
   })
   description = "Grants the task roles rds-db:connect on the given database user. Null keeps password authentication."
 }
+
+variable "flows" {
+  type = object({
+    domain            = string
+    organization_name = string
+    admin_email       = string
+    bucket_name       = string
+    kms_key_arn       = string
+    security_group_id = string
+    image             = string
+    log_configuration = any
+
+    gateway_internal_network_cidr = string
+    additional_env_vars = list(object({
+      name  = string
+      value = string
+    }))
+    sensitive_env_vars = list(object({
+      name      = string
+      valueFrom = string
+    }))
+
+    server_cpu               = number
+    server_memory            = number
+    server_desired_count     = number
+    worker_cpu               = number
+    worker_memory            = number
+    worker_desired_count     = number
+    gateway_cpu              = number
+    gateway_memory           = number
+    gateway_desired_count    = number
+    server_target_group_arn  = string
+    gateway_target_group_arn = string
+  })
+  description = "Spacelift Flows settings. Null when Flows is not deployed, and then nothing is created for it."
+}
+
+variable "flows_secrets" {
+  type = object({
+    database_url   = string
+    admin_password = string
+  })
+  description = "The sensitive part of the Spacelift Flows settings. Null when Flows is not deployed. Stored in Secrets Manager with a write-only attribute."
+  sensitive   = true
+}

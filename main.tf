@@ -29,6 +29,14 @@ locals {
     iot_url             = data.aws_sqs_queue.iot[0].url
   } : null
 
+  # The object can carry sensitive values
+  flows_enabled = nonsensitive(var.flows != null)
+
+  # The Flows services run in the server's security group unless they get their own.
+  flows_security_group_id = local.flows_enabled ? coalesce(var.flows.security_group_id, var.server_security_group_id) : null
+  flows_port              = 8080
+  flows_gateway_port      = 6237
+
   iot_topic = var.mqtt_broker_type == "iotcore" ? "arn:${data.aws_partition.current.partition}:iot:${var.region}:${data.aws_caller_identity.current.account_id}:topic/spacelift/readonly/*" : null
 }
 
@@ -65,6 +73,16 @@ module "lb" {
   mqtt_lb_internal = var.mqtt_lb_internal
   mqtt_lb_subnets  = var.mqtt_lb_subnets
   mqtt_broker_type = local.mqtt_broker_type
+
+  flows = !local.flows_enabled ? null : {
+    domain                = var.flows.domain
+    certificate_arn       = var.flows.certificate_arn
+    lb_subnets            = var.flows.lb_subnets
+    lb_internal           = var.flows.lb_internal
+    security_group_id     = local.flows_security_group_id
+    port                  = local.flows_port
+    gateway_internal_port = local.flows_gateway_port
+  }
 }
 
 module "ecs" {
@@ -191,4 +209,36 @@ module "ecs" {
   datadog_agent_config         = var.datadog_agent_config
   enable_otel_sidecar          = var.enable_otel_sidecar
   otel_config                  = var.otel_config
+
+  # Flows
+  flows = !local.flows_enabled ? null : {
+    domain            = var.flows.domain
+    organization_name = var.flows.organization_name
+    admin_email       = var.flows.admin_email
+    bucket_name       = var.flows.bucket_name
+    kms_key_arn       = var.flows.kms_key_arn
+    security_group_id = local.flows_security_group_id
+    image             = "${var.flows.image}:${coalesce(var.flows.image_tag, var.backend_image_tag)}"
+    log_configuration = var.flows.log_configuration
+
+    gateway_internal_network_cidr = coalesce(var.flows.gateway_internal_network_cidr, data.aws_vpc.vpc[0].cidr_block)
+    additional_env_vars           = var.flows.additional_env_vars
+    sensitive_env_vars            = var.flows.sensitive_env_vars
+
+    server_cpu               = var.flows.server_cpu
+    server_memory            = var.flows.server_memory
+    server_desired_count     = var.flows.server_desired_count
+    worker_cpu               = var.flows.worker_cpu
+    worker_memory            = var.flows.worker_memory
+    worker_desired_count     = var.flows.worker_desired_count
+    gateway_cpu              = var.flows.gateway_cpu
+    gateway_memory           = var.flows.gateway_memory
+    gateway_desired_count    = var.flows.gateway_desired_count
+    server_target_group_arn  = module.lb.flows_server_target_group_arn
+    gateway_target_group_arn = module.lb.flows_gateway_target_group_arn
+  }
+  flows_secrets = !local.flows_enabled ? null : {
+    database_url   = var.flows.database_url
+    admin_password = var.flows.admin_password
+  }
 }

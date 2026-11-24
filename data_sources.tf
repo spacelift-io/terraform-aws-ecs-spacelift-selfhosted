@@ -1,6 +1,12 @@
 data "aws_caller_identity" "current" {}
 data "aws_partition" "current" {}
 
+data "aws_vpc" "vpc" {
+  count  = local.flows_enabled ? 1 : 0
+  region = var.region
+  id     = var.vpc_id
+}
+
 data "aws_iot_endpoint" "iot" {
   count         = var.mqtt_broker_type == "iotcore" ? 1 : 0
   region        = var.region
