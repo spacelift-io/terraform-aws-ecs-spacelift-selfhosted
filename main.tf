@@ -234,6 +234,8 @@ module "ecs" {
     gateway_cpu              = var.flows.gateway_cpu
     gateway_memory           = var.flows.gateway_memory
     gateway_desired_count    = var.flows.gateway_desired_count
+    port                     = local.flows_port
+    gateway_internal_port    = local.flows_gateway_port
     server_target_group_arn  = module.lb.flows_server_target_group_arn
     gateway_target_group_arn = module.lb.flows_gateway_target_group_arn
   }

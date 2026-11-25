@@ -4,9 +4,6 @@
 locals {
   flows_enabled = var.flows != null
 
-  flows_port                  = 8080
-  flows_gateway_internal_port = 6237
-
   # Flows reads its settings from the environment when it gets no config file.
   flows_default_environment = !local.flows_enabled ? [] : [
     {
@@ -19,11 +16,11 @@ locals {
     },
     {
       name  = "SERVER_PUBLIC_PORT"
-      value = tostring(local.flows_port)
+      value = tostring(var.flows.port)
     },
     {
       name  = "SERVER_INTERNAL_PORT"
-      value = tostring(local.flows_port)
+      value = tostring(var.flows.port)
     },
     {
       name  = "OBJECT_STORAGE_S3_BUCKET"
@@ -139,10 +136,13 @@ resource "aws_secretsmanager_secret_version" "flows" {
 # the agents authenticate with the same pair.
 resource "random_uuid" "flows_default_agent_pool_id" {
   count = local.flows_enabled ? 1 : 0
+
+  # If the token secret is ever recreated, the ID has to change with it
+  keepers = {
+    secret = aws_secretsmanager_secret.flows_agent_pool_token[0].id
+  }
 }
 
-# Ephemeral, so the token never ends up in the state. It is written to Secrets
-# Manager once: the version below never changes, so later runs don't replace it.
 ephemeral "random_password" "flows_agent_pool_token" {
   count = local.flows_enabled ? 1 : 0
 
@@ -218,7 +218,7 @@ resource "aws_ecs_service" "flows" {
     content {
       target_group_arn = each.value.target_group_arn
       container_name   = "flows-${each.key}"
-      container_port   = local.flows_port
+      container_port   = var.flows.port
     }
   }
 }

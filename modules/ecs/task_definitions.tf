@@ -260,8 +260,8 @@ module "container_definitions" {
   # Flows
   flows = !local.flows_enabled ? null : {
     image                 = var.flows.image
-    port                  = local.flows_port
-    gateway_internal_port = local.flows_gateway_internal_port
+    port                  = var.flows.port
+    gateway_internal_port = var.flows.gateway_internal_port
     log_configuration     = var.flows.log_configuration
     environment           = local.flows_environment
     secrets               = local.flows_secrets

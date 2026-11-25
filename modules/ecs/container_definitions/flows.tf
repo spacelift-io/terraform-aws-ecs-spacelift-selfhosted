@@ -29,9 +29,7 @@ locals {
           environment      = var.flows.environment
           secrets          = var.flows.secrets
         },
-        var.registry_credentials_secret_arn != null ? {
-          repositoryCredentials = { credentialsParameter = var.registry_credentials_secret_arn }
-        } : {}
+        local.flows_repository_credentials
       )
     ])
   }

@@ -23,6 +23,16 @@ output "flows_service_names" {
   description = "The names of the Spacelift Flows ECS services, keyed by component (server, worker, gateway). Empty when Flows is not deployed."
 }
 
+output "flows_role_arn" {
+  value       = one(aws_iam_role.flows[*].arn)
+  description = "The ARN of the IAM role of the Spacelift Flows services"
+}
+
+output "flows_role_name" {
+  value       = one(aws_iam_role.flows[*].name)
+  description = "The name of the IAM role of the Spacelift Flows services"
+}
+
 output "flows_agent_pool_id" {
   value       = one(random_uuid.flows_default_agent_pool_id[*].result)
   description = "The ID of the default Spacelift Flows agent pool"

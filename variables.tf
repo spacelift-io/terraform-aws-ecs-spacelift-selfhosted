@@ -708,7 +708,9 @@ variable "flows" {
     Deploys Spacelift Flows next to Spacelift. Leave null to not deploy it. Your license has to include Flows.
 
     When set, the module creates the Flows server, worker and gateway services with their IAM role, and a load
-    balancer for them. It also tells the Spacelift server and drain about the Flows instance.
+    balancer for them. It also tells the Spacelift server and drain about the Flows instance, through the
+    `FEATURE_FLAG_FLOWS_INTEGRATION` and `FLOWS_CONFIG` environment variables. If you pass your own
+    `server_container_definition` or `drain_container_definitions`, set those two yourself.
 
     - `domain`: the domain Flows is served on, without protocol and port (e.g., flows.example.com).
     - `certificate_arn`: AWS Certificate Manager ARN for the Flows load balancer. It has to cover `domain` and
@@ -716,8 +718,8 @@ variable "flows" {
     - `organization_name`: the name of the organization Flows creates on its first start. It's a display name
       (e.g., "My Corp"), and shows up in places like invitation emails.
     - `admin_email`: the email of the admin user Flows creates on its first start.
-    - `admin_password`: the password that admin user logs in with. It'll be stored in Secrets Manager using
-      write-only attribute to prevent storage in state file.
+    - `admin_password`: the password that admin user logs in with, at least 32 characters long. It'll be stored
+      in Secrets Manager using write-only attribute to prevent storage in state file.
     - `database_url`: the connection string of the Flows database, for example the `flows_database_url` output
       of the terraform-aws-spacelift-selfhosted module. Stored the same way as `admin_password`.
     - `bucket_name`: the bucket Flows stores its data in.
@@ -728,8 +730,9 @@ variable "flows" {
     - `security_group_id`: the security group of the Flows services. Defaults to `server_security_group_id`,
       which can already reach the database.
     - `image`: the Flows image, without the tag. The default needs `registry_credentials` or
-      `byo_registry_credentials_secret`, like `backend_image` does. Set it to your own registry if you mirror
-      the images there.
+      `byo_registry_credentials_secret`, like `backend_image` does. If you mirror the backend image to your own
+      registry, mirror this one too and set it here: the credentials apply to all images, and ECS rejects them
+      on ECR images.
     - `image_tag`: the tag of the Flows image. Defaults to `backend_image_tag`.
     - `log_configuration`: the log configuration of the Flows services.
     - `gateway_internal_network_cidr`: the network the Flows gateway picks its own address from, which the Flows
@@ -743,8 +746,24 @@ variable "flows" {
   EOT
   default     = null
 
+  # TF only short-circuits from Terraform 1.12, hence the ternary operators
   validation {
-    condition     = var.flows == null || !startswith(var.flows.image, "oci.spacelift.io/") || var.registry_credentials != null || var.byo_registry_credentials_secret != null
-    error_message = "Pulling the Flows image from oci.spacelift.io needs credentials. Set registry_credentials or byo_registry_credentials_secret."
+    condition     = var.flows == null ? true : (!startswith(var.flows.domain, "http://") && !startswith(var.flows.domain, "https://"))
+    error_message = "flows.domain should not include a protocol ('http://' or 'https://')"
+  }
+
+  validation {
+    condition     = var.flows == null ? true : length(var.flows.admin_password) >= 32
+    error_message = "flows.admin_password has to be at least 32 characters long."
+  }
+
+  validation {
+    condition     = var.flows == null ? true : var.flows.bucket_name != null
+    error_message = "flows.bucket_name is null. If it comes from the terraform-aws-spacelift-selfhosted module, set enable_flows = true there."
+  }
+
+  validation {
+    condition     = var.flows == null ? true : (!startswith(var.flows.image, "oci.spacelift.io/") || var.registry_credentials != null || var.byo_registry_credentials_secret != null)
+    error_message = "Pulling the Flows image from oci.spacelift.io needs credentials. Set registry_credentials or byo_registry_credentials_secret, or point flows.image at your own registry if you mirror the images."
   }
 }

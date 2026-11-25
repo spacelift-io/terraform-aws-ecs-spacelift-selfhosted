@@ -73,6 +73,16 @@ output "flows_service_names" {
   description = "The names of the Spacelift Flows ECS services, keyed by component (server, worker, gateway). Empty when Flows is not deployed."
 }
 
+output "flows_role_arn" {
+  value       = module.ecs.flows_role_arn
+  description = "ARN of the IAM role of the Spacelift Flows services, for attaching extra permissions such as SES or Bedrock. Null when Flows is not deployed."
+}
+
+output "flows_role_name" {
+  value       = module.ecs.flows_role_name
+  description = "Name of the IAM role of the Spacelift Flows services, for attaching extra permissions such as SES or Bedrock. Null when Flows is not deployed."
+}
+
 output "flows_agent_pool_id" {
   value       = module.ecs.flows_agent_pool_id
   description = "ID of the default Flows agent pool, for configuring the Flows agents. Null when Flows is not deployed."

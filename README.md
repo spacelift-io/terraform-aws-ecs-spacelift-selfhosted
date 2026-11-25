@@ -324,7 +324,7 @@ module "spacelift_services" {
     certificate_arn   = "<Flows certificate ARN>"
     organization_name = "My Corp"
     admin_email       = "admin@mycorp.io"
-    admin_password    = "<Flows admin password>"
+    admin_password    = "<Flows admin password, at least 32 characters>"
     database_url      = module.spacelift_infra.flows_database_url
     bucket_name       = module.spacelift_infra.flows_bucket_name
     kms_key_arn       = module.spacelift_infra.flows_kms_key_arn

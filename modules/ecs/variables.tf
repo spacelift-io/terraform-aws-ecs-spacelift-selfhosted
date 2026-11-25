@@ -617,6 +617,8 @@ variable "flows" {
     gateway_cpu              = number
     gateway_memory           = number
     gateway_desired_count    = number
+    port                     = number
+    gateway_internal_port    = number
     server_target_group_arn  = string
     gateway_target_group_arn = string
   })

@@ -19,7 +19,7 @@ module "spacelift_services" {
     certificate_arn   = "arn:aws:acm:us-east-1:123456789012:certificate/abc123"
     organization_name = "Spacelift"
     admin_email       = "admin@spacelift.io"
-    admin_password    = "<your-admin-password>"
+    admin_password    = "<your-admin-password-of-at-least-32-characters>"
     database_url      = module.spacelift_infra.flows_database_url
     bucket_name       = module.spacelift_infra.flows_bucket_name
     kms_key_arn       = module.spacelift_infra.flows_kms_key_arn
