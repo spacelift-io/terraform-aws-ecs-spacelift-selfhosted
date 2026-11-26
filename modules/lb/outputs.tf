@@ -50,3 +50,15 @@ output "load_balancer_security_group_id" {
   value       = local.load_balancer_security_group_id
   description = "The security group ID used by the main load balancer (either provided or created)"
 }
+
+output "flows_lb_dns" {
+  value = one(aws_lb.flows[*].dns_name)
+}
+
+output "flows_server_target_group_arn" {
+  value = one(aws_lb_target_group.flows_server[*].arn)
+}
+
+output "flows_gateway_target_group_arn" {
+  value = one(aws_lb_target_group.flows_gateway[*].arn)
+}

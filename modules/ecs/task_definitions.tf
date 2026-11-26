@@ -163,6 +163,21 @@ locals {
         value = "${var.vcs_gateway_domain}:443"
       }
     ] : [],
+    local.flows_enabled ? [
+      {
+        name  = "FEATURE_FLAG_FLOWS_INTEGRATION"
+        value = "true"
+      },
+      {
+        name = "FLOWS_CONFIG"
+        value = jsonencode({
+          (var.flows.domain) = {
+            redirect_url = "https://${var.flows.domain}"
+            api_url      = "https://${var.flows.domain}"
+          }
+        })
+      }
+    ] : [],
     var.enable_datadog_agent_sidecar ? [
       {
         name  = "DD_AGENT_HOST"
@@ -241,6 +256,16 @@ module "container_definitions" {
   # OpenTelemetry sidecar configuration
   enable_otel_sidecar = var.enable_otel_sidecar
   otel_config         = var.otel_config
+
+  # Flows
+  flows = !local.flows_enabled ? null : {
+    image                 = var.flows.image
+    port                  = var.flows.port
+    gateway_internal_port = var.flows.gateway_internal_port
+    log_configuration     = var.flows.log_configuration
+    environment           = local.flows_environment
+    secrets               = local.flows_secrets
+  }
 }
 
 resource "aws_ecs_task_definition" "server" {

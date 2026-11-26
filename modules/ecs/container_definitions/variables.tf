@@ -198,3 +198,21 @@ variable "otel_config" {
   })
   description = "OpenTelemetry Collector configuration. If log_configuration is not provided, a default CloudWatch Logs configuration will be used."
 }
+
+variable "flows" {
+  type = object({
+    image                 = string
+    port                  = number
+    gateway_internal_port = number
+    log_configuration     = any
+    environment = list(object({
+      name  = string
+      value = string
+    }))
+    secrets = list(object({
+      name      = string
+      valueFrom = string
+    }))
+  })
+  description = "What the Spacelift Flows containers need. Null when Flows is not deployed."
+}

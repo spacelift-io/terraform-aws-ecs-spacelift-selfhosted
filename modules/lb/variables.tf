@@ -112,3 +112,16 @@ variable "region" {
   type        = string
   description = "AWS region to deploy resources."
 }
+
+variable "flows" {
+  type = object({
+    domain                = string
+    certificate_arn       = string
+    lb_subnets            = list(string)
+    lb_internal           = bool
+    security_group_id     = string
+    port                  = number
+    gateway_internal_port = number
+  })
+  description = "What the Spacelift Flows load balancer needs. Null when Flows is not deployed, and then no load balancer is created."
+}

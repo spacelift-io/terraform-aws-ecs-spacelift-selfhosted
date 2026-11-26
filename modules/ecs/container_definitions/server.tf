@@ -69,9 +69,7 @@ locals {
         length(local.server_sidecar_dependencies) > 0 ? {
           dependsOn = local.server_sidecar_dependencies
         } : {},
-        var.registry_credentials_secret_arn != null ? {
-          repositoryCredentials = { credentialsParameter = var.registry_credentials_secret_arn }
-        } : {}
+        local.backend_repository_credentials
       )
     ],
     local.datadog_agent_container,

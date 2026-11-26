@@ -663,3 +663,107 @@ variable "rds_iam_auth" {
     error_message = "rds_iam_auth needs a cluster_resource_id and a db_username."
   }
 }
+
+### Spacelift Flows
+
+variable "flows" {
+  type = object({
+    domain            = string
+    certificate_arn   = string
+    organization_name = string
+    admin_email       = string
+    admin_password    = string
+    database_url      = string
+    bucket_name       = string
+    kms_key_arn       = string
+    lb_subnets        = list(string)
+
+    lb_internal       = optional(bool, false)
+    security_group_id = optional(string)
+    image             = optional(string, "oci.spacelift.io/flows/backend")
+    image_tag         = optional(string)
+    log_configuration = optional(any)
+
+    gateway_internal_network_cidr = optional(string)
+    additional_env_vars = optional(list(object({
+      name  = string
+      value = string
+    })), [])
+    sensitive_env_vars = optional(list(object({
+      name      = string
+      valueFrom = string
+    })), [])
+
+    server_cpu            = optional(number, 512)
+    server_memory         = optional(number, 1024)
+    server_desired_count  = optional(number, 3)
+    worker_cpu            = optional(number, 1024)
+    worker_memory         = optional(number, 2048)
+    worker_desired_count  = optional(number, 3)
+    gateway_cpu           = optional(number, 512)
+    gateway_memory        = optional(number, 1024)
+    gateway_desired_count = optional(number, 3)
+  })
+  description = <<-EOT
+    Deploys Spacelift Flows next to Spacelift. Leave null to not deploy it. Your license has to include Flows.
+
+    When set, the module creates the Flows server, worker and gateway services with their IAM role, and a load
+    balancer for them. It also tells the Spacelift server and drain about the Flows instance, through the
+    `FEATURE_FLAG_FLOWS_INTEGRATION` and `FLOWS_CONFIG` environment variables. If you pass your own
+    `server_container_definition` or `drain_container_definitions`, set those two yourself.
+
+    - `domain`: the domain Flows is served on, without protocol and port (e.g., flows.example.com).
+    - `certificate_arn`: AWS Certificate Manager ARN for the Flows load balancer. It has to cover `domain` and
+      its `*.endpoints`, `oauth`, `mcp` and `gateway` subdomains.
+    - `organization_name`: the name of the organization Flows creates on its first start. It's a display name
+      (e.g., "My Corp"), and shows up in places like invitation emails.
+    - `admin_email`: the email of the admin user Flows creates on its first start.
+    - `admin_password`: the password that admin user logs in with, at least 32 characters long. It'll be stored
+      in Secrets Manager using write-only attribute to prevent storage in state file.
+    - `database_url`: the connection string of the Flows database, for example the `flows_database_url` output
+      of the terraform-aws-spacelift-selfhosted module. Stored the same way as `admin_password`.
+    - `bucket_name`: the bucket Flows stores its data in.
+    - `kms_key_arn`: the KMS key the Flows bucket is encrypted with.
+    - `lb_subnets`: the subnets to deploy the Flows load balancer in. If `lb_internal` is true provide the
+      private subnets, otherwise the public ones.
+    - `lb_internal`: whether the Flows load balancer is internal.
+    - `security_group_id`: the security group of the Flows services. Defaults to `server_security_group_id`,
+      which can already reach the database.
+    - `image`: the Flows image, without the tag. The default needs `registry_credentials` or
+      `byo_registry_credentials_secret`, like `backend_image` does. If you mirror the backend image to your own
+      registry, mirror this one too and set it here: the credentials apply to all images, and ECS rejects them
+      on ECR images.
+    - `image_tag`: the tag of the Flows image. Defaults to `backend_image_tag`.
+    - `log_configuration`: the log configuration of the Flows services.
+    - `gateway_internal_network_cidr`: the network the Flows gateway picks its own address from, which the Flows
+      server and worker then call it on. Defaults to the CIDR of the VPC. Set it if the ECS subnets are in a
+      secondary CIDR of the VPC.
+    - `additional_env_vars`: additional environment variables for the Flows containers, for example the email
+      settings. They take precedence over the ones the module sets.
+    - `sensitive_env_vars`: sensitive environment variables for the Flows containers, passed to the `secrets`
+      field of the container definitions. Don't forget to add the ARNs to `secrets_manager_secret_arns`.
+    - `*_cpu`, `*_memory`, `*_desired_count`: sizing of the Flows server, worker and gateway services.
+  EOT
+  default     = null
+
+  # TF only short-circuits from Terraform 1.12, hence the ternary operators
+  validation {
+    condition     = var.flows == null ? true : (!startswith(var.flows.domain, "http://") && !startswith(var.flows.domain, "https://"))
+    error_message = "flows.domain should not include a protocol ('http://' or 'https://')"
+  }
+
+  validation {
+    condition     = var.flows == null ? true : length(var.flows.admin_password) >= 32
+    error_message = "flows.admin_password has to be at least 32 characters long."
+  }
+
+  validation {
+    condition     = var.flows == null ? true : var.flows.bucket_name != null
+    error_message = "flows.bucket_name is null. If it comes from the terraform-aws-spacelift-selfhosted module, set enable_flows = true there."
+  }
+
+  validation {
+    condition     = var.flows == null ? true : (!startswith(var.flows.image, "oci.spacelift.io/") || var.registry_credentials != null || var.byo_registry_credentials_secret != null)
+    error_message = "Pulling the Flows image from oci.spacelift.io needs credentials. Set registry_credentials or byo_registry_credentials_secret, or point flows.image at your own registry if you mirror the images."
+  }
+}

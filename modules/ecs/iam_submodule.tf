@@ -1,6 +1,6 @@
 module "iam_roles_and_policies" {
   source  = "spacelift-io/iam-spacelift-selfhosted/aws"
-  version = "1.11.1"
+  version = "1.13.0"
 
   write_as_files = false
   aws_partition  = var.aws_partition
@@ -8,7 +8,8 @@ module "iam_roles_and_policies" {
   secrets_manager_secret_arns = concat(
     [local.shared_secrets_arn],
     local.use_registry_credentials ? [local.registry_credentials_secret_arn] : [],
-    var.secrets_manager_secret_arns
+    var.secrets_manager_secret_arns,
+    local.flows_secret_arns
   )
 
   kms_encryption_key_arn = var.kms_encryption_key_arn
@@ -26,6 +27,9 @@ module "iam_roles_and_policies" {
   uploads_bucket_name                  = var.uploads_bucket_name
   user_uploaded_workspaces_bucket_name = var.user_uploaded_workspaces_bucket_name
   workspace_bucket_name                = var.workspace_bucket_name
+
+  flows_bucket_name = try(var.flows.bucket_name, null)
+  flows_kms_key_arn = try(var.flows.kms_key_arn, null)
 
   rds_iam_auth_config = var.rds_iam_auth == null ? null : {
     aws_account_id      = var.aws_account_id
