@@ -348,7 +348,7 @@ A few things to know:
 - The Flows image comes from `oci.spacelift.io` and is pulled with the same registry credentials as the backend image. If you mirror the images, set `flows.image`, for example to the `ecr_flows_backend_repository_url` output of the infra module.
 - Anything else Flows can be configured with, such as email settings, goes through `flows.additional_env_vars` and `flows.sensitive_env_vars`.
 - If you bring your own `execution_role_arn`, it needs access to the two Flows secrets the module creates in Secrets Manager.
-- The Flows agents are not deployed by this module. To configure them, use the `flows_agent_pool_id` output and the token stored in the secret from the `flows_agent_pool_token_secret_arn` output. The token is generated once and never stored in the state.
+- The Flows agents are not deployed by this module. To configure them, use the `flows_agent_pool_id` and `flows_agent_pool_token` outputs.
 
 See a full example in the [examples/with-flows](examples/with-flows) directory.
 
