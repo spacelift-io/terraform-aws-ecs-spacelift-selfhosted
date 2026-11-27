@@ -38,6 +38,12 @@ output "flows_agent_pool_id" {
   description = "The ID of the default Spacelift Flows agent pool"
 }
 
+output "flows_agent_pool_token" {
+  value       = one(random_password.flows_agent_pool_token[*].result)
+  description = "The token of the default Spacelift Flows agent pool"
+  sensitive   = true
+}
+
 output "flows_agent_pool_token_secret_arn" {
   value       = one(aws_secretsmanager_secret.flows_agent_pool_token[*].arn)
   description = "The ARN of the Secrets Manager secret with the token of the default Spacelift Flows agent pool"

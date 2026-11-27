@@ -143,7 +143,7 @@ resource "random_uuid" "flows_default_agent_pool_id" {
   }
 }
 
-ephemeral "random_password" "flows_agent_pool_token" {
+resource "random_password" "flows_agent_pool_token" {
   count = local.flows_enabled ? 1 : 0
 
   length  = 64
@@ -163,11 +163,9 @@ resource "aws_secretsmanager_secret" "flows_agent_pool_token" {
 resource "aws_secretsmanager_secret_version" "flows_agent_pool_token" {
   count = local.flows_enabled ? 1 : 0
 
-  region           = var.aws_region
-  secret_id        = aws_secretsmanager_secret.flows_agent_pool_token[0].id
-  secret_string_wo = ephemeral.random_password.flows_agent_pool_token[0].result
-
-  secret_string_wo_version = 1
+  region        = var.aws_region
+  secret_id     = aws_secretsmanager_secret.flows_agent_pool_token[0].id
+  secret_string = random_password.flows_agent_pool_token[0].result
 }
 
 resource "aws_ecs_task_definition" "flows" {

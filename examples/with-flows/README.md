@@ -22,4 +22,4 @@ See [main.tf](main.tf). It only shows the Flows-specific part, so it doesn't app
 
 After applying, create DNS records (`CNAME`) for the names above that point to the `flows_lb_dns_name` output.
 
-The Flows agents are not deployed by this module. To configure them, use the `flows_agent_pool_id` output and the token stored in the Secrets Manager secret from the `flows_agent_pool_token_secret_arn` output.
+The Flows agents are not deployed by this module. To configure them, use the `flows_agent_pool_id` and `flows_agent_pool_token` outputs.

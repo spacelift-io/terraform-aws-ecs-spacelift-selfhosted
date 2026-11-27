@@ -88,9 +88,15 @@ output "flows_agent_pool_id" {
   description = "ID of the default Flows agent pool, for configuring the Flows agents. Null when Flows is not deployed."
 }
 
+output "flows_agent_pool_token" {
+  value       = module.ecs.flows_agent_pool_token
+  description = "Token of the default Flows agent pool, for configuring the Flows agents. Null when Flows is not deployed."
+  sensitive   = true
+}
+
 output "flows_agent_pool_token_secret_arn" {
   value       = module.ecs.flows_agent_pool_token_secret_arn
-  description = "ARN of the Secrets Manager secret with the token of the default Flows agent pool, for configuring the Flows agents. Null when Flows is not deployed."
+  description = "ARN of the Secrets Manager secret with the token of the default Flows agent pool, for agents that read it from Secrets Manager, like ECS tasks. Null when Flows is not deployed."
 }
 
 output "registry_credentials_secret_arn" {
